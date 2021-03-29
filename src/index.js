@@ -1,10 +1,10 @@
-import Editor from '@/edit/index.vue';
+import Edit from '@/edit/index.vue';
 
-export { Editor };
+export { Edit };
 
 export default {
   initState: () => ({}),
   components: {
-    Editor
+    Edit
   }
 };
