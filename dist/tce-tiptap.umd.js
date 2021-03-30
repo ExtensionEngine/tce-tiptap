@@ -1,11 +1,11 @@
 (function (global, factory) {
   typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('tiptap-extensions'), require('tiptap')) :
   typeof define === 'function' && define.amd ? define(['exports', 'tiptap-extensions', 'tiptap'], factory) :
-  (global = typeof globalThis !== 'undefined' ? globalThis : global || self, factory((global.__TAILOR_CONTENT_ELEMENTS__ = global.__TAILOR_CONTENT_ELEMENTS__ || {}, global.__TAILOR_CONTENT_ELEMENTS__['tce-tiptap'] = {}), global.tiptapExtensions, global.tiptap));
+  (global = typeof globalThis !== 'undefined' ? globalThis : global || self, factory((global.__TAILOR_CONTENT_ELEMENTS__ = global.__TAILOR_CONTENT_ELEMENTS__ || {}, global.__TAILOR_CONTENT_ELEMENTS__['@extensionengine/tce-tiptap'] = {}), global.tiptapExtensions, global.tiptap));
 }(this, (function (exports, tiptapExtensions, tiptap) { 'use strict';
 
-  var name = "tce-tiptap";
-  var version = "0.1.0";
+  var name = "@extensionengine/tce-tiptap";
+  var version = "0.0.1";
 
   /**
    * Checks if `value` is the
@@ -724,7 +724,7 @@
       staticClass: "message"
     }, [_c('span', {
       staticClass: "heading"
-    }, [_vm._v("HTML component")]), _vm._v(" "), !_vm.dense ? _c('span', [_vm._v("Select to edit")]) : _vm._e()])]) : _c('editor-menu-bar', {
+    }, [_vm._v("HTML component")]), _vm._v(" "), !_vm.dense ? _c('span', [_vm._v("Select to edit")]) : _vm._e()])]) : [_c('editor-menu-bar', {
       attrs: {
         "editor": _vm.editor
       },
@@ -905,7 +905,7 @@
       attrs: {
         "editor": _vm.editor
       }
-    })], 1);
+    })]], 2);
   };
 
   var __vue_staticRenderFns__ = [function () {
@@ -926,7 +926,7 @@
   const __vue_inject_styles__ = undefined;
   /* scoped */
 
-  const __vue_scope_id__ = "data-v-799c41e0";
+  const __vue_scope_id__ = "data-v-639254b1";
   /* module identifier */
 
   const __vue_module_identifier__ = undefined;

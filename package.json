@@ -1,7 +1,19 @@
 {
-  "name": "tce-tiptap",
-  "version": "0.1.0",
-  "private": true,
+  "name": "@extensionengine/tce-tiptap",
+  "version": "0.0.1",
+  "description": "Tailor content element for tiptap editor",
+  "homepage": "https://github.com/ExtensionEngine/tce-tiptap#readme",
+  "bugs": {
+    "url": "https://github.com/ExtensionEngine/tce-tiptap/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ExtensionEngine/tce-tiptap.git"
+  },
+  "license": "MIT",
+  "author": "ExtensionEngine <info@extensionengine.com>",
+  "main": "dist/tce-tiptap.js",
+  "module": "dist/tce-tiptap.esm.js",
   "scripts": {
     "serve": "vue-cli-service serve ./example/main.js",
     "build": "bili",

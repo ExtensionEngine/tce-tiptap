@@ -8,7 +8,7 @@ module.exports = {
     'tce-tiptap': 'src/index.js'
   },
   output: {
-    format: ['cjs', 'es', 'umd', 'umd-min'],
+    format: ['cjs', 'esm', 'umd', 'umd-min'],
     moduleName: 'TceTiptap'
   },
   externals: [

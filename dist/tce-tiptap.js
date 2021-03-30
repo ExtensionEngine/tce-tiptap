@@ -10,8 +10,8 @@ function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'defau
 
 var debounce__default = /*#__PURE__*/_interopDefaultLegacy(debounce);
 
-var name = "tce-tiptap";
-var version = "0.1.0";
+var name = "@extensionengine/tce-tiptap";
+var version = "0.0.1";
 
 //
 var script = {
@@ -219,7 +219,7 @@ var __vue_render__ = function () {
     staticClass: "message"
   }, [_c('span', {
     staticClass: "heading"
-  }, [_vm._v("HTML component")]), _vm._v(" "), !_vm.dense ? _c('span', [_vm._v("Select to edit")]) : _vm._e()])]) : _c('editor-menu-bar', {
+  }, [_vm._v("HTML component")]), _vm._v(" "), !_vm.dense ? _c('span', [_vm._v("Select to edit")]) : _vm._e()])]) : [_c('editor-menu-bar', {
     attrs: {
       "editor": _vm.editor
     },
@@ -400,7 +400,7 @@ var __vue_render__ = function () {
     attrs: {
       "editor": _vm.editor
     }
-  })], 1);
+  })]], 2);
 };
 
 var __vue_staticRenderFns__ = [function () {
@@ -421,7 +421,7 @@ var __vue_staticRenderFns__ = [function () {
 const __vue_inject_styles__ = undefined;
 /* scoped */
 
-const __vue_scope_id__ = "data-v-799c41e0";
+const __vue_scope_id__ = "data-v-639254b1";
 /* module identifier */
 
 const __vue_module_identifier__ = undefined;
