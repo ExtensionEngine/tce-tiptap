@@ -13,99 +13,101 @@
         <span v-if="!dense">Select to edit</span>
       </div>
     </div>
-    <editor-menu-bar v-else :editor="editor" v-slot="{ commands, isActive }">
-      <div class="toolbar">
-        <button
-          @click="commands.code"
-          class="toolbar-button"
-          :class="{ 'is-active': isActive.code() }">
-          <span class="mdi mdi-code-tags"></span>
-        </button>
-        <button
-          @click="commands.undo"
-          class="toolbar-button">
-          <span class="mdi mdi-undo"></span>
-        </button>
-        <button
-          @click="commands.redo"
-          class="toolbar-button">
-          <span class="mdi mdi-redo"></span>
-        </button>
-        <button
-          @click="commands.bold"
-          class="toolbar-button"
-          :class="{ 'is-active': isActive.bold() }">
-          <span class="mdi mdi-format-bold"></span>
-        </button>
-        <button
-          @click="commands.italic"
-          class="toolbar-button"
-          :class="{ 'is-active': isActive.italic() }">
-          <span class="mdi mdi-format-italic"></span>
-        </button>
-        <button
-          @click="commands.underline"
-          class="toolbar-button"
-          :class="{ 'is-active': isActive.underline() }">
-          <span class="mdi mdi-format-underline"></span>
-        </button>
-        <button
-          @click="commands.strike"
-          class="toolbar-button"
-          :class="{ 'is-active': isActive.strike() }">
-          <span class="mdi mdi-format-strikethrough"></span>
-        </button>
-        <button
-          @click="commands.bullet_list"
-          class="toolbar-button"
-          :class="{ 'is-active': isActive.bullet_list() }">
-          <span class="mdi mdi-format-list-bulleted"></span>
-        </button>
-        <button
-          @click="commands.ordered_list"
-          class="toolbar-button"
-          :class="{ 'is-active': isActive.ordered_list() }">
-          <span class="mdi mdi-format-list-numbered"></span>
-        </button>
-        <button
-          @click="commands.paragraph"
-          class="toolbar-button"
-          :class="{ 'is-active': isActive.paragraph() }">
-          <span class="mdi mdi-format-pilcrow"></span>
-        </button>
-        <button
-          @click="commands.heading({ level: 1 })"
-          class="toolbar-button"
-          :class="{ 'is-active': isActive.heading({ level: 1 }) }">
-          <span class="mdi mdi-format-header-1"></span>
-        </button>
-        <button
-          @click="commands.heading({ level: 2 })"
-          class="toolbar-button"
-          :class="{ 'is-active': isActive.heading({ level: 2 }) }">
-          <span class="mdi mdi-format-header-2"></span>
-        </button>
-        <button
-          @click="commands.heading({ level: 3 })"
-          class="toolbar-button"
-          :class="{ 'is-active': isActive.heading({ level: 3 }) }">
-          <span class="mdi mdi-format-header-3"></span>
-        </button>
-        <button
-          @click="commands.blockquote"
-          class="toolbar-button"
-          :class="{ 'is-active': isActive.blockquote() }">
-          <span class="mdi mdi-format-quote-close"></span>
-        </button>
-        <button
-          @click="commands.link"
-          class="toolbar-button"
-          :class="{ 'is-active': isActive.link() }">
-          <span class="mdi mdi-link"></span>
-        </button>
-      </div>
-    </editor-menu-bar>
-    <editor-content :editor="editor" class="editor" />
+    <template v-else>
+      <editor-menu-bar :editor="editor" v-slot="{ commands, isActive }">
+        <div class="toolbar">
+          <button
+            @click="commands.code"
+            class="toolbar-button"
+            :class="{ 'is-active': isActive.code() }">
+            <span class="mdi mdi-code-tags"></span>
+          </button>
+          <button
+            @click="commands.undo"
+            class="toolbar-button">
+            <span class="mdi mdi-undo"></span>
+          </button>
+          <button
+            @click="commands.redo"
+            class="toolbar-button">
+            <span class="mdi mdi-redo"></span>
+          </button>
+          <button
+            @click="commands.bold"
+            class="toolbar-button"
+            :class="{ 'is-active': isActive.bold() }">
+            <span class="mdi mdi-format-bold"></span>
+          </button>
+          <button
+            @click="commands.italic"
+            class="toolbar-button"
+            :class="{ 'is-active': isActive.italic() }">
+            <span class="mdi mdi-format-italic"></span>
+          </button>
+          <button
+            @click="commands.underline"
+            class="toolbar-button"
+            :class="{ 'is-active': isActive.underline() }">
+            <span class="mdi mdi-format-underline"></span>
+          </button>
+          <button
+            @click="commands.strike"
+            class="toolbar-button"
+            :class="{ 'is-active': isActive.strike() }">
+            <span class="mdi mdi-format-strikethrough"></span>
+          </button>
+          <button
+            @click="commands.bullet_list"
+            class="toolbar-button"
+            :class="{ 'is-active': isActive.bullet_list() }">
+            <span class="mdi mdi-format-list-bulleted"></span>
+          </button>
+          <button
+            @click="commands.ordered_list"
+            class="toolbar-button"
+            :class="{ 'is-active': isActive.ordered_list() }">
+            <span class="mdi mdi-format-list-numbered"></span>
+          </button>
+          <button
+            @click="commands.paragraph"
+            class="toolbar-button"
+            :class="{ 'is-active': isActive.paragraph() }">
+            <span class="mdi mdi-format-pilcrow"></span>
+          </button>
+          <button
+            @click="commands.heading({ level: 1 })"
+            class="toolbar-button"
+            :class="{ 'is-active': isActive.heading({ level: 1 }) }">
+            <span class="mdi mdi-format-header-1"></span>
+          </button>
+          <button
+            @click="commands.heading({ level: 2 })"
+            class="toolbar-button"
+            :class="{ 'is-active': isActive.heading({ level: 2 }) }">
+            <span class="mdi mdi-format-header-2"></span>
+          </button>
+          <button
+            @click="commands.heading({ level: 3 })"
+            class="toolbar-button"
+            :class="{ 'is-active': isActive.heading({ level: 3 }) }">
+            <span class="mdi mdi-format-header-3"></span>
+          </button>
+          <button
+            @click="commands.blockquote"
+            class="toolbar-button"
+            :class="{ 'is-active': isActive.blockquote() }">
+            <span class="mdi mdi-format-quote-close"></span>
+          </button>
+          <button
+            @click="commands.link"
+            class="toolbar-button"
+            :class="{ 'is-active': isActive.link() }">
+            <span class="mdi mdi-link"></span>
+          </button>
+        </div>
+      </editor-menu-bar>
+      <editor-content :editor="editor" class="editor" />
+    </template>
   </div>
 </template>
 
