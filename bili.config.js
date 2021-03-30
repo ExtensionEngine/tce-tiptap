@@ -19,7 +19,7 @@ module.exports = {
     vue: true,
     'tailor-ce': true,
     postcss: {
-      extract: 'tce-jodit.css'
+      extract: 'tce-tiptap.css'
     },
     babel: {
       babelHelpers: 'runtime',
