@@ -6,6 +6,14 @@
 
   var name = "@extensionengine/tce-tiptap";
   var version = "0.0.1";
+  var tailor = {
+  	label: "Html",
+  	type: "TIPTAP_HTML",
+  	ui: {
+  		icon: "mdi-text",
+  		forceFullWidth: false
+  	}
+  };
 
   /**
    * Checks if `value` is the
@@ -519,8 +527,9 @@
   var debounce_1 = debounce;
 
   //
-  var script = {
+  var script$1 = {
     name: 'tce-tiptap-html',
+    inject: ['$elementBus'],
     props: {
       element: {
         type: Object,
@@ -587,6 +596,7 @@
 
       isFocused(val, oldVal) {
         if (oldVal && !val) this.save();
+        this.$elementBus.emit('tiptap-editor', this.editor);
       },
 
       isDragged(state, oldState) {
@@ -621,8 +631,7 @@
     },
 
     components: {
-      EditorContent: tiptap.EditorContent,
-      EditorMenuBar: tiptap.EditorMenuBar
+      EditorContent: tiptap.EditorContent
     }
   };
 
@@ -702,10 +711,10 @@
   }
 
   /* script */
-  const __vue_script__ = script;
+  const __vue_script__$1 = script$1;
   /* template */
 
-  var __vue_render__ = function () {
+  var __vue_render__$1 = function () {
     var _vm = this;
 
     var _h = _vm.$createElement;
@@ -724,7 +733,81 @@
       staticClass: "message"
     }, [_c('span', {
       staticClass: "heading"
-    }, [_vm._v("HTML component")]), _vm._v(" "), !_vm.dense ? _c('span', [_vm._v("Select to edit")]) : _vm._e()])]) : [_c('editor-menu-bar', {
+    }, [_vm._v("HTML component")]), _vm._v(" "), !_vm.dense ? _c('span', [_vm._v("Select to edit")]) : _vm._e()])]) : [_c('editor-content', {
+      staticClass: "editor",
+      attrs: {
+        "editor": _vm.editor
+      }
+    })]], 2);
+  };
+
+  var __vue_staticRenderFns__$1 = [function () {
+    var _vm = this;
+
+    var _h = _vm.$createElement;
+
+    var _c = _vm._self._c || _h;
+
+    return _c('div', {
+      staticClass: "placeholder-avatar"
+    }, [_c('span', [_vm._v("<")]), _vm._v(" "), _c('span', {
+      staticClass: "divider"
+    }, [_vm._v("/")]), _vm._v(" "), _c('span', [_vm._v(">")])]);
+  }];
+  /* style */
+
+  const __vue_inject_styles__$1 = undefined;
+  /* scoped */
+
+  const __vue_scope_id__$1 = "data-v-2f33120d";
+  /* module identifier */
+
+  const __vue_module_identifier__$1 = undefined;
+  /* functional template */
+
+  const __vue_is_functional_template__$1 = false;
+  /* style inject */
+
+  /* style inject SSR */
+
+  /* style inject shadow dom */
+
+  const __vue_component__$1 = /*#__PURE__*/normalizeComponent({
+    render: __vue_render__$1,
+    staticRenderFns: __vue_staticRenderFns__$1
+  }, __vue_inject_styles__$1, __vue_script__$1, __vue_scope_id__$1, __vue_is_functional_template__$1, __vue_module_identifier__$1, false, undefined, undefined, undefined);
+
+  //
+  var script = {
+    inject: ['$elementBus'],
+    name: 'tce-tiptap-toolbar',
+    data: () => ({
+      editor: null
+    }),
+
+    created() {
+      this.$elementBus.on('tiptap-editor', editor => {
+        this.editor = editor;
+      });
+    },
+
+    components: {
+      EditorMenuBar: tiptap.EditorMenuBar
+    }
+  };
+
+  /* script */
+  const __vue_script__ = script;
+  /* template */
+
+  var __vue_render__ = function () {
+    var _vm = this;
+
+    var _h = _vm.$createElement;
+
+    var _c = _vm._self._c || _h;
+
+    return _vm.editor ? _c('editor-menu-bar', {
       attrs: {
         "editor": _vm.editor
       },
@@ -899,34 +982,17 @@
             staticClass: "mdi mdi-link"
           })])])];
         }
-      }])
-    }), _vm._v(" "), _c('editor-content', {
-      staticClass: "editor",
-      attrs: {
-        "editor": _vm.editor
-      }
-    })]], 2);
+      }], null, false, 903112492)
+    }) : _vm._e();
   };
 
-  var __vue_staticRenderFns__ = [function () {
-    var _vm = this;
-
-    var _h = _vm.$createElement;
-
-    var _c = _vm._self._c || _h;
-
-    return _c('div', {
-      staticClass: "placeholder-avatar"
-    }, [_c('span', [_vm._v("<")]), _vm._v(" "), _c('span', {
-      staticClass: "divider"
-    }, [_vm._v("/")]), _vm._v(" "), _c('span', [_vm._v(">")])]);
-  }];
+  var __vue_staticRenderFns__ = [];
   /* style */
 
   const __vue_inject_styles__ = undefined;
   /* scoped */
 
-  const __vue_scope_id__ = "data-v-639254b1";
+  const __vue_scope_id__ = "data-v-f7c2f62e";
   /* module identifier */
 
   const __vue_module_identifier__ = undefined;
@@ -947,13 +1013,15 @@
   var plugin__default = {
     initState: () => ({}),
     components: {
-      Edit: __vue_component__
+      Edit: __vue_component__$1,
+      Toolbar: __vue_component__
     }
   };
 
   var plugin = /*#__PURE__*/Object.freeze({
     __proto__: null,
-    Edit: __vue_component__,
+    Edit: __vue_component__$1,
+    Toolbar: __vue_component__,
     'default': plugin__default
   });
 
@@ -1123,7 +1191,7 @@
     version: version,
     initState: initState,
     components: components
-  }, _missingExportShim);
+  }, tailor);
   var install = function install(Vue) {
     if (hasProp(plugin, 'install')) {
       isFunction(_missingExportShim) && _missingExportShim(Vue);
@@ -1140,7 +1208,8 @@
     });
   };
 
-  exports.Edit = __vue_component__;
+  exports.Edit = __vue_component__$1;
+  exports.Toolbar = __vue_component__;
   exports.default = install;
   exports.install = install;
   exports.options = options;

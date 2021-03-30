@@ -1,10 +1,12 @@
-import Edit from '@/edit/index.vue';
+import Edit from './edit/index.vue';
+import Toolbar from './edit/Toolbar.vue';
 
-export { Edit };
+export { Edit, Toolbar };
 
 export default {
   initState: () => ({}),
   components: {
-    Edit
+    Edit,
+    Toolbar
   }
 };

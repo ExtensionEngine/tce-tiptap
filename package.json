@@ -64,5 +64,13 @@
     "stylelint": "^13.12.0",
     "vue": "^2.6.11",
     "vue-template-compiler": "^2.6.11"
+  },
+  "tailor": {
+    "label": "Html",
+    "type": "TIPTAP_HTML",
+    "ui": {
+      "icon": "mdi-text",
+      "forceFullWidth": false
+    }
   }
 }

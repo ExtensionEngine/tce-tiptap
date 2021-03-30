@@ -14,98 +14,6 @@
       </div>
     </div>
     <template v-else>
-      <editor-menu-bar :editor="editor" v-slot="{ commands, isActive }">
-        <div class="toolbar">
-          <button
-            @click="commands.code"
-            class="toolbar-button"
-            :class="{ 'is-active': isActive.code() }">
-            <span class="mdi mdi-code-tags"></span>
-          </button>
-          <button
-            @click="commands.undo"
-            class="toolbar-button">
-            <span class="mdi mdi-undo"></span>
-          </button>
-          <button
-            @click="commands.redo"
-            class="toolbar-button">
-            <span class="mdi mdi-redo"></span>
-          </button>
-          <button
-            @click="commands.bold"
-            class="toolbar-button"
-            :class="{ 'is-active': isActive.bold() }">
-            <span class="mdi mdi-format-bold"></span>
-          </button>
-          <button
-            @click="commands.italic"
-            class="toolbar-button"
-            :class="{ 'is-active': isActive.italic() }">
-            <span class="mdi mdi-format-italic"></span>
-          </button>
-          <button
-            @click="commands.underline"
-            class="toolbar-button"
-            :class="{ 'is-active': isActive.underline() }">
-            <span class="mdi mdi-format-underline"></span>
-          </button>
-          <button
-            @click="commands.strike"
-            class="toolbar-button"
-            :class="{ 'is-active': isActive.strike() }">
-            <span class="mdi mdi-format-strikethrough"></span>
-          </button>
-          <button
-            @click="commands.bullet_list"
-            class="toolbar-button"
-            :class="{ 'is-active': isActive.bullet_list() }">
-            <span class="mdi mdi-format-list-bulleted"></span>
-          </button>
-          <button
-            @click="commands.ordered_list"
-            class="toolbar-button"
-            :class="{ 'is-active': isActive.ordered_list() }">
-            <span class="mdi mdi-format-list-numbered"></span>
-          </button>
-          <button
-            @click="commands.paragraph"
-            class="toolbar-button"
-            :class="{ 'is-active': isActive.paragraph() }">
-            <span class="mdi mdi-format-pilcrow"></span>
-          </button>
-          <button
-            @click="commands.heading({ level: 1 })"
-            class="toolbar-button"
-            :class="{ 'is-active': isActive.heading({ level: 1 }) }">
-            <span class="mdi mdi-format-header-1"></span>
-          </button>
-          <button
-            @click="commands.heading({ level: 2 })"
-            class="toolbar-button"
-            :class="{ 'is-active': isActive.heading({ level: 2 }) }">
-            <span class="mdi mdi-format-header-2"></span>
-          </button>
-          <button
-            @click="commands.heading({ level: 3 })"
-            class="toolbar-button"
-            :class="{ 'is-active': isActive.heading({ level: 3 }) }">
-            <span class="mdi mdi-format-header-3"></span>
-          </button>
-          <button
-            @click="commands.blockquote"
-            class="toolbar-button"
-            :class="{ 'is-active': isActive.blockquote() }">
-            <span class="mdi mdi-format-quote-close"></span>
-          </button>
-          <button
-            @click="commands.link"
-            class="toolbar-button"
-            :class="{ 'is-active': isActive.link() }">
-            <span class="mdi mdi-link"></span>
-          </button>
-        </div>
-      </editor-menu-bar>
       <editor-content :editor="editor" class="editor" />
     </template>
   </div>
@@ -131,11 +39,12 @@ import {
   TableRow,
   Underline
 } from 'tiptap-extensions';
-import { Editor, EditorContent, EditorMenuBar } from 'tiptap';
+import { Editor, EditorContent } from 'tiptap';
 import debounce from 'lodash/debounce';
 
 export default {
   name: 'tce-tiptap-html',
+  inject: ['$elementBus'],
   props: {
     element: { type: Object, required: true },
     isFocused: { type: Boolean, default: false },
@@ -171,6 +80,7 @@ export default {
     },
     isFocused(val, oldVal) {
       if (oldVal && !val) this.save();
+      this.$elementBus.emit('tiptap-editor', this.editor);
     },
     isDragged(state, oldState) {
       if (state) {
@@ -214,38 +124,77 @@ export default {
     this.editor.destroy();
   },
   components: {
-    EditorContent,
-    EditorMenuBar
+    EditorContent
   }
 };
 </script>
 
 <style lang="scss" scoped>
-.toolbar-button {
-  min-width: 34px;
-  height: 34px;
-  background: #fff;
-  border: none;
+$min-width: 11.25rem;
+$min-height: 8.75rem;
+$min-height-sm: 5.5rem;
+$borderSize: 6px;
+$tooltipColor: #37474f;
 
-  .mdi {
-    color: #333;
-    font-size: 20px;
-    line-height: 20px;
-    vertical-align: top;
+.tiptap-html-placeholder {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  min-height: $min-height;
+  margin-bottom: 0;
+  padding: 0.5rem 0 0;
+
+  .placeholder-avatar {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 3.75rem;
+    height: 3.75rem;
+    padding-top: 0.125rem;
+    color: #f1f1f1;
+    font-size: 2rem;
+    line-height: 2rem;
+    background: #263238;
+    border-radius: 50%;
+
+    .divider {
+      font-size: 0.75rem;
+    }
+  }
+
+  .message {
+    padding: 0.5rem 0;
+    text-align: center;
+    font-family: Roboto, sans-serif;
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.75rem;
+
+    span {
+      display: block;
+    }
+
+    .heading {
+      padding: 0.5rem 0;
+      font-size: 1.5rem;
+      line-height: 2rem;
+    }
   }
 }
 
 .editor {
-  margin-top: 20px;
-  border: 1px solid #eee;
-  border-radius: 3px;
+  text-align: left;
 
   ::v-deep .ProseMirror {
-    min-height: 300px;
+    min-height: 10rem;
     padding: 10px;
 
+    h1, h2, h3, h4, h5, h6 {
+      margin: 0;
+    }
+
     &:focus {
-      outline: #ddd auto 1px;
+      outline: none;
     }
 
     p {
