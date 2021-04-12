@@ -15,6 +15,7 @@
     </div>
     <template v-else>
       <editor-content :editor="editor" class="editor" />
+      <bubble-menu :editor="editor" />
     </template>
   </div>
 </template>
@@ -29,7 +30,6 @@ import {
   Heading,
   History,
   Italic,
-  Link,
   ListItem,
   OrderedList,
   Strike,
@@ -40,7 +40,9 @@ import {
   Underline
 } from 'tiptap-extensions';
 import { Editor, EditorContent } from 'tiptap';
+import BubbleMenu from './BubbleMenu/index';
 import debounce from 'lodash/debounce';
+import TceLink from './extensions/tce-link';
 
 export default {
   name: 'tce-tiptap-html',
@@ -101,7 +103,6 @@ export default {
         new Bold(),
         new Code(),
         new Italic(),
-        new Link(),
         new HardBreak(),
         new Heading({ levels: [1, 2, 3] }),
         new History(),
@@ -113,7 +114,8 @@ export default {
         new Table(),
         new TableCell(),
         new TableHeader(),
-        new TableRow()
+        new TableRow(),
+        new TceLink()
       ],
       onUpdate: ({ getHTML }) => {
         this.content = getHTML();
@@ -124,7 +126,8 @@ export default {
     this.editor.destroy();
   },
   components: {
-    EditorContent
+    EditorContent,
+    BubbleMenu
   }
 };
 </script>
@@ -185,23 +188,25 @@ $tooltipColor: #37474f;
 .editor {
   text-align: left;
 
-  ::v-deep .ProseMirror {
-    min-height: 10rem;
-    padding: 10px;
+  ::v-deep {
+    .ProseMirror {
+      min-height: 10rem;
+      padding: 10px;
 
-    h1, h2, h3, h4, h5, h6 {
-      margin: 0;
-    }
-
-    &:focus {
-      outline: none;
-    }
-
-    p {
-      margin: 0;
+      h1, h2, h3, h4, h5, h6 {
+        margin: 0;
+      }
 
       &:focus {
         outline: none;
+      }
+
+      p {
+        margin: 0;
+
+        &:focus {
+          outline: none;
+        }
       }
     }
   }
