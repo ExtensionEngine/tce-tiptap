@@ -1,100 +1,71 @@
 <template>
-  <editor-menu-bar v-if="editor" :editor="editor" v-slot="{ commands, isActive }">
-    <div class="toolbar">
-      <button
-        @click="commands.code"
-        class="toolbar-button"
-        :class="{ 'is-active': isActive.code() }">
-        <span class="mdi mdi-code-tags"></span>
-      </button>
-      <button
-        @click="commands.undo"
-        class="toolbar-button">
-        <span class="mdi mdi-undo"></span>
-      </button>
-      <button
-        @click="commands.redo"
-        class="toolbar-button">
-        <span class="mdi mdi-redo"></span>
-      </button>
-      <button
-        @click="commands.bold"
-        class="toolbar-button"
-        :class="{ 'is-active': isActive.bold() }">
-        <span class="mdi mdi-format-bold"></span>
-      </button>
-      <button
-        @click="commands.italic"
-        class="toolbar-button"
-        :class="{ 'is-active': isActive.italic() }">
-        <span class="mdi mdi-format-italic"></span>
-      </button>
-      <button
-        @click="commands.underline"
-        class="toolbar-button"
-        :class="{ 'is-active': isActive.underline() }">
-        <span class="mdi mdi-format-underline"></span>
-      </button>
-      <button
-        @click="commands.strike"
-        class="toolbar-button"
-        :class="{ 'is-active': isActive.strike() }">
-        <span class="mdi mdi-format-strikethrough"></span>
-      </button>
-      <button
-        @click="commands.bullet_list"
-        class="toolbar-button"
-        :class="{ 'is-active': isActive.bullet_list() }">
-        <span class="mdi mdi-format-list-bulleted"></span>
-      </button>
-      <button
-        @click="commands.ordered_list"
-        class="toolbar-button"
-        :class="{ 'is-active': isActive.ordered_list() }">
-        <span class="mdi mdi-format-list-numbered"></span>
-      </button>
-      <button
-        @click="commands.paragraph"
-        class="toolbar-button"
-        :class="{ 'is-active': isActive.paragraph() }">
-        <span class="mdi mdi-format-pilcrow"></span>
-      </button>
-      <button
-        @click="commands.heading({ level: 1 })"
-        class="toolbar-button"
-        :class="{ 'is-active': isActive.heading({ level: 1 }) }">
-        <span class="mdi mdi-format-header-1"></span>
-      </button>
-      <button
-        @click="commands.heading({ level: 2 })"
-        class="toolbar-button"
-        :class="{ 'is-active': isActive.heading({ level: 2 }) }">
-        <span class="mdi mdi-format-header-2"></span>
-      </button>
-      <button
-        @click="commands.heading({ level: 3 })"
-        class="toolbar-button"
-        :class="{ 'is-active': isActive.heading({ level: 3 }) }">
-        <span class="mdi mdi-format-header-3"></span>
-      </button>
-      <button
-        @click="commands.blockquote"
-        class="toolbar-button"
-        :class="{ 'is-active': isActive.blockquote() }">
-        <span class="mdi mdi-format-quote-close"></span>
-      </button>
-      <button
-        @click="commands.link"
-        class="toolbar-button"
-        :class="{ 'is-active': isActive.link() }">
-        <span class="mdi mdi-link"></span>
-      </button>
-    </div>
-  </editor-menu-bar>
+  <div>
+    <editor-menu-bar v-if="editor" :editor="editor" v-slot="{ commands, isActive, getMarkAttrs }">
+      <div class="toolbar">
+        <menu-button
+          :command="commands.code"
+          :is-active="isActive.code()"
+          icon="code-tags" />
+        <menu-button :command="commands.undo" icon="undo" />
+        <menu-button :command="commands.redo" icon="redo" />
+        <menu-button
+          :command="commands.bold"
+          :is-active="isActive.bold()"
+          icon="format-bold" />
+        <menu-button
+          :command="commands.italic"
+          :is-active="isActive.italic()"
+          icon="format-italic" />
+        <menu-button
+          :command="commands.underline"
+          :is-active="isActive.underline()"
+          icon="format-underline" />
+        <menu-button
+          :command="commands.strike"
+          :is-active="isActive.strike()"
+          icon="format-strikethrough" />
+        <menu-button
+          :command="commands.bullet_list"
+          :is-active="isActive.bullet_list()"
+          icon="format-list-bulleted" />
+        <menu-button
+          :command="commands.ordered_list"
+          :is-active="isActive.ordered_list()"
+          icon="format-list-numbered" />
+        <menu-button
+          :command="commands.paragraph"
+          :is-active="isActive.paragraph()"
+          icon="format-pilcrow" />
+        <menu-button
+          :command="() => commands.heading({ level: 1 })"
+          :is-active="isActive.heading({ level: 1 })"
+          icon="format-header-1" />
+        <menu-button
+          :command="() => commands.heading({ level: 2 })"
+          :is-active="isActive.heading({ level: 2 })"
+          icon="format-header-2" />
+        <menu-button
+          :command="() => commands.heading({ level: 3 })"
+          :is-active="isActive.heading({ level: 3 })"
+          icon="format-header-3" />
+        <menu-button
+          :command="commands.blockquote"
+          :is-active="isActive.blockquote()"
+          icon="format-quote-close" />
+        <link-button
+          :command="commands.link"
+          :is-active="isActive.link()"
+          :link-attributes="getMarkAttrs('link')"
+          icon="link" />
+      </div>
+    </editor-menu-bar>
+  </div>
 </template>
 
 <script>
 import { EditorMenuBar } from 'tiptap';
+import LinkButton from './MenuButtons/Link';
+import MenuButton from './MenuButton';
 
 export default {
   inject: ['$elementBus'],
@@ -108,7 +79,9 @@ export default {
     });
   },
   components: {
-    EditorMenuBar
+    EditorMenuBar,
+    MenuButton,
+    LinkButton
   }
 };
 </script>
@@ -118,27 +91,4 @@ export default {
   display: flex;
   padding: 19px;
 }
-
-.toolbar-button {
-  min-width: 34px;
-  height: 34px;
-  background: transparent;
-  border: none;
-
-  .mdi {
-    color: #333;
-    font-size: 20px;
-    line-height: 20px;
-    vertical-align: top;
-  }
-
-  &.is-active {
-    .mdi {
-      color: #ff6590;
-    }
-
-    background: #ffe5ec;
-  }
-}
-
 </style>
