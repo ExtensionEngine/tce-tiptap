@@ -1,6 +1,8 @@
 <template>
   <v-btn
+    v-on="$listeners"
     @click="command"
+    v-bind="$attrs"
     icon
     :class="{ 'active': isActive }"
     class="menu-button mx-1">
@@ -12,7 +14,7 @@
 export default {
   name: 'tce-tiptap-menu-button',
   props: {
-    command: { type: Function, required: true },
+    command: { type: Function, default: () => {} },
     isActive: { type: Boolean, default: false },
     icon: { type: String, required: true }
   }
