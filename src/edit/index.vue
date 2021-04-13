@@ -40,9 +40,9 @@ import {
   Underline
 } from 'tiptap-extensions';
 import { Editor, EditorContent } from 'tiptap';
+import { FontSize, FontType, Link } from './extensions';
 import BubbleMenu from './BubbleMenu/index';
 import debounce from 'lodash/debounce';
-import TceLink from './extensions/tce-link';
 
 export default {
   name: 'tce-tiptap-html',
@@ -115,7 +115,9 @@ export default {
         new TableCell(),
         new TableHeader(),
         new TableRow(),
-        new TceLink()
+        new Link(),
+        new FontSize(),
+        new FontType()
       ],
       onUpdate: ({ getHTML }) => {
         this.content = getHTML();

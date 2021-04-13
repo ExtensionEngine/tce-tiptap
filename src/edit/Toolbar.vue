@@ -57,6 +57,8 @@
           :is-active="isActive.link()"
           :link-attributes="getMarkAttrs('link')"
           icon="link" />
+        <font-size :editor-context="{ editor, commands }" />
+        <font-type :editor-context="{ editor, commands }" />
       </div>
     </editor-menu-bar>
   </div>
@@ -64,8 +66,10 @@
 
 <script>
 import { EditorMenuBar } from 'tiptap';
-import LinkButton from './MenuButtons/Link';
-import MenuButton from './MenuButton';
+import FontSize from './MenuButtons/FontSize.vue';
+import FontType from './MenuButtons/FontType.vue';
+import LinkButton from './MenuButtons/Link.vue';
+import MenuButton from './MenuButton.vue';
 
 export default {
   inject: ['$elementBus'],
@@ -80,6 +84,8 @@ export default {
   },
   components: {
     EditorMenuBar,
+    FontSize,
+    FontType,
     MenuButton,
     LinkButton
   }
