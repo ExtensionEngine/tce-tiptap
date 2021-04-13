@@ -8,13 +8,13 @@
       v-if="isMenuOpen"
       v-click-outside="closeMenu"
       @keydown.esc="closeMenu"
-      @submit.prevent="save(command, href)"
+      @submit.prevent="save(command, url)"
       class="link-button-form">
       <v-card min-width="300">
         <v-card-text class="pb-0">
           <v-text-field
             ref="url"
-            v-model="href"
+            v-model="url"
             label="Url"
             placeholder="https://example.com"
             type="url" />
@@ -57,9 +57,9 @@ export default {
     isMenuOpen: false
   }),
   methods: {
-    openMenu(attrs) {
-      this.url = attrs.url;
-      this.newTab = attrs.target === '_blank';
+    openMenu({ href, target }) {
+      this.url = href;
+      this.newTab = target === '_blank';
       this.isMenuOpen = true;
       this.$nextTick(() => {
         this.$refs.url.focus();
