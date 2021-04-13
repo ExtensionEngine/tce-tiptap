@@ -57,8 +57,8 @@
           :is-active="isActive.link()"
           :link-attributes="getMarkAttrs('link')"
           icon="link" />
-        <font-size :editor-context="{ editor, commands }" />
-        <font-type :editor-context="{ editor, commands }" />
+        <font-size :editor-context="{ editor, commands, isActive }" />
+        <font-type :editor-context="{ editor, commands, isActive }" />
       </div>
     </editor-menu-bar>
   </div>

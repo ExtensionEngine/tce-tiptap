@@ -81,43 +81,39 @@ export default class FontType extends Mark {
 }
 
 export function findActiveFontType(state) {
-  const { schema, selection, tr } = state;
-  const markType = schema.marks.font_type;
-
+  const { schema, selection } = state;
+  const markType = schema.marks.fontType;
   if (!markType) return DEFAULT_FONT;
-
-  const { empty } = selection;
-
-  if (empty) {
-    const storedMarks = tr.storedMarks ||
-      state.storedMarks ||
-      (
-        selection instanceof TextSelection &&
-        selection.$cursor &&
-        selection.$cursor.marks &&
-        selection.$cursor.marks()
-      ) ||
-      [];
-
-    const sm = storedMarks.find(m => m.type === markType);
-    return (sm && sm.attrs.name) || DEFAULT_FONT;
-  }
-
+  if (selection.empty) return resolveEmptySelection(state, markType);
   const attrs = getMarkAttrs(state, markType);
   const fontName = attrs.name;
-
   if (!fontName) return DEFAULT_FONT;
-
   return fontName;
 }
 
 function setFontType(tr, type, name) {
   const { selection } = tr;
-
-  if (!(selection instanceof TextSelection || selection instanceof AllSelection)) {
-    return tr;
-  }
+  if (!isCorrectSelection(selection)) return tr;
   const attrs = name ? { name } : null;
   tr = applyMark(tr, type, attrs);
   return tr;
 }
+
+function resolveEmptySelection(state, markType) {
+  const { tr, selection } = state;
+  const storedMarks = tr.storedMarks ||
+    state.storedMarks ||
+    (
+      selection instanceof TextSelection &&
+      selection.$cursor &&
+      selection.$cursor.marks &&
+      selection.$cursor.marks()
+    ) ||
+    [];
+
+  const sm = storedMarks.find(m => m.type === markType);
+  return (sm && sm.attrs.name) || DEFAULT_FONT;
+}
+
+const isCorrectSelection = selection =>
+  selection instanceof TextSelection || selection instanceof AllSelection;

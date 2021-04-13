@@ -87,42 +87,40 @@ export function convertToPX(styleValue) {
 
 export function setFontSize(tr, type, fontSize) {
   const { selection } = tr;
-
-  if (!(selection instanceof TextSelection || selection instanceof AllSelection)) {
-    return tr;
-  }
-
-  const attrs = (fontSize && fontSize !== DEFAULT_FONT_SIZE) ? { px: fontSize } : null;
+  if (!isCorrectSelection(selection)) return tr;
+  const attrs = (fontSize && fontSize !== DEFAULT_FONT_SIZE)
+    ? { px: fontSize }
+    : null;
   tr = applyMark(tr, type, attrs);
   return tr;
 }
 
 export function findActiveFontSize(state) {
-  const { schema, selection, tr } = state;
-  const markType = schema.marks.font_size;
-
+  const { schema, selection } = state;
+  const markType = schema.marks.fontSize;
   if (!markType) return DEFAULT_FONT_SIZE;
-
-  const { empty } = selection;
-
-  if (empty) {
-    const storedMarks = tr.storedMarks ||
-      state.storedMarks ||
-      (
-        selection instanceof TextSelection &&
-        selection.$cursor &&
-        selection.$cursor.marks &&
-        selection.$cursor.marks()
-      ) ||
-      [];
-
-    const sm = storedMarks.find(m => m.type === markType);
-    return sm ? String(sm.attrs.px || DEFAULT_FONT_SIZE) : DEFAULT_FONT_SIZE;
-  }
-
+  if (selection.empty) return resolveEmptyState(state, markType);
   const attrs = getMarkAttrs(state, markType);
   const fontSize = attrs.px;
   if (fontSize) return String(fontSize);
-
   return DEFAULT_FONT_SIZE;
 }
+
+function resolveEmptyState(state, markType) {
+  const { selection, tr } = state;
+  const storedMarks = tr.storedMarks ||
+  state.storedMarks ||
+  (
+    selection instanceof TextSelection &&
+    selection.$cursor &&
+    selection.$cursor.marks &&
+    selection.$cursor.marks()
+  ) ||
+  [];
+
+  const sm = storedMarks.find(m => m.type === markType);
+  return sm ? String(sm.attrs.px || DEFAULT_FONT_SIZE) : DEFAULT_FONT_SIZE;
+}
+
+const isCorrectSelection = selection =>
+  selection instanceof TextSelection || selection instanceof AllSelection;

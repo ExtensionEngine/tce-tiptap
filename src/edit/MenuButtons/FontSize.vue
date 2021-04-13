@@ -3,16 +3,20 @@
     transition="slide-y-transition"
     bottom>
     <template #activator="{ on, attrs }">
-      <menu-button v-on="on" v-bind="attrs" icon="format-size" />
+      <menu-button
+        v-on="on"
+        :is-active="isActive"
+        v-bind="attrs"
+        icon="format-size" />
     </template>
-
-    <v-list dense>
+    <v-list dense class="font-sizes">
       <v-list-item-group v-model="size">
         <v-list-item
           v-for="fontSize in fontSizes"
           :key="fontSize"
           @click="toggleFontSize"
-          :value="fontSize">
+          :value="fontSize"
+          :class="{ 'active': fontSize === activeFontSize}">
           <v-list-item-title>{{ fontSize }}</v-list-item-title>
         </v-list-item>
       </v-list-item-group>
@@ -36,12 +40,9 @@ export default {
   data: () => ({ size: 14 }),
   computed: {
     fontSizes: () => FONT_SIZES,
-    editor() {
-      return this.editorContext.editor;
-    },
-    activeFontSize() {
-      return findActiveFontSize(this.editor.state);
-    }
+    editor: ({ editorContext: { editor } }) => editor,
+    activeFontSize: ({ editor }) => findActiveFontSize(editor.state),
+    isActive: ({ editorContext: { isActive } }) => isActive.fontSize()
   },
   methods: {
     toggleFontSize(size) {
@@ -58,3 +59,13 @@ export default {
   }
 };
 </script>
+
+<style lang="scss" scoped>
+.font-sizes.v-list .v-list-item.active {
+  color: #ff6590 !important;
+
+  &::before {
+    opacity: 0.12;
+  }
+}
+</style>
