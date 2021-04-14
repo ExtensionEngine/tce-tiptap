@@ -39,7 +39,15 @@ import {
   TableRow,
   Underline
 } from 'tiptap-extensions';
-import { ClearFormat, FontSize, FontType, Heading, Link } from './extensions';
+import {
+  ClearFormat,
+  FontSize,
+  FontType,
+  Heading,
+  Link,
+  TextColor,
+  TextHighlight
+} from './extensions';
 import { Editor, EditorContent } from 'tiptap';
 import BubbleMenu from './BubbleMenu/index';
 import debounce from 'lodash/debounce';
@@ -119,7 +127,9 @@ export default {
         new TableRow(),
         new Link(),
         new FontSize(),
-        new FontType()
+        new FontType(),
+        new TextColor(),
+        new TextHighlight()
       ],
       onUpdate: ({ getHTML }) => {
         this.content = getHTML();

@@ -51,12 +51,20 @@
           :command="commands.horizontal_rule"
           :is-active="isActive.horizontal_rule()"
           icon="minus" />
+        <color-picker
+          :command="commands.textColor"
+          :is-active="isActive.textColor()" />
+        <color-picker
+          :command="commands.textHighlight"
+          :is-active="isActive.textHighlight()"
+          icon="format-color-highlight" />
       </div>
     </editor-menu-bar>
   </div>
 </template>
 
 <script>
+import ColorPicker from './MenuButtons/ColorPicker.vue';
 import { EditorMenuBar } from 'tiptap';
 import FontSize from './MenuButtons/FontSize.vue';
 import FontType from './MenuButtons/FontType.vue';
@@ -76,6 +84,7 @@ export default {
     });
   },
   components: {
+    ColorPicker,
     EditorMenuBar,
     FontSize,
     FontType,

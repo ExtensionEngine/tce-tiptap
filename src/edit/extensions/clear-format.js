@@ -8,8 +8,8 @@ const FORMAT_MARKS = {
   underline: 'underline',
   strike: 'strike',
   link: 'link',
-  textColor: 'text_color',
-  textHighlight: 'text_highlight',
+  textColor: 'textColor',
+  textHighlight: 'textHighlight',
   fontSize: 'fontSize',
   fontType: 'fontType'
 };
