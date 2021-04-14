@@ -47,6 +47,10 @@
         <menu-button
           :command="commands.clearFormat"
           icon="format-clear" />
+        <menu-button
+          :command="commands.horizontal_rule"
+          :is-active="isActive.horizontal_rule()"
+          icon="minus" />
       </div>
     </editor-menu-bar>
   </div>
