@@ -44,6 +44,9 @@
         <font-size :editor-context="{ editor, commands, isActive }" />
         <font-type :editor-context="{ editor, commands, isActive }" />
         <heading :editor-context="{ editor, commands, isActive }" />
+        <menu-button
+          :command="commands.clearFormat"
+          icon="format-clear" />
       </div>
     </editor-menu-bar>
   </div>

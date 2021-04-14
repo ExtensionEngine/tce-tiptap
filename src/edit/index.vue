@@ -38,8 +38,8 @@ import {
   TableRow,
   Underline
 } from 'tiptap-extensions';
+import { ClearFormat, FontSize, FontType, Heading, Link } from './extensions';
 import { Editor, EditorContent } from 'tiptap';
-import { FontSize, FontType, Heading, Link } from './extensions';
 import BubbleMenu from './BubbleMenu/index';
 import debounce from 'lodash/debounce';
 
@@ -101,6 +101,7 @@ export default {
         new Blockquote(),
         new Bold(),
         new Code(),
+        new ClearFormat(),
         new Italic(),
         new HardBreak(),
         new Heading({ levels: [1, 2, 3, 4, 5] }),
