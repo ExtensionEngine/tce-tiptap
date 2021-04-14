@@ -14,7 +14,6 @@
         <v-list-item
           v-for="fontType in fontTypes"
           :key="fontType"
-          @click="toggleFontType"
           :value="fontType"
           :class="{ 'active': fontType === activeFontType}">
           <v-list-item-title>

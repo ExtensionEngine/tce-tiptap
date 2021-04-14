@@ -27,7 +27,6 @@ import {
   BulletList,
   Code,
   HardBreak,
-  Heading,
   History,
   Italic,
   ListItem,
@@ -40,7 +39,7 @@ import {
   Underline
 } from 'tiptap-extensions';
 import { Editor, EditorContent } from 'tiptap';
-import { FontSize, FontType, Link } from './extensions';
+import { FontSize, FontType, Heading, Link } from './extensions';
 import BubbleMenu from './BubbleMenu/index';
 import debounce from 'lodash/debounce';
 
@@ -104,7 +103,7 @@ export default {
         new Code(),
         new Italic(),
         new HardBreak(),
-        new Heading({ levels: [1, 2, 3] }),
+        new Heading({ levels: [1, 2, 3, 4, 5] }),
         new History(),
         new ListItem(),
         new OrderedList(),

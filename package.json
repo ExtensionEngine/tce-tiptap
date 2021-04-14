@@ -22,6 +22,7 @@
   },
   "dependencies": {
     "lodash.debounce": "^4.0.8",
+    "prosemirror-utils": "^0.9.6",
     "tiptap": "^1.32.2",
     "tiptap-extensions": "^1.35.2"
   },

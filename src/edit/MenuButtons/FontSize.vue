@@ -14,7 +14,6 @@
         <v-list-item
           v-for="fontSize in fontSizes"
           :key="fontSize"
-          @click="toggleFontSize"
           :value="fontSize"
           :class="{ 'active': fontSize === activeFontSize}">
           <v-list-item-title>{{ fontSize }}</v-list-item-title>

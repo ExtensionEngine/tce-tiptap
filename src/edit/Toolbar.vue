@@ -33,22 +33,6 @@
           :is-active="isActive.ordered_list()"
           icon="format-list-numbered" />
         <menu-button
-          :command="commands.paragraph"
-          :is-active="isActive.paragraph()"
-          icon="format-pilcrow" />
-        <menu-button
-          :command="() => commands.heading({ level: 1 })"
-          :is-active="isActive.heading({ level: 1 })"
-          icon="format-header-1" />
-        <menu-button
-          :command="() => commands.heading({ level: 2 })"
-          :is-active="isActive.heading({ level: 2 })"
-          icon="format-header-2" />
-        <menu-button
-          :command="() => commands.heading({ level: 3 })"
-          :is-active="isActive.heading({ level: 3 })"
-          icon="format-header-3" />
-        <menu-button
           :command="commands.blockquote"
           :is-active="isActive.blockquote()"
           icon="format-quote-close" />
@@ -59,6 +43,7 @@
           icon="link" />
         <font-size :editor-context="{ editor, commands, isActive }" />
         <font-type :editor-context="{ editor, commands, isActive }" />
+        <heading :editor-context="{ editor, commands, isActive }" />
       </div>
     </editor-menu-bar>
   </div>
@@ -68,6 +53,7 @@
 import { EditorMenuBar } from 'tiptap';
 import FontSize from './MenuButtons/FontSize.vue';
 import FontType from './MenuButtons/FontType.vue';
+import Heading from './MenuButtons/Heading.vue';
 import LinkButton from './MenuButtons/Link.vue';
 import MenuButton from './MenuButton.vue';
 
@@ -86,6 +72,7 @@ export default {
     EditorMenuBar,
     FontSize,
     FontType,
+    Heading,
     MenuButton,
     LinkButton
   }
