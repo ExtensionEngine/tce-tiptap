@@ -37,7 +37,7 @@ import {
 import MenuButton from '../MenuButton.vue';
 
 export default {
-  name: 'tce-tiptap-font-size',
+  name: 'tce-tiptap-heading',
   props: {
     editorContext: { type: Object, required: true }
   },
