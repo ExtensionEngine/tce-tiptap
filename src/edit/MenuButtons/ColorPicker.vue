@@ -28,7 +28,6 @@ export default {
     isActive: { type: Boolean, default: false },
     icon: { type: String, default: 'palette' }
   },
-  data: () => ({ size: 14 }),
   methods: {
     onColorChange(color) {
       this.command(color.hex);
