@@ -8,7 +8,7 @@
             :key="'c' + col"
             @mouseover="selectGridSize(row, col)"
             @mousedown="onMouseDown(row, col)"
-            :class="{ 'selected': col <= selectedGridSize.col && row <= selectedGridSize.row }"
+            :class="{ 'selected': isSelected(row, col) }"
             class="table-grid-cell">
             <div class="table-grid-cell-inner"></div>
           </div>
@@ -39,29 +39,27 @@ export default {
     }
   }),
   methods: {
+    isSelected(row, col) {
+      return col <= this.selectedGridSize.col && row <= this.selectedGridSize.row;
+    },
     selectGridSize(row, col) {
       if (row === this.gridSize.row) {
         this.gridSize.row = Math.min(row + 1, MAX_GRID_SIZE);
       }
-
       if (col === this.gridSize.col) {
         this.gridSize.col = Math.min(col + 1, MAX_GRID_SIZE);
       }
-
       this.selectedGridSize.row = row;
       this.selectedGridSize.col = col;
     },
-
     onMouseDown(row, col) {
       this.$emit('insert:table', { row, col });
     },
-
     resetgridSize() {
       this.gridSize = {
         row: INIT_GRID_SIZE,
         col: INIT_GRID_SIZE
       };
-
       this.selectedGridSize = {
         row: DEFAULT_SELECTED_GRID_SIZE,
         col: DEFAULT_SELECTED_GRID_SIZE
