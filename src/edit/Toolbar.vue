@@ -1,6 +1,9 @@
 <template>
   <div>
-    <editor-menu-bar v-if="editor" :editor="editor" v-slot="{ commands, isActive, getMarkAttrs }">
+    <editor-menu-bar
+      v-if="editor"
+      :editor="editor"
+      v-slot="{ commands, isActive, getMarkAttrs }">
       <div class="toolbar">
         <menu-button
           :command="commands.code"
@@ -58,6 +61,7 @@
           :command="commands.textHighlight"
           :is-active="isActive.textHighlight()"
           icon="format-color-highlight" />
+        <tiptap-table :editor-context="{ editor, commands, isActive }" />
       </div>
     </editor-menu-bar>
   </div>
@@ -71,6 +75,7 @@ import FontType from './MenuButtons/FontType.vue';
 import Heading from './MenuButtons/Heading.vue';
 import LinkButton from './MenuButtons/Link.vue';
 import MenuButton from './MenuButton.vue';
+import TiptapTable from './MenuButtons/Table/index.vue';
 
 export default {
   inject: ['$elementBus'],
@@ -90,7 +95,8 @@ export default {
     FontType,
     Heading,
     MenuButton,
-    LinkButton
+    LinkButton,
+    TiptapTable
   }
 };
 </script>

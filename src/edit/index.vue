@@ -222,6 +222,55 @@ $tooltipColor: #37474f;
           outline: none;
         }
       }
+
+      table {
+        border-collapse: collapse;
+        table-layout: fixed;
+        width: 100%;
+        margin: 0;
+        overflow: hidden;
+
+        td, th {
+          position: relative;
+          min-width: 1em;
+          padding: 3px 5px;
+          border: 1px solid #ddd;
+          vertical-align: top;
+          box-sizing: border-box;
+
+          > * {
+            margin-bottom: 0;
+          }
+        }
+
+        th {
+          font-weight: bold;
+          text-align: left;
+        }
+
+        .selectedCell::after {
+          content: "";
+          position: absolute;
+          top: 0;
+          right: 0;
+          bottom: 0;
+          left: 0;
+          background: rgba(200, 200, 255, 0.4);
+          z-index: 2;
+          pointer-events: none;
+        }
+
+        .column-resize-handle {
+          position: absolute;
+          top: 0;
+          right: -2px;
+          bottom: 0;
+          width: 4px;
+          background-color: #adf;
+          z-index: 20;
+          pointer-events: none;
+        }
+      }
     }
   }
 }
