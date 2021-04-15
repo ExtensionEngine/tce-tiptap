@@ -64,13 +64,3 @@ export default {
   }
 };
 </script>
-
-<style lang="scss" scoped>
-.font-sizes.v-list .v-list-item.active {
-  color: #ff6590 !important;
-
-  &::before {
-    opacity: 0.12;
-  }
-}
-</style>
