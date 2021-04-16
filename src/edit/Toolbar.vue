@@ -62,6 +62,7 @@
           :is-active="isActive.textHighlight()"
           icon="format-color-highlight" />
         <tiptap-table :editor-context="{ editor, commands, isActive }" />
+        <text-align :editor-context="{ editor, commands, isActive }" />
       </div>
     </editor-menu-bar>
   </div>
@@ -75,6 +76,7 @@ import FontType from './MenuButtons/FontType.vue';
 import Heading from './MenuButtons/Heading.vue';
 import LinkButton from './MenuButtons/Link.vue';
 import MenuButton from './MenuButton.vue';
+import TextAlign from './MenuButtons/TextAlign.vue';
 import TiptapTable from './MenuButtons/Table/index.vue';
 
 export default {
@@ -96,7 +98,8 @@ export default {
     Heading,
     MenuButton,
     LinkButton,
-    TiptapTable
+    TiptapTable,
+    TextAlign
   }
 };
 </script>

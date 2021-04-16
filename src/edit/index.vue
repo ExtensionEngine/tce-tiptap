@@ -45,6 +45,7 @@ import {
   FontType,
   Heading,
   Link,
+  TextAlign,
   TextColor,
   TextHighlight
 } from './extensions';
@@ -129,7 +130,8 @@ export default {
         new FontSize(),
         new FontType(),
         new TextColor(),
-        new TextHighlight()
+        new TextHighlight(),
+        new TextAlign()
       ],
       onUpdate: ({ getHTML }) => {
         this.content = getHTML();
