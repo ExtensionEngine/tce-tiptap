@@ -1,7 +1,6 @@
 import { mergeCells, splitCell } from 'prosemirror-tables';
 
 export function isTableActive(state) {
-  console.log(state);
   if (!state) return false;
   const { selection, doc } = state;
   const { from, to } = selection;
