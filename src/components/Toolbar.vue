@@ -50,6 +50,16 @@
           :command="commands.ordered_list"
           :is-active="isActive.ordered_list()"
           icon="format-list-numbered" />
+        <menu-button
+          :command="commands.ordered_list"
+          :is-active="isActive.ordered_list()"
+          icon="format-list-numbered" />
+        <menu-button
+          :command="commands.outdent"
+          icon="format-indent-decrease" />
+        <menu-button
+          :command="commands.indent"
+          icon="format-indent-increase" />
         <text-align :editor-context="{ editor, commands, isActive }" />
         <v-divider vertical />
         <link-button

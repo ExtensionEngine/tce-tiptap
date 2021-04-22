@@ -44,9 +44,7 @@ import {
   FontSize,
   FontType,
   Heading,
-  Indent,
   Link,
-  Paragraph,
   TextAlign,
   TextColor,
   TextHighlight
@@ -116,7 +114,6 @@ export default {
         new ClearFormat(),
         new Italic(),
         new HardBreak(),
-        new Indent(),
         new Heading({ levels: [1, 2, 3, 4, 5] }),
         new HorizontalRule(),
         new History(),
@@ -129,7 +126,6 @@ export default {
         new TableCell(),
         new TableHeader(),
         new TableRow(),
-        new Paragraph(),
         new Link(),
         new FontSize(),
         new FontType(),
@@ -212,14 +208,6 @@ $tooltipColor: #37474f;
     .ProseMirror {
       min-height: 10rem;
       padding: 10px;
-
-      @for $i from 1 through 7 /* max-indent */ {
-        $indent-margin-base: 30px;
-
-        *[data-indent="#{$i}"] {
-          margin-left: $indent-margin-base * $i !important;
-        }
-      }
 
       h1, h2, h3, h4, h5, h6 {
         margin: 0;
