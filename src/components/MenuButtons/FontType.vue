@@ -26,7 +26,7 @@
 </template>
 
 <script>
-import { findActiveFontType, FONT_TYPES } from '../extensions/font-type';
+import { findActiveFontType, FONT_TYPES } from '../../extensions/font-type';
 import MenuButton from '../MenuButton.vue';
 
 export default {

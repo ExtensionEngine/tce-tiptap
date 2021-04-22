@@ -48,7 +48,7 @@ import {
   TextAlign,
   TextColor,
   TextHighlight
-} from './extensions';
+} from '../extensions';
 import { Editor, EditorContent } from 'tiptap';
 import BubbleMenu from './BubbleMenu/index';
 import debounce from 'lodash/debounce';

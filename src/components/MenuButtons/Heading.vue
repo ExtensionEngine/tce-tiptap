@@ -33,7 +33,7 @@
 <script>
 import {
   isHeadingActive
-} from '../extensions/heading';
+} from '../../extensions/heading';
 import MenuButton from '../MenuButton.vue';
 
 export default {

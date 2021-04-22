@@ -9,8 +9,14 @@
           :command="commands.code"
           :is-active="isActive.code()"
           icon="code-tags" />
+        <v-divider vertical />
         <menu-button :command="commands.undo" icon="undo" />
         <menu-button :command="commands.redo" icon="redo" />
+        <v-divider vertical />
+        <heading :editor-context="{ editor, commands, isActive }" />
+        <font-size :editor-context="{ editor, commands, isActive }" />
+        <font-type :editor-context="{ editor, commands, isActive }" />
+        <v-divider vertical />
         <menu-button
           :command="commands.bold"
           :is-active="isActive.bold()"
@@ -27,6 +33,15 @@
           :command="commands.strike"
           :is-active="isActive.strike()"
           icon="format-strikethrough" />
+        <v-divider vertical />
+        <color-picker
+          :command="commands.textColor"
+          :is-active="isActive.textColor()" />
+        <color-picker
+          :command="commands.textHighlight"
+          :is-active="isActive.textHighlight()"
+          icon="format-color-highlight" />
+        <v-divider vertical />
         <menu-button
           :command="commands.bullet_list"
           :is-active="isActive.bullet_list()"
@@ -35,34 +50,26 @@
           :command="commands.ordered_list"
           :is-active="isActive.ordered_list()"
           icon="format-list-numbered" />
-        <menu-button
-          :command="commands.blockquote"
-          :is-active="isActive.blockquote()"
-          icon="format-quote-close" />
+        <text-align :editor-context="{ editor, commands, isActive }" />
+        <v-divider vertical />
         <link-button
           :command="commands.link"
           :is-active="isActive.link()"
           :link-attributes="getMarkAttrs('link')"
           icon="link" />
-        <font-size :editor-context="{ editor, commands, isActive }" />
-        <font-type :editor-context="{ editor, commands, isActive }" />
-        <heading :editor-context="{ editor, commands, isActive }" />
-        <menu-button
-          :command="commands.clearFormat"
-          icon="format-clear" />
+        <tiptap-table :editor-context="{ editor, commands, isActive }" />
         <menu-button
           :command="commands.horizontal_rule"
           :is-active="isActive.horizontal_rule()"
           icon="minus" />
-        <color-picker
-          :command="commands.textColor"
-          :is-active="isActive.textColor()" />
-        <color-picker
-          :command="commands.textHighlight"
-          :is-active="isActive.textHighlight()"
-          icon="format-color-highlight" />
-        <tiptap-table :editor-context="{ editor, commands, isActive }" />
-        <text-align :editor-context="{ editor, commands, isActive }" />
+        <menu-button
+          :command="commands.blockquote"
+          :is-active="isActive.blockquote()"
+          icon="format-quote-close" />
+        <v-divider vertical />
+        <menu-button
+          :command="commands.clearFormat"
+          icon="format-clear" />
       </div>
     </editor-menu-bar>
   </div>

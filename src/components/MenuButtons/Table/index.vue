@@ -128,7 +128,7 @@ import {
   enableMergeCells,
   enableSplitCell,
   isTableActive
-} from '../../utils/table';
+} from '../../../utils/table';
 import MenuButton from '../../MenuButton.vue';
 import TableGrid from './TableGrid.vue';
 

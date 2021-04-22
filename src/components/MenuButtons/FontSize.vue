@@ -28,7 +28,7 @@ import {
   DEFAULT_FONT_SIZE,
   findActiveFontSize,
   FONT_SIZES
-} from '../extensions/font-size';
+} from '../../extensions/font-size';
 import MenuButton from '../MenuButton.vue';
 
 export default {

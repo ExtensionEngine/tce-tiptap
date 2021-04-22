@@ -28,7 +28,7 @@
 </template>
 
 <script>
-import { isTextAlignActive } from '../extensions/text-align';
+import { isTextAlignActive } from '../../extensions/text-align';
 import MenuButton from '../MenuButton.vue';
 
 export default {
