@@ -22,8 +22,8 @@
 </template>
 
 <script>
-import LinkButton from '../MenuButtons/Link';
-import MenuButton from '../MenuButton';
+import LinkButton from '../MenuButtons/Link.vue';
+import MenuButton from '../MenuButton.vue';
 
 export default {
   name: 'tce-tiptap-link-menu',
