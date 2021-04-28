@@ -75,6 +75,12 @@ function toDOM(node) {
 }
 
 export default class Paragraph extends TiptapParagraph {
+  get defaultOptions() {
+    return {
+      px: 12
+    };
+  }
+
   get schema() {
     return ParagraphNodeSpec;
   }

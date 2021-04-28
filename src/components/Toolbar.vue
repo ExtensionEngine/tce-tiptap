@@ -68,6 +68,7 @@
           :link-attributes="getMarkAttrs('link')"
           icon="link" />
         <tiptap-table :editor-context="{ editor, commands, isActive }" />
+        <tce-image :editor-context="{ editor, commands, isActive }" />
         <menu-button
           :command="commands.horizontal_rule"
           :is-active="isActive.horizontal_rule()"
@@ -93,6 +94,7 @@ import FontType from './MenuButtons/FontType.vue';
 import Heading from './MenuButtons/Heading.vue';
 import LinkButton from './MenuButtons/Link.vue';
 import MenuButton from './MenuButton.vue';
+import TceImage from './MenuButtons/Image/index.vue';
 import TextAlign from './MenuButtons/TextAlign.vue';
 import TiptapTable from './MenuButtons/Table/index.vue';
 
@@ -113,6 +115,7 @@ export default {
     FontSize,
     FontType,
     Heading,
+    TceImage,
     MenuButton,
     LinkButton,
     TiptapTable,

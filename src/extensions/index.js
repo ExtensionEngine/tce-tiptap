@@ -2,6 +2,7 @@ import ClearFormat from './clear-format';
 import FontSize from './font-size';
 import FontType from './font-type';
 import Heading from './heading';
+import Image from './image';
 import Indent from './indent';
 import Link from './link';
 import Paragraph from './paragraph';
@@ -14,6 +15,7 @@ export {
   FontSize,
   FontType,
   Heading,
+  Image,
   Indent,
   Link,
   Paragraph,

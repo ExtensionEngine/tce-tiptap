@@ -44,6 +44,7 @@ import {
   FontSize,
   FontType,
   Heading,
+  Image,
   Indent,
   Link,
   Paragraph,
@@ -52,7 +53,7 @@ import {
   TextHighlight
 } from '../extensions';
 import { Editor, EditorContent } from 'tiptap';
-import BubbleMenu from './BubbleMenu/index';
+import BubbleMenu from './BubbleMenu/index.vue';
 import debounce from 'lodash/debounce';
 
 export default {
@@ -130,6 +131,7 @@ export default {
         new TableHeader(),
         new TableRow(),
         new Paragraph(),
+        new Image(),
         new Link(),
         new FontSize(),
         new FontType(),
@@ -210,6 +212,8 @@ $tooltipColor: #37474f;
 
   ::v-deep {
     .ProseMirror {
+      display: inline-block;
+      flex-direction: column;
       min-height: 10rem;
       padding: 10px;
 
@@ -230,7 +234,7 @@ $tooltipColor: #37474f;
       }
 
       p {
-        margin: 0;
+        margin: 0 0 1rem 0;
 
         &:focus {
           outline: none;
