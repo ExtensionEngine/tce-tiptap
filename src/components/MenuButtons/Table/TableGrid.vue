@@ -27,7 +27,7 @@ const MAX_GRID_SIZE = 10;
 const DEFAULT_SELECTED_GRID_SIZE = 2;
 
 export default {
-  name: 'table-grid',
+  name: 'tce-tiptap-table-grid',
   data: () => ({
     gridSize: {
       row: INIT_GRID_SIZE,

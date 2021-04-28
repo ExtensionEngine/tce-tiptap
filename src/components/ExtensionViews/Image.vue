@@ -55,7 +55,7 @@ const MIN_SIZE = 20;
 const MAX_SIZE = 100000;
 
 export default {
-  name: 'image-view',
+  name: 'tce-tiptap-image-view',
   props: {
     node: { type: Object, required: true },
     view: { type: Object, required: true },

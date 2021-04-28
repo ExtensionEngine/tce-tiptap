@@ -26,6 +26,7 @@ import LinkButton from '../MenuButtons/Link';
 import MenuButton from '../MenuButton';
 
 export default {
+  name: 'tce-tiptap-link-menu',
   props: {
     editorContext: { type: Object, required: true },
     isLinkSelection: { type: Boolean, required: true }
