@@ -1,96 +1,80 @@
 <template>
-  <div>
-    <editor-menu-bar
-      v-if="editor"
+  <div v-if="editor" class="toolbar">
+    <menu-button
+      @click="editor.chain().focus().toggleCode().run()"
+      :is-active="editor.isActive('code')"
+      icon="code-tags" />
+    <v-divider vertical />
+    <menu-button @click="editor.chain().focus().undo().run()" icon="undo" />
+    <menu-button @click="editor.chain().focus().redo().run()" icon="redo" />
+    <v-divider vertical />
+    <heading :editor="editor" />
+    <font-family :editor="editor" />
+    <font-size :editor="editor" />
+    <v-divider vertical />
+    <menu-button
+      @click="editor.chain().focus().toggleBold().run()"
+      :is-active="editor.isActive('bold')"
+      icon="format-bold" />
+    <menu-button
+      @click="editor.chain().focus().toggleItalic().run()"
+      :is-active="editor.isActive('italic')"
+      icon="format-italic" />
+    <menu-button
+      @click="editor.chain().focus().toggleUnderline().run()"
+      :is-active="editor.isActive('underline')"
+      icon="format-underline" />
+    <menu-button
+      @click="editor.chain().focus().toggleStrike().run()"
+      :is-active="editor.isActive('strike')"
+      icon="format-strikethrough" />
+    <v-divider vertical />
+    <tiptap-table :editor="editor" />
+    <color-picker
+      :command="editor.chain().focus().setTextColor"
+      :is-active="!!editor.getAttributes('textStyle').color" />
+    <color-picker
+      :command="editor.chain().focus().setTextHighlight"
+      :is-active="!!editor.getAttributes('textStyle').backgroundColor"
+      icon="format-color-highlight" />
+    <v-divider vertical />
+    <menu-button
+      @click="editor.chain().focus().toggleBulletList().run()" :is-active="editor.isActive('bulletList')"
+      icon="format-list-bulleted" />
+    <menu-button
+      @click="editor.chain().focus().toggleOrderedList().run()" :is-active="editor.isActive('orderedList')"
+      icon="format-list-numbered" />
+    <text-align :editor="editor" />
+    <menu-button
+      @click="editor.chain().focus().outdent(5).run()"
+      icon="format-indent-decrease" />
+    <menu-button
+      @click="editor.chain().focus().indent(5).run()"
+      icon="format-indent-increase" />
+    <v-divider vertical />
+    <menu-button
+      @click="editor.chain().focus().setHorizontalRule().run()"
+      :is-active="editor.isActive('horizontalRule')"
+      icon="minus" />
+    <menu-button
+      @click="editor.chain().focus().toggleBlockquote().run()"
+      :is-active="editor.isActive('blockquote')"
+      icon="format-quote-close" />
+    <v-divider vertical />
+    <menu-button
+      @click="editor.chain().focus().unsetAllMarks().run()"
+      icon="format-clear" />
+    <link-button
       :editor="editor"
-      v-slot="{ commands, isActive, getMarkAttrs }">
-      <div class="toolbar">
-        <menu-button
-          :command="commands.code"
-          :is-active="isActive.code()"
-          icon="code-tags" />
-        <v-divider vertical />
-        <menu-button :command="commands.undo" icon="undo" />
-        <menu-button :command="commands.redo" icon="redo" />
-        <v-divider vertical />
-        <heading :editor-context="{ editor, commands, isActive }" />
-        <font-size :editor-context="{ editor, commands, isActive }" />
-        <font-type :editor-context="{ editor, commands, isActive }" />
-        <v-divider vertical />
-        <menu-button
-          :command="commands.bold"
-          :is-active="isActive.bold()"
-          icon="format-bold" />
-        <menu-button
-          :command="commands.italic"
-          :is-active="isActive.italic()"
-          icon="format-italic" />
-        <menu-button
-          :command="commands.underline"
-          :is-active="isActive.underline()"
-          icon="format-underline" />
-        <menu-button
-          :command="commands.strike"
-          :is-active="isActive.strike()"
-          icon="format-strikethrough" />
-        <v-divider vertical />
-        <color-picker
-          :command="commands.textColor"
-          :is-active="isActive.textColor()" />
-        <color-picker
-          :command="commands.textHighlight"
-          :is-active="isActive.textHighlight()"
-          icon="format-color-highlight" />
-        <v-divider vertical />
-        <menu-button
-          :command="commands.bullet_list"
-          :is-active="isActive.bullet_list()"
-          icon="format-list-bulleted" />
-        <menu-button
-          :command="commands.ordered_list"
-          :is-active="isActive.ordered_list()"
-          icon="format-list-numbered" />
-        <menu-button
-          :command="commands.ordered_list"
-          :is-active="isActive.ordered_list()"
-          icon="format-list-numbered" />
-        <menu-button
-          :command="commands.outdent"
-          icon="format-indent-decrease" />
-        <menu-button
-          :command="commands.indent"
-          icon="format-indent-increase" />
-        <text-align :editor-context="{ editor, commands, isActive }" />
-        <v-divider vertical />
-        <link-button
-          :command="commands.link"
-          :is-active="isActive.link()"
-          :link-attributes="getMarkAttrs('link')"
-          icon="link" />
-        <tiptap-table :editor-context="{ editor, commands, isActive }" />
-        <tce-image :editor-context="{ editor, commands, isActive }" />
-        <menu-button
-          :command="commands.horizontal_rule"
-          :is-active="isActive.horizontal_rule()"
-          icon="minus" />
-        <menu-button
-          :command="commands.blockquote"
-          :is-active="isActive.blockquote()"
-          icon="format-quote-close" />
-        <v-divider vertical />
-        <menu-button
-          :command="commands.clearFormat"
-          icon="format-clear" />
-      </div>
-    </editor-menu-bar>
+      icon="link" />
+    <tce-image :editor="editor" />
   </div>
 </template>
 
 <script>
 import ColorPicker from './MenuButtons/ColorPicker.vue';
-import { EditorMenuBar } from 'tiptap';
+import FontFamily from './MenuButtons/FontFamily.vue';
 import FontSize from './MenuButtons/FontSize.vue';
-import FontType from './MenuButtons/FontType.vue';
 import Heading from './MenuButtons/Heading.vue';
 import LinkButton from './MenuButtons/Link.vue';
 import MenuButton from './MenuButton.vue';
@@ -111,9 +95,8 @@ export default {
   },
   components: {
     ColorPicker,
-    EditorMenuBar,
     FontSize,
-    FontType,
+    FontFamily,
     Heading,
     TceImage,
     MenuButton,

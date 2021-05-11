@@ -1,115 +1,57 @@
+import { Extension, getNodeAttributes } from '@tiptap/core';
 
-import { AllSelection, TextSelection } from 'prosemirror-state';
-import { Extension } from 'tiptap';
-import { isListNode } from '../utils/list';
+export default Extension.create({
+  name: 'indent',
 
-function clamp(val, min, max) {
-  if (val < min) return min;
-  if (val > max) return max;
-  return val;
-}
+  defaultOptions: {
+    types: ['heading', 'paragraph']
+  },
 
-export const IndentProps = {
-  max: 7,
-  min: 0,
-  more: 1,
-  less: -1
-};
+  addGlobalAttributes() {
+    return [
+      {
+        types: this.options.types,
+        attributes: {
+          marginLeft: {
+            default: null,
+            renderHTML: attributes => {
+              if (!attributes.marginLeft) {
+                return {};
+              }
 
-function updateIndentLevel(tr, delta) {
-  const { doc, selection } = tr;
+              return {
+                style: `margin-left: ${attributes.marginLeft}px`
+              };
+            },
+            parseHTML: element => {
+              return {
+                marginLeft: Number(element.style.marginLeft.replace(/['"px]+/g, ''))
+              };
+            }
+          }
+        }
+      }
+    ];
+  },
 
-  if (!doc || !selection) return tr;
-
-  if (!(selection instanceof TextSelection || selection instanceof AllSelection)) {
-    return tr;
-  }
-
-  const { from, to } = selection;
-
-  doc.nodesBetween(from, to, (node, pos) => {
-    const nodeType = node.type;
-
-    if (
-      nodeType.name === 'paragraph' ||
-      nodeType.name === 'heading' ||
-      nodeType.name === 'blockquote'
-    ) {
-      tr = setNodeIndentMarkup(tr, pos, delta);
-      return false;
-    } else if (isListNode(node)) {
-      return false;
-    }
-    return true;
-  });
-
-  return tr;
-}
-
-function setNodeIndentMarkup(tr, pos, delta) {
-  if (!tr.doc) return tr;
-
-  const node = tr.doc.nodeAt(pos);
-  if (!node) return tr;
-
-  const minIndent = IndentProps.min;
-  const maxIndent = IndentProps.max;
-
-  const indent = clamp(
-    (node.attrs.indent || 0) + delta,
-    minIndent,
-    maxIndent
-  );
-
-  if (indent === node.attrs.indent) return tr;
-
-  const nodeAttrs = {
-    ...node.attrs,
-    indent
-  };
-
-  return tr.setNodeMarkup(pos, node.type, nodeAttrs, node.marks);
-}
-
-function createIndentCommand(delta) {
-  return (state, dispatch) => {
-    const { selection } = state;
-    let { tr } = state;
-    tr = tr.setSelection(selection);
-    tr = updateIndentLevel(tr, delta);
-
-    if (tr.docChanged) {
-      dispatch && dispatch(tr);
-      return true;
-    }
-
-    return false;
-  };
-}
-
-export default class Indent extends Extension {
-  get name() {
-    return 'indent';
-  }
-
-  get defaultOptions() {
+  addCommands() {
     return {
-      minIndent: IndentProps.min,
-      maxIndent: IndentProps.max
+      indent: value => ({ commands, state }) => {
+        return this.options.types.every(type => {
+          let { marginLeft = 0 } = getNodeAttributes(state, type);
+          marginLeft = marginLeft + value;
+          if (marginLeft > 200) marginLeft = 200;
+          return commands.updateAttributes(type, { marginLeft });
+        });
+      },
+      outdent: value => ({ commands, state }) => {
+        return this.options.types.every(type => {
+          let { marginLeft = 0 } = getNodeAttributes(state, type);
+          marginLeft = marginLeft - value;
+          if (marginLeft < 0) return this.options.types.every(type => commands.resetAttributes(type, 'marginLeft'));
+          return commands.updateAttributes(type, { marginLeft });
+        });
+      }
     };
   }
-
-  commands() {
-    return {
-      indent: () => createIndentCommand(IndentProps.more),
-      outdent: () => createIndentCommand(IndentProps.less)
-    };
-  }
-
-  keys() {
-    return {
-      Tab: createIndentCommand(IndentProps.more),
-      'Shift-Tab': createIndentCommand(IndentProps.less)
-    };
-  }
-}
+});

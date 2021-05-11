@@ -38,21 +38,18 @@ import MenuButton from '../../MenuButton.vue';
 export default {
   name: 'tce-tiptap-image',
   props: {
-    editorContext: { type: Object, required: true }
+    editor: { type: Object, required: true }
   },
   data: () => ({
     menu: false,
     imageUrl: '',
     alt: ''
   }),
-  computed: {
-    editor: ({ editorContext: { editor } }) => editor
-  },
   methods: {
     save() {
       const { imageUrl: src, alt } = this;
       this.menu = false;
-      this.editorContext.commands.image({ src, alt });
+      this.editor.chain().focus().setImage({ src, alt }).run();
     }
   },
   components: {

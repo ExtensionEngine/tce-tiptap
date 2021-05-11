@@ -14,11 +14,11 @@
           v-for="it in alignments"
           :key="it"
           :value="it"
-          :class="{ 'active': isTextAlignActive(editor.state, it)}">
+          :class="{ 'active': editor.isActive({ textAlign: it }) }">
           <v-list-item-title>
             <menu-button
-              :command="editorContext.commands[`align_${it}`]"
-              :is-active="isTextAlignActive(editor.state, it)"
+              @click="editor.chain().focus().setTextAlign(it).run()"
+              :is-active="editor.isActive({ textAlign: it }) "
               :icon="`format-align-${it}`" />
           </v-list-item-title>
         </v-list-item>
@@ -28,21 +28,16 @@
 </template>
 
 <script>
-import { isTextAlignActive } from '../../extensions/text-align';
 import MenuButton from '../MenuButton.vue';
 
 export default {
-  name: 'tce-tiptap-heading',
+  name: 'tce-tiptap-text-align',
   props: {
-    editorContext: { type: Object, required: true }
+    editor: { type: Object, required: true }
   },
   data: () => ({ alignment: 'left' }),
   computed: {
-    editor: ({ editorContext: { editor } }) => editor,
-    alignments: ({ editor }) => editor.extensions.options.textAlign.alignments
-  },
-  methods: {
-    isTextAlignActive
+    alignments: () => ['left', 'center', 'right', 'justify']
   },
   components: {
     MenuButton

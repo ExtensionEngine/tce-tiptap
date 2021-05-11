@@ -1,7 +1,5 @@
-import { AllSelection, TextSelection } from 'prosemirror-state';
-import { applyMark } from '../utils';
-import { getMarkAttrs } from 'tiptap-utils';
-import { Mark } from 'tiptap';
+import '@tiptap/extension-text-style';
+import { Extension } from '@tiptap/core';
 
 export const FONT_SIZES = [
   '8',
@@ -19,108 +17,51 @@ export const FONT_SIZES = [
   '72'
 ];
 
-export const DEFAULT_FONT_SIZE = 'default';
+export default Extension.create({
+  name: 'fontSize',
 
-export default class FontSize extends Mark {
-  get name() {
-    return 'fontSize';
-  }
+  defaultOptions: {
+    types: ['textStyle']
+  },
 
-  get defaultOptions() {
-    return {
-      fontSizes: FONT_SIZES
-    };
-  }
+  addGlobalAttributes() {
+    return [
+      {
+        types: this.options.types,
+        attributes: {
+          fontSize: {
+            default: null,
+            renderHTML: attributes => {
+              if (!attributes.fontSize) {
+                return {};
+              }
 
-  get schema() {
-    return {
-      attrs: { px: '' },
-      inline: true,
-      group: 'inline',
-      parseDOM: [
-        {
-          style: 'font-size',
-          getAttrs: fontSize => {
-            const attrs = {};
-            if (!fontSize) return attrs;
-            const px = convertToPX(fontSize);
-            if (!px) return attrs;
-            return { px };
+              return {
+                style: `font-size: ${attributes.fontSize}px`
+              };
+            },
+            parseHTML: element => ({
+              fontSize: element.style.fontSize.replace(/['"px]+/g, '')
+            })
           }
         }
-      ],
-      toDOM(node) {
-        const { px } = node.attrs;
-        const attrs = {};
-        if (px) attrs.style = `font-size: ${px}px`;
-        return ['span', attrs, 0];
+      }
+    ];
+  },
+
+  addCommands() {
+    return {
+      setFontSize: fontSize => ({ chain }) => {
+        return chain()
+          .setMark('textStyle', { fontSize })
+          .run();
+      },
+      unsetFontSize: () => ({ chain }) => {
+        return chain()
+          .setMark('textStyle', { fontSize: null })
+          .removeEmptyTextStyle()
+          .run();
       }
     };
   }
-
-  commands({ type }) {
-    return fontSize => (state, dispatch) => {
-      let { tr } = state;
-      tr = setFontSize(
-        state.tr.setSelection(state.selection),
-        type,
-        fontSize
-      );
-      if (tr.docChanged || tr.storedMarksSet) {
-        dispatch && dispatch(tr);
-        return true;
-      }
-      return false;
-    };
-  }
-}
-
-const SIZE_PATTERN = /([\d.]+)px/i;
-
-export function convertToPX(styleValue) {
-  const matches = styleValue.match(SIZE_PATTERN);
-  if (!matches) return '';
-  const value = matches[1];
-  if (!value) return '';
-  return value;
-}
-
-export function setFontSize(tr, type, fontSize) {
-  const { selection } = tr;
-  if (!isCorrectSelection(selection)) return tr;
-  const attrs = (fontSize && fontSize !== DEFAULT_FONT_SIZE)
-    ? { px: fontSize }
-    : null;
-  tr = applyMark(tr, type, attrs);
-  return tr;
-}
-
-export function findActiveFontSize(state) {
-  const { schema, selection } = state;
-  const markType = schema.marks.fontSize;
-  if (!markType) return DEFAULT_FONT_SIZE;
-  if (selection.empty) return resolveEmptyState(state, markType);
-  const attrs = getMarkAttrs(state, markType);
-  const fontSize = attrs.px;
-  if (fontSize) return String(fontSize);
-  return DEFAULT_FONT_SIZE;
-}
-
-function resolveEmptyState(state, markType) {
-  const { selection, tr } = state;
-  const storedMarks = tr.storedMarks ||
-  state.storedMarks ||
-  (
-    selection instanceof TextSelection &&
-    selection.$cursor &&
-    selection.$cursor.marks &&
-    selection.$cursor.marks()
-  ) ||
-  [];
-
-  const sm = storedMarks.find(m => m.type === markType);
-  return sm ? String(sm.attrs.px || DEFAULT_FONT_SIZE) : DEFAULT_FONT_SIZE;
-}
-
-const isCorrectSelection = selection =>
-  selection instanceof TextSelection || selection instanceof AllSelection;
+});

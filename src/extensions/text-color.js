@@ -1,56 +1,51 @@
-import applyMark from '../utils/apply-mark';
-import { isHexColor } from '../utils/color';
-import { Mark } from 'tiptap';
+import '@tiptap/extension-text-style';
+import { Extension } from '@tiptap/core';
 
-export default class TextColor extends Mark {
-  get name() {
-    return 'textColor';
-  }
+export default Extension.create({
+  name: 'textColor',
 
-  get schema() {
+  defaultOptions: {
+    types: ['textStyle']
+  },
+
+  addGlobalAttributes() {
+    return [
+      {
+        types: this.options.types,
+        attributes: {
+          color: {
+            default: null,
+            renderHTML: attributes => {
+              if (!attributes.color) {
+                return {};
+              }
+
+              return {
+                style: `color: ${attributes.color}`
+              };
+            },
+            parseHTML: element => ({
+              color: element.style.color.replace(/['"]+/g, '')
+            })
+          }
+        }
+      }
+    ];
+  },
+
+  addCommands() {
     return {
-      attrs: {
-        color: ''
+      setTextColor: color => ({ chain }) => {
+        return chain()
+          .setMark('textStyle', { color })
+          .run();
       },
-      inline: true,
-      group: 'inline',
-      parseDOM: [{
-        style: 'color',
-        getAttrs: color => {
-          return {
-            color
-          };
-        }
-      }],
-      toDOM(node) {
-        const { color } = node.attrs;
-        let style = '';
-        if (color) {
-          style += `color: ${color};`;
-        }
-        return ['span', { style }, 0];
+      unsetTextColor: () => ({ chain }) => {
+        return chain()
+          .setMark('textStyle', { color: null })
+          .removeEmptyTextStyle()
+          .run();
       }
     };
   }
-
-  commands() {
-    return color => (state, dispatch) => {
-      if (color !== undefined) {
-        const { schema } = state;
-        let { tr } = state;
-        const markType = schema.marks.textColor;
-        const attrs = color && isHexColor(color) ? { color } : null;
-        tr = applyMark(
-          state.tr.setSelection(state.selection),
-          markType,
-          attrs
-        );
-        if (tr.docChanged || tr.storedMarksSet) {
-          dispatch && dispatch(tr);
-          return true;
-        }
-      }
-      return false;
-    };
-  }
-}
+});

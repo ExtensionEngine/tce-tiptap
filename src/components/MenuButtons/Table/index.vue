@@ -24,7 +24,7 @@
       </v-menu>
       <v-divider />
       <v-list-item
-        @click="editorContext.commands.addColumnBefore"
+        @click="editor.chain().focus().addColumnBefore().run()"
         :disabled="!isTableActive">
         <v-icon
           color="#333"
@@ -35,7 +35,7 @@
         Add column before
       </v-list-item>
       <v-list-item
-        @click="editorContext.commands.addColumnAfter"
+        @click="editor.chain().focus().addColumnAfter().run()"
         :disabled="!isTableActive">
         <v-icon
           color="#333"
@@ -46,7 +46,7 @@
         Add column after
       </v-list-item>
       <v-list-item
-        @click="editorContext.commands.deleteColumn"
+        @click="editor.chain().focus().deleteColumn().run()"
         :disabled="!isTableActive">
         <v-icon
           color="#333"
@@ -58,7 +58,7 @@
       </v-list-item>
       <v-divider />
       <v-list-item
-        @click="editorContext.commands.addRowBefore"
+        @click="editor.chain().focus().addRowBefore().run()"
         :disabled="!isTableActive">
         <v-icon
           color="#333"
@@ -68,7 +68,7 @@
         </v-icon> Add row before
       </v-list-item>
       <v-list-item
-        @click="editorContext.commands.addRowAfter"
+        @click="editor.chain().focus().addRowAfter().run()"
         :disabled="!isTableActive">
         <v-icon
           color="#333"
@@ -78,7 +78,7 @@
         </v-icon> Add row after
       </v-list-item>
       <v-list-item
-        @click="editorContext.commands.deleteRow"
+        @click="editor.chain().focus().deleteRow().run()"
         :disabled="!isTableActive">
         <v-icon
           color="#333"
@@ -89,7 +89,7 @@
       </v-list-item>
       <v-divider />
       <v-list-item
-        @click="editorContext.commands.mergeCells"
+        @click="editor.chain().focus().mergeCells().run()"
         :disabled="!isMergeCellsEnabled">
         <v-icon
           color="#333"
@@ -99,7 +99,7 @@
         </v-icon> Merge cells
       </v-list-item>
       <v-list-item
-        @click="editorContext.commands.splitCell"
+        @click="editor.chain().focus().splitCell().run()"
         :disabled="!isSplitCellEnabled">
         <v-icon
           color="#333"
@@ -110,7 +110,7 @@
       </v-list-item>
       <v-divider />
       <v-list-item
-        @click="editorContext.commands.deleteTable"
+        @click="editor.chain().focus().deleteTable().run()"
         :disabled="!isTableActive">
         <v-icon
           color="#333"
@@ -135,22 +135,21 @@ import TableGrid from './TableGrid.vue';
 export default {
   name: 'tce-tiptap-table',
   props: {
-    editorContext: { type: Object, required: true }
+    editor: { type: Object, required: true }
   },
   computed: {
-    editor: ({ editorContext: { editor } }) => editor,
-    isActive: ({ editorContext: { isActive } }) => isActive.table(),
+    isActive: ({ editor }) => editor.isActive('table'),
     isTableActive: ({ editor }) => isTableActive(editor.state),
     isMergeCellsEnabled: ({ editor }) => enableMergeCells(editor.state),
     isSplitCellEnabled: ({ editor }) => enableSplitCell(editor.state)
   },
   methods: {
     insertTable({ row, col }) {
-      this.editorContext.commands.createTable({
+      this.editor.chain().focus().insertTable({
         rowsCount: row,
         colsCount: col,
         withHeaderRow: true
-      });
+      }).run();
     }
   },
   components: {

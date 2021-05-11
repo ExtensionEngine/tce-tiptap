@@ -1,58 +1,51 @@
-import applyMark from '../utils/apply-mark';
-import { isHexColor } from '../utils/color';
-import { Mark } from 'tiptap';
+import '@tiptap/extension-text-style';
+import { Extension } from '@tiptap/core';
 
-export default class TextHighlight extends Mark {
-  get name() {
-    return 'textHighlight';
-  }
+export default Extension.create({
+  name: 'textHighlight',
 
-  get schema() {
+  defaultOptions: {
+    types: ['textStyle']
+  },
+
+  addGlobalAttributes() {
+    return [
+      {
+        types: this.options.types,
+        attributes: {
+          backgroundColor: {
+            default: null,
+            renderHTML: attributes => {
+              if (!attributes.backgroundColor) {
+                return {};
+              }
+
+              return {
+                style: `background-color: ${attributes.backgroundColor}`
+              };
+            },
+            parseHTML: element => ({
+              backgroundColor: element.style.backgroundColor.replace(/['"]+/g, '')
+            })
+          }
+        }
+      }
+    ];
+  },
+
+  addCommands() {
     return {
-      attrs: {
-        highlightColor: ''
+      setTextHighlight: backgroundColor => ({ chain }) => {
+        return chain()
+          .setMark('textStyle', { backgroundColor })
+          .run();
       },
-      inline: true,
-      group: 'inline',
-      parseDOM: [{
-        tag: 'span[style*=background-color]',
-        getAttrs: dom => {
-          const { backgroundColor } = dom.style;
-
-          return {
-            highlightColor: backgroundColor
-          };
-        }
-      }],
-      toDOM(node) {
-        const { highlightColor } = node.attrs;
-        let style = '';
-        if (highlightColor) {
-          style += `background-color: ${highlightColor};`;
-        }
-        return ['span', { style }, 0];
+      unsetTextHighlight: () => ({ chain }) => {
+        return chain()
+          .setMark('textStyle', { backgroundColor: null })
+          .removeEmptyTextStyle()
+          .run();
       }
     };
   }
-
-  commands() {
-    return color => (state, dispatch) => {
-      if (color !== undefined) {
-        const { schema } = state;
-        let { tr } = state;
-        const markType = schema.marks.textHighlight;
-        const attrs = color && isHexColor(color) ? { highlightColor: color } : null;
-        tr = applyMark(
-          state.tr.setSelection(state.selection),
-          markType,
-          attrs
-        );
-        if (tr.docChanged || tr.storedMarksSet) {
-          dispatch && dispatch(tr);
-          return true;
-        }
-      }
-      return false;
-    };
-  }
-}
+});

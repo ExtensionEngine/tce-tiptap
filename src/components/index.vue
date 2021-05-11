@@ -15,46 +15,43 @@
     </div>
     <template v-else>
       <editor-content :editor="editor" class="editor" />
-      <bubble-menu :editor="editor" />
+      <bubble-menu-content v-if="editor" :editor="editor" />
     </template>
   </div>
 </template>
 
 <script>
-import {
-  Blockquote,
-  Bold,
-  BulletList,
-  Code,
-  HardBreak,
-  History,
-  HorizontalRule,
-  Italic,
-  ListItem,
-  OrderedList,
-  Strike,
-  Table,
-  TableCell,
-  TableHeader,
-  TableRow,
-  Underline
-} from 'tiptap-extensions';
-import {
-  ClearFormat,
-  FontSize,
-  FontType,
-  Heading,
-  Image,
-  Indent,
-  Link,
-  Paragraph,
-  TextAlign,
-  TextColor,
-  TextHighlight
-} from '../extensions';
-import { Editor, EditorContent } from 'tiptap';
-import BubbleMenu from './BubbleMenu/index.vue';
+import { BubbleMenu, Editor, EditorContent } from '@tiptap/vue-2';
+import { FontSize, Image, Indent, TextColor, TextHighlight } from '../extensions';
+import Blockquote from '@tiptap/extension-blockquote';
+import Bold from '@tiptap/extension-bold';
+import BubbleMenuContent from './BubbleMenu/index.vue';
+import BulletList from '@tiptap/extension-bullet-list';
+import Code from '@tiptap/extension-code';
+import CodeBlock from '@tiptap/extension-code-block';
 import debounce from 'lodash/debounce';
+import Document from '@tiptap/extension-document';
+import Dropcursor from '@tiptap/extension-dropcursor';
+import FontFamily from '@tiptap/extension-font-family';
+import Gapcursor from '@tiptap/extension-gapcursor';
+import HardBreak from '@tiptap/extension-hard-break';
+import Heading from '@tiptap/extension-heading';
+import History from '@tiptap/extension-history';
+import HorizontalRule from '@tiptap/extension-horizontal-rule';
+import Italic from '@tiptap/extension-italic';
+import Link from '@tiptap/extension-link';
+import ListItem from '@tiptap/extension-list-item';
+import OrderedList from '@tiptap/extension-ordered-list';
+import Paragraph from '@tiptap/extension-paragraph';
+import Strike from '@tiptap/extension-strike';
+import Table from '@tiptap/extension-table';
+import TableCell from '@tiptap/extension-table-cell';
+import TableHeader from '@tiptap/extension-table-header';
+import TableRow from '@tiptap/extension-table-row';
+import Text from '@tiptap/extension-text';
+import TextAlign from '@tiptap/extension-text-align';
+import TextStyle from '@tiptap/extension-text-style';
+import Underline from '@tiptap/extension-underline';
 
 export default {
   name: 'tce-tiptap-html',
@@ -111,36 +108,42 @@ export default {
     this.editor = new Editor({
       content: this.content,
       extensions: [
-        new Blockquote(),
-        new Bold(),
-        new Code(),
-        new ClearFormat(),
-        new Italic(),
-        new HardBreak(),
-        new Indent(),
-        new Heading({ levels: [1, 2, 3, 4, 5] }),
-        new HorizontalRule(),
-        new History(),
-        new ListItem(),
-        new OrderedList(),
-        new BulletList(),
-        new Strike(),
-        new Underline(),
-        new Table(),
-        new TableCell(),
-        new TableHeader(),
-        new TableRow(),
-        new Paragraph(),
-        new Image(),
-        new Link(),
-        new FontSize(),
-        new FontType(),
-        new TextColor(),
-        new TextHighlight(),
-        new TextAlign()
+        BubbleMenu,
+        Blockquote,
+        Bold,
+        BulletList,
+        Code,
+        CodeBlock,
+        Document,
+        Dropcursor,
+        Gapcursor,
+        HardBreak,
+        Heading,
+        History,
+        HorizontalRule,
+        Indent,
+        Image,
+        Italic,
+        ListItem,
+        Link.configure({ openOnClick: false }),
+        OrderedList,
+        Paragraph,
+        Strike,
+        Text,
+        TextStyle,
+        FontFamily,
+        FontSize,
+        Underline,
+        Table.configure({ resizable: true }),
+        TableRow,
+        TableHeader,
+        TableCell,
+        TextAlign,
+        TextColor,
+        TextHighlight
       ],
-      onUpdate: ({ getHTML }) => {
-        this.content = getHTML();
+      onUpdate: () => {
+        this.content = this.editor.getHTML();
       }
     });
   },
@@ -149,7 +152,7 @@ export default {
   },
   components: {
     EditorContent,
-    BubbleMenu
+    BubbleMenuContent
   }
 };
 </script>
@@ -213,17 +216,10 @@ $tooltipColor: #37474f;
   ::v-deep {
     .ProseMirror {
       display: inline-block;
-      flex-direction: column;
+      width: 100%;
       min-height: 10rem;
       padding: 10px;
-
-      @for $i from 1 through 7 /* max-indent */ {
-        $indent-margin-base: 30px;
-
-        *[data-indent="#{$i}"] {
-          margin-left: $indent-margin-base * $i !important;
-        }
-      }
+      flex-direction: column;
 
       h1, h2, h3, h4, h5, h6 {
         margin: 0;
@@ -242,10 +238,10 @@ $tooltipColor: #37474f;
       }
 
       table {
-        border-collapse: collapse;
-        table-layout: fixed;
         width: 100%;
         margin: 0;
+        border-collapse: collapse;
+        table-layout: fixed;
         overflow: hidden;
 
         td, th {

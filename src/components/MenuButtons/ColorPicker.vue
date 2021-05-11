@@ -30,7 +30,7 @@ export default {
   },
   methods: {
     onColorChange(color) {
-      this.command(color.hex);
+      this.command(color.hex).run();
     }
   },
   components: {

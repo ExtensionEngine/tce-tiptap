@@ -1,45 +1,45 @@
 <template>
-  <editor-menu-bubble
+  <bubble-menu
     v-if="editor"
     :editor="editor"
-    class="editor-bubble-menu"
-    v-slot="{ commands, isActive, getMarkAttrs, menu }">
-    <v-card
-      class="bubble-menu"
-      :class="{ 'is-active': menu.isActive }"
-      :style="`left: ${left || menu.left}px; bottom: ${menu.bottom}px;`">
+    class="editor-bubble-menu">
+    <v-card>
       <v-card-text class="d-flex pa-1">
-        <template v-if="isImage">
+        <!-- <template v-if="isImage">
           <image-menu
             :node="imageNode"
             :editor-context="{ commands, isActive, editor }" />
-        </template>
-        <template v-if="isText">
+        </template> -->
+        <template>
           <link-menu
+            :editor="editor"
             :is-link-selection="isLink"
-            :editor-context="{ commands, isActive, getMarkAttrs }" />
+            icon="link" />
           <menu-button
-            :command="commands.bold"
-            :is-active="isActive.bold()"
+            @click="editor.chain().focus().toggleBold().run()"
+            :is-active="editor.isActive('bold')"
             icon="format-bold" />
           <menu-button
-            :command="commands.italic"
-            :is-active="isActive.italic()"
+            @click="editor.chain().focus().toggleItalic().run()"
+            :is-active="editor.isActive('italic')"
             icon="format-italic" />
           <menu-button
-            :command="commands.underline"
-            :is-active="isActive.underline()"
+            @click="editor.chain().focus().toggleUnderline().run()"
+            :is-active="editor.isActive('underline')"
             icon="format-underline" />
+          <menu-button
+            @click="editor.chain().focus().toggleStrike().run()"
+            :is-active="editor.isActive('strike')"
+            icon="format-strikethrough" />
         </template>
       </v-card-text>
     </v-card>
-  </editor-menu-bubble>
+  </bubble-menu>
 </template>
 
 <script>
-import { EditorMenuBubble } from 'tiptap';
-import { getMarkRange } from 'tiptap-utils';
-import ImageMenu from './ImageMenu.vue';
+import { BubbleMenu } from '@tiptap/vue-2';
+// import ImageMenu from './ImageMenu.vue';
 import LinkMenu from './LinkMenu.vue';
 import MenuButton from '../MenuButton.vue';
 import { TextSelection } from 'prosemirror-state';
@@ -59,26 +59,28 @@ export default {
   }),
   methods: {
     isLinkSelection(selection) {
-      const { schema } = this.editor;
-      const linkType = schema.marks.link;
+      // const { schema } = this.editor;
+      // const linkType = schema.marks.link;
 
-      if (!linkType || !selection) {
-        this.isLink = false;
-        return;
-      }
+      // if (!linkType || !selection) {
+      //   this.isLink = false;
+      //   return;
+      // }
 
-      const { $from, $to } = selection;
-      const range = getMarkRange($from, linkType);
+      // const { $from, $to } = selection;
+      // const range = getMarkRange($from, linkType);
 
-      if (!range) {
-        this.isLink = false;
-        return;
-      }
+      // if (!range) {
+      //   this.isLink = false;
+      //   return;
+      // }
 
-      this.isLink = range.to === $to.pos;
-      this.left = null;
+      // this.isLink = range.to === $to.pos;
+      // this.left = null;
+      return false;
     },
     isImageSelection(selection) {
+      return false;
       if (!selection.node) {
         this.isImage = false;
         return;
@@ -109,8 +111,8 @@ export default {
     'editor.state.selection': 'getSelectionType'
   },
   components: {
-    EditorMenuBubble,
-    ImageMenu,
+    BubbleMenu,
+    // ImageMenu,
     LinkMenu,
     MenuButton
   }

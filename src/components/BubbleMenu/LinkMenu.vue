@@ -1,17 +1,15 @@
 <template>
   <div class="d-flex">
     <link-button
-      :command="editorContext.commands.link"
-      :is-active="editorContext.isActive.link()"
-      :link-attributes="linkAttributes"
+      :editor="editor"
       :icon="isLinkSelection ? 'pencil' : 'link'" />
     <template v-if="isLinkSelection">
       <menu-button
-        :command="openLink"
+        @click="openLink"
         icon="eye"
         class="menu-button" />
       <menu-button
-        :command="removeLink"
+        @click="removeLink"
         icon="link-off"
         class="menu-button" />
       <v-divider
@@ -28,20 +26,15 @@ import MenuButton from '../MenuButton.vue';
 export default {
   name: 'tce-tiptap-link-menu',
   props: {
-    editorContext: { type: Object, required: true },
+    editor: { type: Object, required: true },
     isLinkSelection: { type: Boolean, required: true }
-  },
-  computed: {
-    linkAttributes() {
-      return this.editorContext.getMarkAttrs('link');
-    }
   },
   methods: {
     openLink() {
       window.open(this.linkAttributes.href, '_blank');
     },
     removeLink() {
-      this.editorContext.commands.link({ href: null, target: null });
+      this.editor.chain().focus().unsetLink();
     }
   },
   components: {
