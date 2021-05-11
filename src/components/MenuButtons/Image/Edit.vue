@@ -54,18 +54,16 @@ export default {
   name: 'tce-tiptap-image-edit',
   props: {
     node: { type: Object, required: true },
-    editorContext: { type: Object, required: true }
+    editor: { type: Object, required: true }
   },
   data: () => ({
     imageAttrs: {},
     menu: false
   }),
-  computed: {
-    editor: ({ editorContext: { editor } }) => editor
-  },
   methods: {
     save() {
       updateAttrs(this.imageAttrs, this.editor, this.node);
+      this.close();
     },
     close() {
       this.imageAttrs = {};

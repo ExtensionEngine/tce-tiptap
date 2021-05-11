@@ -31,11 +31,10 @@ export default {
   name: 'tce-tiptap-image-display',
   props: {
     node: { type: Object, required: true },
-    editorContext: { type: Object, required: true }
+    editor: { type: Object, required: true }
   },
   data: () => ({ display: '' }),
   computed: {
-    editor: ({ editorContext: { editor } }) => editor,
     alignments: () => Object.values(ImageDisplay)
   },
   methods: {

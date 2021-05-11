@@ -1,41 +1,44 @@
 <template>
-  <span :class="imageViewClass">
-    <div
-      :class="{
-        'image-view__body--focused': selected,
-        'image-view__body--resizing': resizing,
-      }"
-      class="image-view__body">
-      <img
-        @load="onImageLoad"
-        @click="selectImage"
-        :src="src"
-        :alt="node.attrs.alt"
-        :width="width"
-        :height="height"
-        class="image-view__body__image">
-
-      <template v-if="selected || resizing">
-        <div class="image-dimensions">
-          <div>{{ width }} x {{ height }}</div>
-        </div>
-      </template>
+  <node-view-wrapper>
+    <span :class="imageViewClass">
       <div
-        v-if="view.editable"
-        v-show="selected || resizing"
-        class="image-resizer">
-        <span
-          v-for="direction in resizeDirections"
-          :key="direction"
-          @mousedown="onMouseDown($event, direction)"
-          :class="`image-resizer__handler--${direction}`"
-          class="image-resizer__handler"></span>
+        :class="{
+          'image-view__body--focused': selected,
+          'image-view__body--resizing': resizing,
+        }"
+        class="image-view__body">
+        <img
+          @load="onImageLoad"
+          @click="selectImage"
+          :src="src"
+          :alt="node.attrs.alt"
+          :width="width"
+          :height="height"
+          class="image-view__body__image">
+
+        <template v-if="selected || resizing">
+          <div class="image-dimensions">
+            <div>{{ width }} x {{ height }}</div>
+          </div>
+        </template>
+        <div
+          v-if="editor.view.editable"
+          v-show="selected || resizing"
+          class="image-resizer">
+          <span
+            v-for="direction in resizeDirections"
+            :key="direction"
+            @mousedown="onMouseDown($event, direction)"
+            :class="`image-resizer__handler--${direction}`"
+            class="image-resizer__handler"></span>
+        </div>
       </div>
-    </div>
-  </span>
+    </span>
+  </node-view-wrapper>
 </template>
 
 <script>
+import { nodeViewProps, NodeViewWrapper } from '@tiptap/vue-2';
 import { NodeSelection } from 'prosemirror-state';
 
 function clamp(val, min, max) {
@@ -57,10 +60,7 @@ const MAX_SIZE = 100000;
 export default {
   name: 'tce-tiptap-image-view',
   props: {
-    node: { type: Object, required: true },
-    view: { type: Object, required: true },
-    getPos: { type: Function, required: true },
-    updateAttrs: { type: Function, required: true },
+    ...nodeViewProps,
     selected: { type: Boolean, required: true }
   },
   data: vm => ({
@@ -119,16 +119,16 @@ export default {
     },
     // https://github.com/scrumpy/tiptap/issues/361#issuecomment-540299541
     selectImage() {
-      const { state } = this.view;
+      const { state } = this.editor.view;
       let { tr } = state;
       const selection = NodeSelection.create(state.doc, this.getPos());
       tr = tr.setSelection(selection);
-      this.view.dispatch(tr);
+      this.editor.view.dispatch(tr);
     },
 
     /* invoked when window or editor resize */
     getMaxSize() {
-      const { width } = getComputedStyle(this.view.dom);
+      const { width } = getComputedStyle(this.editor.view.dom);
       this.maxSize.width = parseInt(width, 10);
     },
 
@@ -182,7 +182,7 @@ export default {
       const dx = (e.clientX - x) * (/l/.test(dir) ? -1 : 1);
       const dy = (e.clientY - y) * (/t/.test(dir) ? -1 : 1);
 
-      this.updateAttrs({
+      this.updateAttributes({
         width: clamp(w + dx, MIN_SIZE, this.maxSize.width),
         height: Math.max(h + dy, MIN_SIZE)
       });
@@ -218,11 +218,14 @@ export default {
     }
   },
   mounted() {
-    this.resizeOb.observe(this.view.dom);
+    this.resizeOb.observe(this.editor.view.dom);
   },
 
   beforeDestroy() {
     this.resizeOb.disconnect();
+  },
+  components: {
+    NodeViewWrapper
   }
 };
 </script>

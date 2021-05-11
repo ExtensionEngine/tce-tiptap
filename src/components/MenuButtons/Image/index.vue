@@ -48,6 +48,7 @@ export default {
   methods: {
     save() {
       const { imageUrl: src, alt } = this;
+      console.log(src);
       this.menu = false;
       this.editor.chain().focus().setImage({ src, alt }).run();
     }

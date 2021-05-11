@@ -12,10 +12,7 @@ export default {
   name: 'tce-tiptap-remove-image',
   props: {
     node: { type: Object, required: true },
-    editorContext: { type: Object, required: true }
-  },
-  computed: {
-    editor: ({ editorContext: { editor } }) => editor
+    editor: { type: Object, required: true }
   },
   methods: {
     removeImage() {

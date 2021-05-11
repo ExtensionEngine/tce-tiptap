@@ -5,12 +5,12 @@
     class="editor-bubble-menu">
     <v-card>
       <v-card-text class="d-flex pa-1">
-        <!-- <template v-if="isImage">
+        <template v-if="isImage">
           <image-menu
             :node="imageNode"
-            :editor-context="{ commands, isActive, editor }" />
-        </template> -->
-        <template>
+            :editor="editor" />
+        </template>
+        <template v-else>
           <link-menu
             :editor="editor"
             :is-link-selection="isLink"
@@ -41,7 +41,7 @@
 <script>
 import { BubbleMenu } from '@tiptap/vue-2';
 import { getMarkAttributes } from '@tiptap/core';
-// import ImageMenu from './ImageMenu.vue';
+import ImageMenu from './ImageMenu.vue';
 import LinkMenu from './LinkMenu.vue';
 import MenuButton from '../MenuButton.vue';
 import { TextSelection } from 'prosemirror-state';
@@ -106,7 +106,7 @@ export default {
   },
   components: {
     BubbleMenu,
-    // ImageMenu,
+    ImageMenu,
     LinkMenu,
     MenuButton
   }

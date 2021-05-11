@@ -2,13 +2,13 @@
   <div class="d-flex">
     <image-display
       :node="node"
-      :editor-context="editorContext" />
+      :editor="editor" />
     <image-edit
       :node="node"
-      :editor-context="editorContext" />
+      :editor="editor" />
     <image-remove
       :node="node"
-      :editor-context="editorContext" />
+      :editor="editor" />
   </div>
 </template>
 
@@ -21,7 +21,7 @@ export default {
   name: 'tce-tiptap-image-menu',
   props: {
     node: { type: Object, required: true },
-    editorContext: { type: Object, required: true }
+    editor: { type: Object, required: true }
   },
   components: {
     ImageDisplay,
