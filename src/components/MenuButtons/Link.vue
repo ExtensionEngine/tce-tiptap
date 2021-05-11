@@ -17,7 +17,6 @@
         <v-text-field
           ref="url"
           v-model="url"
-          @blur.stop="test"
           label="Url"
           placeholder="https://example.com"
           type="url" />
@@ -56,9 +55,6 @@ export default {
     close() {
       this.url = null;
       this.menu = false;
-    },
-    test() {
-      console.log('aaaaa');
     },
     save() {
       this.editor.chain().focus()

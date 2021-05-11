@@ -30,19 +30,16 @@
       icon="format-strikethrough" />
     <v-divider vertical />
     <tiptap-table :editor="editor" />
-    <color-picker
-      :command="editor.chain().focus().setTextColor"
-      :is-active="!!editor.getAttributes('textStyle').color" />
-    <color-picker
-      :command="editor.chain().focus().setTextHighlight"
-      :is-active="!!editor.getAttributes('textStyle').backgroundColor"
-      icon="format-color-highlight" />
+    <text-color :editor="editor" />
+    <text-highlight :editor="editor" />
     <v-divider vertical />
     <menu-button
-      @click="editor.chain().focus().toggleBulletList().run()" :is-active="editor.isActive('bulletList')"
+      @click="editor.chain().focus().toggleBulletList().run()"
+      :is-active="editor.isActive('bulletList')"
       icon="format-list-bulleted" />
     <menu-button
-      @click="editor.chain().focus().toggleOrderedList().run()" :is-active="editor.isActive('orderedList')"
+      @click="editor.chain().focus().toggleOrderedList().run()"
+      :is-active="editor.isActive('orderedList')"
       icon="format-list-numbered" />
     <text-align :editor="editor" />
     <menu-button
@@ -72,7 +69,6 @@
 </template>
 
 <script>
-import ColorPicker from './MenuButtons/ColorPicker.vue';
 import FontFamily from './MenuButtons/FontFamily.vue';
 import FontSize from './MenuButtons/FontSize.vue';
 import Heading from './MenuButtons/Heading.vue';
@@ -80,6 +76,8 @@ import LinkButton from './MenuButtons/Link.vue';
 import MenuButton from './MenuButton.vue';
 import TceImage from './MenuButtons/Image/index.vue';
 import TextAlign from './MenuButtons/TextAlign.vue';
+import TextColor from './MenuButtons/TextColor.vue';
+import TextHighlight from './MenuButtons/TextHighlight.vue';
 import TiptapTable from './MenuButtons/Table/index.vue';
 
 export default {
@@ -94,7 +92,8 @@ export default {
     });
   },
   components: {
-    ColorPicker,
+    TextColor,
+    TextHighlight,
     FontSize,
     FontFamily,
     Heading,
@@ -107,7 +106,8 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped>
+<style,
+    TextHighlight lang="scss" scoped>
 .toolbar {
   display: flex;
   padding: 19px;
