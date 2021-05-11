@@ -14,6 +14,7 @@
           <link-menu
             :editor="editor"
             :is-link-selection="isLink"
+            :link-attributes="linkAttributes"
             icon="link" />
           <menu-button
             @click="editor.chain().focus().toggleBold().run()"
@@ -39,6 +40,7 @@
 
 <script>
 import { BubbleMenu } from '@tiptap/vue-2';
+import { getMarkAttributes } from '@tiptap/core';
 // import ImageMenu from './ImageMenu.vue';
 import LinkMenu from './LinkMenu.vue';
 import MenuButton from '../MenuButton.vue';
@@ -54,33 +56,25 @@ export default {
     isImage: false,
     isText: false,
     imageNode: null,
+    linkAttributes: {},
     opened: true,
     left: null
   }),
   methods: {
     isLinkSelection(selection) {
-      // const { schema } = this.editor;
-      // const linkType = schema.marks.link;
+      const { schema, state } = this.editor;
+      const linkType = schema.marks.link;
 
-      // if (!linkType || !selection) {
-      //   this.isLink = false;
-      //   return;
-      // }
+      if (!linkType || !selection) {
+        this.isLink = false;
+        return;
+      }
 
-      // const { $from, $to } = selection;
-      // const range = getMarkRange($from, linkType);
-
-      // if (!range) {
-      //   this.isLink = false;
-      //   return;
-      // }
-
-      // this.isLink = range.to === $to.pos;
-      // this.left = null;
-      return false;
+      this.linkAttributes = getMarkAttributes(state, linkType);
+      this.isLink = !!this.linkAttributes.href;
+      this.left = null;
     },
     isImageSelection(selection) {
-      return false;
       if (!selection.node) {
         this.isImage = false;
         return;

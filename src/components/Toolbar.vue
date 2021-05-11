@@ -58,13 +58,12 @@
       :is-active="editor.isActive('blockquote')"
       icon="format-quote-close" />
     <v-divider vertical />
+    <link-button :editor="editor" icon="link" />
+    <tce-image :editor="editor" />
+    <v-divider vertical />
     <menu-button
       @click="editor.chain().focus().unsetAllMarks().run()"
       icon="format-clear" />
-    <link-button
-      :editor="editor"
-      icon="link" />
-    <tce-image :editor="editor" />
   </div>
 </template>
 
