@@ -138,8 +138,6 @@ export default {
       e.preventDefault();
       e.stopPropagation();
 
-      console.log('hello?');
-
       this.resizerState.x = e.clientX;
       this.resizerState.y = e.clientY;
 

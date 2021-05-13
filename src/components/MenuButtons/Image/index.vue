@@ -60,7 +60,6 @@ export default {
   },
   watch: {
     menu() {
-      console.log(this.editor.getAttributes('image'));
       this.imageAttrs = this.editor.getAttributes('image');
     }
   },
