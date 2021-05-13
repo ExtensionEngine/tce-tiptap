@@ -1,6 +1,5 @@
 <template>
   <v-menu
-    ref="menu"
     v-model="menu"
     transition="slide-y-transition"
     :close-on-content-click="false"
@@ -63,17 +62,15 @@ export default {
       this.close();
     },
     remove() {
-      this.editor.chain().focus().unsetLink();
+      this.editor.commands.unsetLink();
       this.close();
     }
   },
   watch: {
     menu() {
-      this.editor.view.dom.blur();
       const attributes = this.editor.getAttributes('link');
       this.url = attributes.href || null;
       this.newTab = attributes && attributes.target === '_blank';
-      this.$nextTick(() => this.$refs.menu.$el.focus());
     }
   },
   components: {
