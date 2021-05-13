@@ -24,22 +24,20 @@
 </template>
 
 <script>
-import { ImageDisplay, updateAttrs } from '../../../extensions/image';
 import MenuButton from '../../MenuButton.vue';
 
 export default {
   name: 'tce-tiptap-image-display',
   props: {
-    node: { type: Object, required: true },
     editor: { type: Object, required: true }
   },
   data: () => ({ display: '' }),
   computed: {
-    alignments: () => Object.values(ImageDisplay)
+    alignments: () => ['inline', 'block', 'left', 'right']
   },
   methods: {
     updateAligment(display) {
-      updateAttrs({ display }, this.editor, this.node);
+      this.editor.commands.updateAttributes('image', { display });
     }
   },
   watch: {

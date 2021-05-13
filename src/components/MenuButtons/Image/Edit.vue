@@ -48,12 +48,10 @@
 
 <script>
 import MenuButton from '../../MenuButton.vue';
-import { updateAttrs } from '../../../extensions/image';
 
 export default {
   name: 'tce-tiptap-image-edit',
   props: {
-    node: { type: Object, required: true },
     editor: { type: Object, required: true }
   },
   data: () => ({
@@ -62,7 +60,7 @@ export default {
   }),
   methods: {
     save() {
-      updateAttrs(this.imageAttrs, this.editor, this.node);
+      this.editor.commands.updateAttributes('image', this.imageAttrs);
       this.close();
     },
     close() {
@@ -70,7 +68,7 @@ export default {
     }
   },
   created() {
-    this.imageAttrs = { ...this.node.attrs };
+    this.imageAttrs = this.editor.getAttributes('image');
   },
   components: {
     MenuButton

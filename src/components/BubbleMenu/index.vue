@@ -2,11 +2,7 @@
   <bubble-menu v-if="editor" :editor="editor">
     <v-card>
       <v-card-text class="d-flex pa-1">
-        <template v-if="isImage">
-          <image-menu
-            :node="imageNode"
-            :editor="editor" />
-        </template>
+        <image-menu v-if="isImage" :editor="editor" />
         <template v-else>
           <link-menu
             :editor="editor"
@@ -37,7 +33,6 @@
 
 <script>
 import { BubbleMenu } from '@tiptap/vue-2';
-import { getMarkAttributes } from '@tiptap/core';
 import ImageMenu from './ImageMenu.vue';
 import LinkMenu from './LinkMenu.vue';
 import MenuButton from '../MenuButton.vue';
@@ -52,45 +47,22 @@ export default {
     isLink: false,
     isImage: false,
     isText: false,
-    imageNode: null,
-    linkAttributes: {},
-    opened: true,
-    left: null
+    linkAttributes: {}
   }),
   methods: {
-    isLinkSelection(selection) {
-      const { schema, state } = this.editor;
-      const linkType = schema.marks.link;
-
-      if (!linkType || !selection) {
-        this.isLink = false;
-        return;
-      }
-
-      this.linkAttributes = getMarkAttributes(state, linkType);
+    isLinkSelection() {
+      this.linkAttributes = this.editor.getAttributes('link');
       this.isLink = !!this.linkAttributes.href;
-      this.left = null;
     },
     isImageSelection(selection) {
       if (!selection.node) {
         this.isImage = false;
         return;
       }
-
       this.isImage = selection.node.type.name === 'image';
-      this.isText = false;
-      this.imageNode = selection.node;
-      const { from, to } = selection;
-      const imageWidth = selection.node.attrs.width;
-      const start = this.editor.view.coordsAtPos(from);
-      const end = this.editor.view.coordsAtPos(to);
-      const box = this.editor.view.dom.getBoundingClientRect();
-      const left = Math.max((start.left + end.left) / 2, start.left + 3);
-      this.left = left - box.left + imageWidth / 2;
     },
     isTextSelection(selection) {
       this.isText = selection instanceof TextSelection;
-      this.left = null;
     },
     getSelectionType(selection) {
       this.isTextSelection(selection);

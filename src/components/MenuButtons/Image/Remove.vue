@@ -11,7 +11,6 @@ import MenuButton from '../../MenuButton.vue';
 export default {
   name: 'tce-tiptap-remove-image',
   props: {
-    node: { type: Object, required: true },
     editor: { type: Object, required: true }
   },
   methods: {
