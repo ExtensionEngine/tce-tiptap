@@ -66,11 +66,10 @@ export default {
       this.close();
     },
     close() {
-      this.imageAttrs = {};
       this.menu = false;
     }
   },
-  async created() {
+  created() {
     this.imageAttrs = { ...this.node.attrs };
   },
   components: {

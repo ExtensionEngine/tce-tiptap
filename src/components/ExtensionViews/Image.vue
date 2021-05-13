@@ -1,39 +1,37 @@
 <template>
-  <node-view-wrapper>
-    <span :class="imageViewClass">
-      <div
-        :class="{
-          'image-view__body--focused': selected,
-          'image-view__body--resizing': resizing,
-        }"
-        class="image-view__body">
-        <img
-          @load="onImageLoad"
-          @click="selectImage"
-          :src="src"
-          :alt="node.attrs.alt"
-          :width="width"
-          :height="height"
-          class="image-view__body__image">
+  <node-view-wrapper :class="imageViewClass">
+    <div
+      :class="{
+        'image-view__body--focused': selected,
+        'image-view__body--resizing': resizing,
+      }"
+      class="image-view__body">
+      <img
+        @load="onImageLoad"
+        @click="selectImage"
+        :src="src"
+        :alt="node.attrs.alt"
+        :width="width"
+        :height="height"
+        class="image-view__body__image">
 
-        <template v-if="selected || resizing">
-          <div class="image-dimensions">
-            <div>{{ width }} x {{ height }}</div>
-          </div>
-        </template>
-        <div
-          v-if="editor.view.editable"
-          v-show="selected || resizing"
-          class="image-resizer">
-          <span
-            v-for="direction in resizeDirections"
-            :key="direction"
-            @mousedown="onMouseDown($event, direction)"
-            :class="`image-resizer__handler--${direction}`"
-            class="image-resizer__handler"></span>
+      <template v-if="selected || resizing">
+        <div class="image-dimensions">
+          <div>{{ width }} x {{ height }}</div>
         </div>
+      </template>
+      <div
+        v-if="editor.view.editable"
+        v-show="selected || resizing"
+        class="image-resizer">
+        <span
+          v-for="direction in resizeDirections"
+          :key="direction"
+          @mousedown="onMouseDown($event, direction)"
+          :class="`image-resizer__handler--${direction}`"
+          class="image-resizer__handler"></span>
       </div>
-    </span>
+    </div>
   </node-view-wrapper>
 </template>
 
@@ -139,6 +137,8 @@ export default {
     onMouseDown(e, dir) {
       e.preventDefault();
       e.stopPropagation();
+
+      console.log('hello?');
 
       this.resizerState.x = e.clientX;
       this.resizerState.y = e.clientY;

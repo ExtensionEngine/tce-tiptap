@@ -21,10 +21,11 @@
 </template>
 
 <script>
-import { BubbleMenu, Editor, EditorContent } from '@tiptap/vue-2';
+import { Editor, EditorContent } from '@tiptap/vue-2';
 import { FontSize, Image, Indent, TextColor, TextHighlight } from '../extensions';
 import Blockquote from '@tiptap/extension-blockquote';
 import Bold from '@tiptap/extension-bold';
+import BubbleMenu from '@tiptap/extension-bubble-menu';
 import BubbleMenuContent from './BubbleMenu/index.vue';
 import BulletList from '@tiptap/extension-bullet-list';
 import Code from '@tiptap/extension-code';

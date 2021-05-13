@@ -27,6 +27,9 @@ export default Image.extend({
       src: {
         default: null
       },
+      alt: {
+        default: null
+      },
       width: {
         default: this.imageDefaultWidth > 0
           ? this.imageDefaultWidth

@@ -1,8 +1,5 @@
 <template>
-  <bubble-menu
-    v-if="editor"
-    :editor="editor"
-    class="editor-bubble-menu">
+  <bubble-menu v-if="editor" :editor="editor">
     <v-card>
       <v-card-text class="d-flex pa-1">
         <template v-if="isImage">
