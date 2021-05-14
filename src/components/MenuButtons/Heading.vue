@@ -7,7 +7,9 @@
         v-on="on"
         :is-active="editor.isActive('heading')"
         v-bind="attrs"
-        icon="format-pilcrow" />
+        icon="format-pilcrow">
+        <v-icon size="14" class="ml-1">mdi-chevron-down</v-icon>
+      </menu-button>
     </template>
     <v-list dense class="headings">
       <v-list-item-group v-model="level">

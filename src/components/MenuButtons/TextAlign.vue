@@ -6,7 +6,9 @@
       <menu-button
         v-on="on"
         v-bind="attrs"
-        icon="format-align-left" />
+        icon="format-align-left">
+        <v-icon size="14" class="ml-1">mdi-chevron-down</v-icon>
+      </menu-button>
     </template>
     <v-list dense class="text-alignment">
       <v-list-item-group v-model="alignment">

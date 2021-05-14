@@ -2,10 +2,12 @@
   <v-btn
     v-on="$listeners"
     v-bind="$attrs"
-    icon
+    text
+    rounded
     :class="{ 'active': isActive }"
     class="menu-button mx-1">
     <v-icon>{{ `mdi-${icon}` }}</v-icon>
+    <span class="slot"><slot></slot></span>
   </v-btn>
 </template>
 
@@ -20,9 +22,10 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.menu-button {
+.menu-button.v-btn {
   min-width: 34px;
   height: 34px;
+  padding: 0 10px;
   background: transparent;
   border: none;
 
@@ -35,6 +38,10 @@ export default {
 
   &.active {
     .mdi {
+      color: #ff6590;
+    }
+
+    .slot ::v-deep .mdi {
       color: #ff6590;
     }
 

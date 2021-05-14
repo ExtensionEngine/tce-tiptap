@@ -7,7 +7,9 @@
         v-on="on"
         :is-active="!!editor.getAttributes('textStyle').fontSize"
         v-bind="attrs"
-        icon="format-size" />
+        icon="format-size">
+        <v-icon size="14" class="ml-1">mdi-chevron-down</v-icon>
+      </menu-button>
     </template>
     <v-list dense class="font-sizes">
       <v-list-item-group v-model="size">
