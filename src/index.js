@@ -1,5 +1,5 @@
-import Edit from './components/index.vue';
-import Toolbar from './components/Toolbar.vue';
+import Edit from './edit/index.vue';
+import Toolbar from './edit/Toolbar.vue';
 
 export { Edit, Toolbar };
 

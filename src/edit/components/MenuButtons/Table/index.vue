@@ -127,13 +127,39 @@
 </template>
 
 <script>
-import {
-  enableMergeCells,
-  enableSplitCell,
-  isTableActive
-} from '../../../utils/table';
+import { mergeCells, splitCell } from 'prosemirror-tables';
 import MenuButton from '../../MenuButton.vue';
 import TableGrid from './TableGrid.vue';
+
+function isTableActive(state) {
+  if (!state) return false;
+  const { selection, doc } = state;
+  const { from, to } = selection;
+  let keepLooking = true;
+  let active = false;
+
+  doc.nodesBetween(from, to, node => {
+    const name = node.type.name;
+    if (
+      keepLooking &&
+      (name === 'table' || name === 'table_row' || name === 'table_column' || name === 'table_cell')
+    ) {
+      keepLooking = false;
+      active = true;
+    }
+    return keepLooking;
+  });
+
+  return active;
+}
+
+function enableMergeCells(state) {
+  return isTableActive(state) && mergeCells(state);
+}
+
+function enableSplitCell(state) {
+  return isTableActive(state) && splitCell(state);
+}
 
 export default {
   name: 'tce-tiptap-table',

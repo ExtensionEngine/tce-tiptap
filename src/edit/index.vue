@@ -15,18 +15,18 @@
     </div>
     <template v-else>
       <editor-content :editor="editor" class="editor" />
-      <bubble-menu-content v-if="editor" :editor="editor" />
+      <bubble-menu v-if="editor" :editor="editor" />
     </template>
   </div>
 </template>
 
 <script>
 import { Editor, EditorContent } from '@tiptap/vue-2';
-import { FontSize, Image, Indent, TextColor, TextHighlight } from '../extensions';
+import { FontSize, Image, Indent, TextColor, TextHighlight } from './extensions';
 import Blockquote from '@tiptap/extension-blockquote';
 import Bold from '@tiptap/extension-bold';
-import BubbleMenu from '@tiptap/extension-bubble-menu';
-import BubbleMenuContent from './BubbleMenu/index.vue';
+import BubbleMenu from './components/BubbleMenu/index.vue';
+import BubbleMenuExtension from '@tiptap/extension-bubble-menu';
 import BulletList from '@tiptap/extension-bullet-list';
 import Code from '@tiptap/extension-code';
 import CodeBlock from '@tiptap/extension-code-block';
@@ -109,7 +109,7 @@ export default {
     this.editor = new Editor({
       content: this.content,
       extensions: [
-        BubbleMenu,
+        BubbleMenuExtension,
         Blockquote,
         Bold,
         BulletList,
@@ -153,7 +153,7 @@ export default {
   },
   components: {
     EditorContent,
-    BubbleMenuContent
+    BubbleMenu
   }
 };
 </script>

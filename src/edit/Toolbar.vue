@@ -86,16 +86,16 @@
 </template>
 
 <script>
-import FontFamily from './MenuButtons/FontFamily.vue';
-import FontSize from './MenuButtons/FontSize.vue';
-import Heading from './MenuButtons/Heading.vue';
-import LinkButton from './MenuButtons/Link.vue';
-import MenuButton from './MenuButton.vue';
-import TceImage from './MenuButtons/Image/index.vue';
-import TextAlign from './MenuButtons/TextAlign.vue';
-import TextColor from './MenuButtons/TextColor.vue';
-import TextHighlight from './MenuButtons/TextHighlight.vue';
-import TiptapTable from './MenuButtons/Table/index.vue';
+import FontFamily from './components/MenuButtons/FontFamily.vue';
+import FontSize from './components/MenuButtons/FontSize.vue';
+import Heading from './components/MenuButtons/Heading.vue';
+import LinkButton from './components/MenuButtons/Link.vue';
+import MenuButton from './components/MenuButton.vue';
+import TceImage from './components/MenuButtons/Image/index.vue';
+import TextAlign from './components/MenuButtons/TextAlign.vue';
+import TextColor from './components/MenuButtons/TextColor.vue';
+import TextHighlight from './components/MenuButtons/TextHighlight.vue';
+import TiptapTable from './components/MenuButtons/Table/index.vue';
 
 export default {
   inject: ['$elementBus'],
@@ -123,8 +123,7 @@ export default {
 };
 </script>
 
-<style,
-    TextHighlight lang="scss" scoped>
+<style lang="scss" scoped>
 .toolbar {
   display: flex;
   padding: 19px;
