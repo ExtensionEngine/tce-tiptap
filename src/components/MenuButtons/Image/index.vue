@@ -17,7 +17,6 @@
           ref="imageUrl"
           v-model="imageAttrs.src"
           label="Url"
-          :disabled="!!imageAttrs.src"
           placeholder="https://example.com"
           type="url" />
         <v-text-field
@@ -26,7 +25,7 @@
       </v-card-text>
       <v-card-actions class="pt-0">
         <v-spacer />
-        <v-btn @click="save" :disabled="!!imageAttrs.src" text>
+        <v-btn @click="save" text>
           Save
         </v-btn>
         <v-btn @click="menu = false" text>
