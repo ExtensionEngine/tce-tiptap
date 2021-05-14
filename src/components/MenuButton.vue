@@ -1,14 +1,21 @@
 <template>
-  <v-btn
-    v-on="$listeners"
-    v-bind="$attrs"
-    text
-    rounded
-    :class="{ 'active': isActive }"
-    class="menu-button mx-1">
-    <v-icon>{{ `mdi-${icon}` }}</v-icon>
-    <span class="slot"><slot></slot></span>
-  </v-btn>
+  <div style="position: relative;">
+    <v-tooltip :disabled="!tooltip" bottom>
+      <template #activator="{ on, attrs }">
+        <v-btn
+          v-on="{...$listeners, ...on}"
+          v-bind="{...$attrs, ...attrs}"
+          text
+          rounded
+          :class="{ 'active': isActive }"
+          class="menu-button mx-1">
+          <v-icon>{{ `mdi-${icon}` }}</v-icon>
+          <span class="slot"><slot></slot></span>
+        </v-btn>
+      </template>
+      <span>{{ tooltip }}</span>
+    </v-tooltip>
+  </div>
 </template>
 
 <script>
@@ -16,7 +23,8 @@ export default {
   name: 'tce-tiptap-menu-button',
   props: {
     isActive: { type: Boolean, default: false },
-    icon: { type: String, required: true }
+    icon: { type: String, required: true },
+    tooltip: { type: String, default: null }
   }
 };
 </script>

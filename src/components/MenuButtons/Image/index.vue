@@ -9,7 +9,8 @@
         v-on="on"
         :is-active="editor.isActive('image')"
         v-bind="attrs"
-        icon="image-plus" />
+        icon="image-plus"
+        tooltip="Insert image" />
     </template>
     <v-card min-width="300">
       <v-card-text class="pb-0">

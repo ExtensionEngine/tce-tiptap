@@ -7,7 +7,8 @@
         v-on="on"
         :is-active="editor.isActive('heading')"
         v-bind="attrs"
-        icon="format-pilcrow">
+        icon="format-pilcrow"
+        tooltip="Heading">
         <v-icon size="14" class="ml-1">mdi-chevron-down</v-icon>
       </menu-button>
     </template>

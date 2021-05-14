@@ -8,7 +8,8 @@
       <menu-button
         v-on="on"
         v-bind="attrs"
-        icon="image-edit" />
+        icon="image-edit"
+        tooltip="Edit image" />
     </template>
     <v-card min-width="300">
       <v-card-text class="pb-0">

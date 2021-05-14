@@ -7,7 +7,8 @@
         v-on="on"
         v-bind="attrs"
         :is-active="!!editor.getAttributes('textStyle').fontFamily"
-        icon="format-font">
+        icon="format-font"
+        tooltip="Font family">
         <v-icon size="14" class="ml-1">mdi-chevron-down</v-icon>
       </menu-button>
     </template>

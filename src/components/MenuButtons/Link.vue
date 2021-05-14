@@ -9,7 +9,8 @@
         v-on="on"
         :is-active="editor.isActive('link')"
         v-bind="attrs"
-        :icon="icon" />
+        :icon="icon"
+        :tooltip="editor.isActive('link') ? 'Edit link' : 'Insert link'" />
     </template>
     <v-card min-width="300">
       <v-card-text class="pb-0">

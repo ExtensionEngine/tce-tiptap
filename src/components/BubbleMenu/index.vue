@@ -7,24 +7,27 @@
           <link-menu
             :editor="editor"
             :is-link-selection="isLink"
-            :link-attributes="linkAttributes"
-            icon="link" />
+            :link-attributes="linkAttributes" />
           <menu-button
             @click="editor.chain().focus().toggleBold().run()"
             :is-active="editor.isActive('bold')"
-            icon="format-bold" />
+            icon="format-bold"
+            tooltip="Bold" />
           <menu-button
             @click="editor.chain().focus().toggleItalic().run()"
             :is-active="editor.isActive('italic')"
-            icon="format-italic" />
+            icon="format-italic"
+            tooltip="italic" />
           <menu-button
             @click="editor.chain().focus().toggleUnderline().run()"
             :is-active="editor.isActive('underline')"
-            icon="format-underline" />
+            icon="format-underline"
+            tooltip="Underline" />
           <menu-button
             @click="editor.chain().focus().toggleStrike().run()"
             :is-active="editor.isActive('strike')"
-            icon="format-strikethrough" />
+            icon="format-strikethrough"
+            tooltip="Strikethrough" />
         </template>
       </v-card-text>
     </v-card>

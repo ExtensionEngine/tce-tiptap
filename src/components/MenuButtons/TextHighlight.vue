@@ -7,7 +7,8 @@
         v-on="on"
         :is-active="!!editor.getAttributes('textStyle').backgroundColor"
         v-bind="attrs"
-        icon="format-color-highlight" />
+        icon="format-color-highlight"
+        tooltip="Highlight text" />
     </template>
     <v-color-picker
       @input="onColorChange"

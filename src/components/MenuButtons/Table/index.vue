@@ -7,7 +7,8 @@
         v-on="on"
         :is-active="isActive"
         v-bind="attrs"
-        icon="table">
+        icon="table"
+        tooltip="Insert table">
         <v-icon size="14" class="ml-1">mdi-chevron-down</v-icon>
       </menu-button>
     </template>

@@ -1,6 +1,9 @@
 <template>
   <div>
-    <menu-button :command="() => removeImage()" icon="delete" />
+    <menu-button
+      :command="() => removeImage()"
+      icon="delete"
+      tooltip="Remove image" />
   </div>
 </template>
 

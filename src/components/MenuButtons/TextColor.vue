@@ -7,7 +7,8 @@
         v-on="on"
         :is-active="!!editor.getAttributes('textStyle').color"
         v-bind="attrs"
-        icon="palette" />
+        icon="palette"
+        tooltip="Add text color" />
     </template>
     <v-color-picker
       @input="onColorChange"

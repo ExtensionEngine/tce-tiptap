@@ -6,7 +6,8 @@
       <menu-button
         v-on="on"
         v-bind="attrs"
-        icon="image-text" />
+        icon="image-text"
+        tooltip="Align image" />
     </template>
     <v-list dense class="font-sizes">
       <v-list-item-group v-model="display">

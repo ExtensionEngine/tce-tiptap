@@ -6,7 +6,8 @@
       <menu-button
         v-on="on"
         v-bind="attrs"
-        icon="format-align-left">
+        icon="format-align-left"
+        tooltip="Align text">
         <v-icon size="14" class="ml-1">mdi-chevron-down</v-icon>
       </menu-button>
     </template>
