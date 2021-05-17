@@ -1,14 +1,31 @@
-
-
 <div align="center" style="display: flex; align-items: center; justify-content: center;">
   <img width="50" style="margin-right: 20px;" src="https://raw.githubusercontent.com/ExtensionEngine/tailor/d6e8ce002b49092421ca5437fa17700dd368c82d/client/assets/img/default-logo-full.svg">
   <img width="200"style="margin-left: 20px;"  src="https://www.tiptap.dev/assets/img/logo.5bc64ab8.svg">
 </div>
 
-# @extensionengine/tce-tiptap - nextgen editor for Tailor
+# A better text editor for Tailor
 
-`tce-tiptap` is based on [`tiptap editor`](https://www.tiptap.dev/). It covers all the basic features needed for Tailor. 
+`tce-tiptap` is based on [`tiptap editor`](https://www.tiptap.dev/). It covers all the basic features needed for Tailor.
 
+## Installation  and setup
+Install the package with last commit hash in tailor
+```
+npm install @extensionengine/tce-tiptap#[last-commit-hash]
+```
+
+Add `tce-tiptap` folder to `client/components/content-elements` and  `index.js` file with this configuration: 
+```js
+// client/components/content-elements/tce-tiptap/index.js
+import '@extensionengine/tce-tiptap/dist/tce-tiptap.css';
+import { Edit, options, Toolbar } from '@extensionengine/tce-tiptap/dist/tce-tiptap.esm';
+
+export default {
+  ...options,
+  name: options.label,
+  Edit,
+  Toolbar
+};
+```
 ## Development 
 Install dependecies:
 ```
@@ -51,7 +68,7 @@ export default {
 ```
 If `tce-tiptap` isn't part of `tailor` yet, please consult [this PR](https://github.com/ExtensionEngine/tailor/pull/835/files) all other required changes. 
 
-### Production build
+## Production build
 For production build and deployment
 ```
 npm run build
