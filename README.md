@@ -1,3 +1,10 @@
+
+
+<div align="center" style="display: flex; align-items: center; justify-content: center;">
+  <img width="50" style="margin-right: 20px;" src="https://raw.githubusercontent.com/ExtensionEngine/tailor/d6e8ce002b49092421ca5437fa17700dd368c82d/client/assets/img/default-logo-full.svg">
+  <span style="font-size: 20px;">❤️</span>
+  <img width="200"style="margin-left: 20px;"  src="https://www.tiptap.dev/assets/img/logo.5bc64ab8.svg">
+</div>
 # tce-tiptap 🚧
 
 `tce-tiptap` is based on [`tiptap editor`](https://www.tiptap.dev/). It covers all the basic features needed for Tailor. 
