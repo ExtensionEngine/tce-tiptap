@@ -77,7 +77,10 @@
     "sass-loader": "^10.1.1",
     "stylelint": "^13.13.1",
     "vue": "^2.6.11",
-    "vue-template-compiler": "^2.6.11"
+    "vue-cli-plugin-vuetify": "^2.4.0",
+    "vue-template-compiler": "^2.6.11",
+    "vuetify": "^2.5.0",
+    "vuetify-loader": "^1.7.2"
   },
   "tailor": {
     "label": "Html",
