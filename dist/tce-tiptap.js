@@ -2,22 +2,77 @@
 
 Object.defineProperty(exports, '__esModule', { value: true });
 
-var tiptapExtensions = require('tiptap-extensions');
-var tiptap = require('tiptap');
-var prosemirrorState = require('prosemirror-state');
-var tiptapUtils = require('tiptap-utils');
-var prosemirrorUtils = require('prosemirror-utils');
-var tiptapCommands = require('tiptap-commands');
+var vue2 = require('@tiptap/vue-2');
+var core = require('@tiptap/core');
+var Image$1 = require('@tiptap/extension-image');
+var TextStyle = require('@tiptap/extension-text-style');
+var Blockquote = require('@tiptap/extension-blockquote');
+var Bold = require('@tiptap/extension-bold');
 var prosemirrorCommands = require('prosemirror-commands');
+var prosemirrorState = require('prosemirror-state');
+var BubbleMenuExtension = require('@tiptap/extension-bubble-menu');
+var BulletList = require('@tiptap/extension-bullet-list');
+var Code = require('@tiptap/extension-code');
+var CodeBlock = require('@tiptap/extension-code-block');
 var debounce = require('lodash/debounce');
+var Document = require('@tiptap/extension-document');
+var Dropcursor = require('@tiptap/extension-dropcursor');
+var FontFamily = require('@tiptap/extension-font-family');
+var Gapcursor = require('@tiptap/extension-gapcursor');
+var HardBreak = require('@tiptap/extension-hard-break');
+var Heading = require('@tiptap/extension-heading');
+var History = require('@tiptap/extension-history');
+var HorizontalRule = require('@tiptap/extension-horizontal-rule');
+var Italic = require('@tiptap/extension-italic');
+var Link = require('@tiptap/extension-link');
+var ListItem = require('@tiptap/extension-list-item');
+var OrderedList = require('@tiptap/extension-ordered-list');
+var Paragraph = require('@tiptap/extension-paragraph');
+var Strike = require('@tiptap/extension-strike');
+var Table = require('@tiptap/extension-table');
+var TableCell = require('@tiptap/extension-table-cell');
+var TableHeader = require('@tiptap/extension-table-header');
+var TableRow = require('@tiptap/extension-table-row');
+var Text = require('@tiptap/extension-text');
+var TextAlign = require('@tiptap/extension-text-align');
+var Underline = require('@tiptap/extension-underline');
 var prosemirrorTables = require('prosemirror-tables');
 
 function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
 
+var Image__default = /*#__PURE__*/_interopDefaultLegacy(Image$1);
+var TextStyle__default = /*#__PURE__*/_interopDefaultLegacy(TextStyle);
+var Blockquote__default = /*#__PURE__*/_interopDefaultLegacy(Blockquote);
+var Bold__default = /*#__PURE__*/_interopDefaultLegacy(Bold);
+var BubbleMenuExtension__default = /*#__PURE__*/_interopDefaultLegacy(BubbleMenuExtension);
+var BulletList__default = /*#__PURE__*/_interopDefaultLegacy(BulletList);
+var Code__default = /*#__PURE__*/_interopDefaultLegacy(Code);
+var CodeBlock__default = /*#__PURE__*/_interopDefaultLegacy(CodeBlock);
 var debounce__default = /*#__PURE__*/_interopDefaultLegacy(debounce);
+var Document__default = /*#__PURE__*/_interopDefaultLegacy(Document);
+var Dropcursor__default = /*#__PURE__*/_interopDefaultLegacy(Dropcursor);
+var FontFamily__default = /*#__PURE__*/_interopDefaultLegacy(FontFamily);
+var Gapcursor__default = /*#__PURE__*/_interopDefaultLegacy(Gapcursor);
+var HardBreak__default = /*#__PURE__*/_interopDefaultLegacy(HardBreak);
+var Heading__default = /*#__PURE__*/_interopDefaultLegacy(Heading);
+var History__default = /*#__PURE__*/_interopDefaultLegacy(History);
+var HorizontalRule__default = /*#__PURE__*/_interopDefaultLegacy(HorizontalRule);
+var Italic__default = /*#__PURE__*/_interopDefaultLegacy(Italic);
+var Link__default = /*#__PURE__*/_interopDefaultLegacy(Link);
+var ListItem__default = /*#__PURE__*/_interopDefaultLegacy(ListItem);
+var OrderedList__default = /*#__PURE__*/_interopDefaultLegacy(OrderedList);
+var Paragraph__default = /*#__PURE__*/_interopDefaultLegacy(Paragraph);
+var Strike__default = /*#__PURE__*/_interopDefaultLegacy(Strike);
+var Table__default = /*#__PURE__*/_interopDefaultLegacy(Table);
+var TableCell__default = /*#__PURE__*/_interopDefaultLegacy(TableCell);
+var TableHeader__default = /*#__PURE__*/_interopDefaultLegacy(TableHeader);
+var TableRow__default = /*#__PURE__*/_interopDefaultLegacy(TableRow);
+var Text__default = /*#__PURE__*/_interopDefaultLegacy(Text);
+var TextAlign__default = /*#__PURE__*/_interopDefaultLegacy(TextAlign);
+var Underline__default = /*#__PURE__*/_interopDefaultLegacy(Underline);
 
 var name = "@extensionengine/tce-tiptap";
-var version = "0.0.1";
+var version = "0.1.0";
 var tailor = {
 	label: "Html",
 	type: "TIPTAP_HTML",
@@ -27,828 +82,307 @@ var tailor = {
 	}
 };
 
-const ALLOWED_NODE_TYPES$2 = ['paragraph', 'heading', 'list_item', 'todo_item', 'title'];
-function setTextAlign$1(tr, alignment) {
-  const {
-    selection,
-    doc
-  } = tr;
-
-  if (!selection || !doc) {
-    return tr;
-  }
-
-  const {
-    from,
-    to
-  } = selection;
-  const tasks = [];
-  alignment = alignment || null;
-  doc.nodesBetween(from, to, (node, pos) => {
-    const nodeType = node.type;
-
-    if (ALLOWED_NODE_TYPES$2.includes(nodeType.name)) {
-      const align = node.attrs.textAlign || null;
-
-      if (align !== alignment) {
-        tasks.push({
-          node,
-          pos,
-          nodeType
-        });
-        return nodeType.name !== 'list_item' && nodeType.name !== 'todo_item';
-      }
-    }
-
-    return true;
-  });
-  if (!tasks.length) return tr;
-  tasks.forEach(job => {
-    const {
-      node,
-      pos,
-      nodeType
-    } = job;
-    let {
-      attrs
-    } = node;
-    attrs = { ...attrs,
-      textAlign: alignment
-    };
-    tr = tr.setNodeMarkup(pos, nodeType, attrs, node.marks);
-  });
-  return tr;
-}
-
-const LINE_HEIGHT_100 = 1.7;
-const DEFAULT_LINE_HEIGHT = '100%';
-const ALLOWED_NODE_TYPES$1 = ['paragraph', 'heading', 'list_item', 'todo_item'];
-const NUMBER_VALUE_PATTERN = /^\d+(.\d+)?$/;
-function transformLineHeightToCSS(value) {
-  if (!value) return '';
-  let strValue = String(value);
-
-  if (NUMBER_VALUE_PATTERN.test(strValue)) {
-    const numValue = parseFloat(strValue);
-    strValue = String(Math.round(numValue * 100)) + '%';
-  }
-
-  return parseFloat(strValue) * LINE_HEIGHT_100 + '%';
-}
-function transformCSStoLineHeight(value) {
-  if (!value) return '';
-  if (value === DEFAULT_LINE_HEIGHT) return '';
-  let strValue = value;
-
-  if (NUMBER_VALUE_PATTERN.test(value)) {
-    const numValue = parseFloat(value);
-    strValue = String(Math.round(numValue * 100)) + '%';
-    if (strValue === DEFAULT_LINE_HEIGHT) return '';
-  }
-
-  return parseFloat(strValue) / LINE_HEIGHT_100 + '%';
-}
-function setTextLineHeight(tr, lineHeight) {
-  const {
-    selection,
-    doc
-  } = tr;
-  if (!selection || !doc) return tr;
-
-  if (!(selection instanceof prosemirrorState.TextSelection || selection instanceof prosemirrorState.AllSelection)) {
-    return tr;
-  }
-
-  const {
-    from,
-    to
-  } = selection;
-  const tasks = [];
-  const lineHeightValue = lineHeight && lineHeight !== DEFAULT_LINE_HEIGHT ? lineHeight : null;
-  doc.nodesBetween(from, to, (node, pos) => {
-    const nodeType = node.type;
-
-    if (ALLOWED_NODE_TYPES$1.includes(nodeType.name)) {
-      const lineHeight = node.attrs.lineHeight || null;
-
-      if (lineHeight !== lineHeightValue) {
-        tasks.push({
-          node,
-          pos,
-          nodeType
-        });
-      }
-
-      return nodeType.name !== 'list_item' && nodeType.name !== 'todo_item';
-    }
-
-    return true;
-  });
-  if (!tasks.length) return tr;
-  tasks.forEach(task => {
-    const {
-      node,
-      pos,
-      nodeType
-    } = task;
-    let {
-      attrs
-    } = node;
-    attrs = { ...attrs,
-      lineHeight: lineHeightValue
-    };
-    tr = tr.setNodeMarkup(pos, nodeType, attrs, node.marks);
-  });
-  return tr;
-}
-
-const FORMAT_MARKS = {
-  bold: 'bold',
-  italic: 'italic',
-  underline: 'underline',
-  strike: 'strike',
-  link: 'link',
-  textColor: 'textColor',
-  textHighlight: 'textHighlight',
-  fontSize: 'fontSize',
-  fontType: 'fontType'
-};
-function clearMarks(tr, schema) {
-  const {
-    doc,
-    selection
-  } = tr;
-  if (!selection || !doc) return tr;
-  const {
-    from,
-    to,
-    empty
-  } = selection;
-  if (empty) return tr;
-  const markTypesToRemove = new Set(Object.values(FORMAT_MARKS).map(n => schema.marks[n]).filter(Boolean));
-  if (!markTypesToRemove.size) return tr;
-  const tasks = [];
-  doc.nodesBetween(from, to, (node, pos) => {
-    if (node.marks && node.marks.length) {
-      node.marks.some(mark => {
-        if (markTypesToRemove.has(mark.type)) {
-          tasks.push({
-            node,
-            pos,
-            mark
-          });
-        }
-      });
-      return true;
-    }
-
-    return true;
-  });
-  tasks.forEach(job => {
-    const {
-      node,
-      mark,
-      pos
-    } = job;
-    tr = tr.removeMark(pos, pos + node.nodeSize, mark.type);
-  });
-  tr = setTextAlign$1(tr, null);
-  tr = setTextLineHeight(tr, null);
-  return tr;
-}
-class FormatClear extends tiptap.Extension {
-  get name() {
-    return 'clearFormat';
-  }
-
-  commands() {
-    return () => (state, dispatch) => {
-      const tr = clearMarks(state.tr.setSelection(state.selection), state.schema);
-
-      if (dispatch && tr.docChanged) {
-        dispatch(tr);
-        return true;
-      }
-
-      return false;
-    };
-  }
-
-}
-
-function markApplies(doc, ranges, type) {
-  for (let i = 0; i < ranges.length; i++) {
-    const {
-      $from,
-      $to
-    } = ranges[i];
-    let can = $from.depth === 0 ? doc.type.allowsMarkType(type) : false;
-    doc.nodesBetween($from.pos, $to.pos, node => {
-      if (can) return false;
-      can = node.inlineContent && node.type.allowsMarkType(type);
-      return true;
-    });
-    if (can) return true;
-  }
-
-  return false;
-} // https://github.com/ProseMirror/prosemirror-commands/blob/master/src/commands.js
-
-
-function applyMark(tr, markType, attrs) {
-  if (!tr.selection || !tr.doc || !markType) return tr;
-  const {
-    empty,
-    $cursor,
-    ranges
-  } = tr.selection;
-  if (empty && !$cursor || !markApplies(tr.doc, ranges, markType)) return tr;
-
-  if ($cursor) {
-    tr = tr.removeStoredMark(markType);
-    return attrs ? tr.addStoredMark(markType.create(attrs)) : tr;
-  }
-
-  let has = false;
-
-  for (let i = 0; !has && i < ranges.length; i++) {
-    const {
-      $from,
-      $to
-    } = ranges[i];
-    has = tr.doc.rangeHasMark($from.pos, $to.pos, markType);
-  }
-
-  for (let i = 0; i < ranges.length; i++) {
-    const {
-      $from,
-      $to
-    } = ranges[i];
-
-    if (has) {
-      tr = tr.removeMark($from.pos, $to.pos, markType);
-    }
-
-    if (attrs) {
-      tr = tr.addMark($from.pos, $to.pos, markType.create(attrs));
-    }
-  }
-
-  return tr;
-}
-
 const FONT_SIZES = ['8', '10', '12', '14', '16', '18', '20', '24', '30', '36', '48', '60', '72'];
-const DEFAULT_FONT_SIZE = 'default';
-class FontSize extends tiptap.Mark {
-  get name() {
-    return 'fontSize';
-  }
-
-  get defaultOptions() {
-    return {
-      fontSizes: FONT_SIZES
-    };
-  }
-
-  get schema() {
-    return {
-      attrs: {
-        px: ''
-      },
-      inline: true,
-      group: 'inline',
-      parseDOM: [{
-        style: 'font-size',
-        getAttrs: fontSize => {
-          const attrs = {};
-          if (!fontSize) return attrs;
-          const px = convertToPX(fontSize);
-          if (!px) return attrs;
-          return {
-            px
-          };
-        }
-      }],
-
-      toDOM(node) {
-        const {
-          px
-        } = node.attrs;
-        const attrs = {};
-        if (px) attrs.style = `font-size: ${px}px`;
-        return ['span', attrs, 0];
-      }
-
-    };
-  }
-
-  commands({
-    type
-  }) {
-    return fontSize => (state, dispatch) => {
-      let {
-        tr
-      } = state;
-      tr = setFontSize(state.tr.setSelection(state.selection), type, fontSize);
-
-      if (tr.docChanged || tr.storedMarksSet) {
-        dispatch && dispatch(tr);
-        return true;
-      }
-
-      return false;
-    };
-  }
-
-}
-const SIZE_PATTERN = /([\d.]+)px/i;
-function convertToPX(styleValue) {
-  const matches = styleValue.match(SIZE_PATTERN);
-  if (!matches) return '';
-  const value = matches[1];
-  if (!value) return '';
-  return value;
-}
-function setFontSize(tr, type, fontSize) {
-  const {
-    selection
-  } = tr;
-  if (!isCorrectSelection$1(selection)) return tr;
-  const attrs = fontSize && fontSize !== DEFAULT_FONT_SIZE ? {
-    px: fontSize
-  } : null;
-  tr = applyMark(tr, type, attrs);
-  return tr;
-}
-function findActiveFontSize(state) {
-  const {
-    schema,
-    selection
-  } = state;
-  const markType = schema.marks.fontSize;
-  if (!markType) return DEFAULT_FONT_SIZE;
-  if (selection.empty) return resolveEmptyState(state, markType);
-  const attrs = tiptapUtils.getMarkAttrs(state, markType);
-  const fontSize = attrs.px;
-  if (fontSize) return String(fontSize);
-  return DEFAULT_FONT_SIZE;
-}
-
-function resolveEmptyState(state, markType) {
-  const {
-    selection,
-    tr
-  } = state;
-  const storedMarks = tr.storedMarks || state.storedMarks || selection instanceof prosemirrorState.TextSelection && selection.$cursor && selection.$cursor.marks && selection.$cursor.marks() || [];
-  const sm = storedMarks.find(m => m.type === markType);
-  return sm ? String(sm.attrs.px || DEFAULT_FONT_SIZE) : DEFAULT_FONT_SIZE;
-}
-
-const isCorrectSelection$1 = selection => selection instanceof prosemirrorState.TextSelection || selection instanceof prosemirrorState.AllSelection;
-
-const FONT_TYPES = ['Arial', 'Arial Black', 'Georgia', 'Impact', 'Tahoma', 'Times New Roman', 'Verdana', 'Courier New', 'Lucida Console', 'Monaco', 'monospace'].reduce((acc, font) => {
-  acc[font] = font;
-  return acc;
-}, {});
-const DEFAULT_FONT = '';
-class FontType extends tiptap.Mark {
-  get name() {
-    return 'fontType';
-  }
-
-  get defaultOptions() {
-    return {
-      fontTypes: FONT_TYPES
-    };
-  }
-
-  get schema() {
-    return {
-      attrs: {
-        name: ''
-      },
-      inline: true,
-      group: 'inline',
-      parseDOM: [{
-        style: 'font-family',
-        getAttrs: name => {
-          return {
-            name: name ? name.replace(/["']/g, '') : ''
-          };
-        }
-      }],
-
-      toDOM(node) {
-        const {
-          name
-        } = node.attrs;
-        const attrs = {};
-
-        if (name) {
-          attrs.style = `font-family: ${name}`;
-        }
-
-        return ['span', attrs, 0];
-      }
-
-    };
-  }
-
-  commands({
-    type
-  }) {
-    return name => (state, dispatch) => {
-      let {
-        tr
-      } = state;
-      tr = setFontType(state.tr.setSelection(state.selection), type, name);
-
-      if (tr.docChanged || tr.storedMarksSet) {
-        dispatch && dispatch(tr);
-        return true;
-      }
-
-      return false;
-    };
-  }
-
-}
-function findActiveFontType(state) {
-  const {
-    schema,
-    selection
-  } = state;
-  const markType = schema.marks.fontType;
-  if (!markType) return DEFAULT_FONT;
-  if (selection.empty) return resolveEmptySelection(state, markType);
-  const attrs = tiptapUtils.getMarkAttrs(state, markType);
-  const fontName = attrs.name;
-  if (!fontName) return DEFAULT_FONT;
-  return fontName;
-}
-
-function setFontType(tr, type, name) {
-  const {
-    selection
-  } = tr;
-  if (!isCorrectSelection(selection)) return tr;
-  const attrs = name ? {
-    name
-  } : null;
-  tr = applyMark(tr, type, attrs);
-  return tr;
-}
-
-function resolveEmptySelection(state, markType) {
-  const {
-    tr,
-    selection
-  } = state;
-  const storedMarks = tr.storedMarks || state.storedMarks || selection instanceof prosemirrorState.TextSelection && selection.$cursor && selection.$cursor.marks && selection.$cursor.marks() || [];
-  const sm = storedMarks.find(m => m.type === markType);
-  return sm && sm.attrs.name || DEFAULT_FONT;
-}
-
-const isCorrectSelection = selection => selection instanceof prosemirrorState.TextSelection || selection instanceof prosemirrorState.AllSelection;
-
-const Alignment$1 = {
-  left: 'left',
-  center: 'center',
-  right: 'right',
-  justify: 'justify'
-};
-const ALIGN_PATTERN$1 = new RegExp(`(${Alignment$1.left}|${Alignment$1.center}|${Alignment$1.right}|${Alignment$1.justify})`);
-const ParagraphNodeSpec = {
-  attrs: {
-    textAlign: {
-      default: null
-    },
-    indent: {
-      default: null
-    },
-    lineHeight: {
-      default: null
-    }
+var FontSize = core.Extension.create({
+  name: 'fontSize',
+  defaultOptions: {
+    types: ['textStyle']
   },
-  content: 'inline*',
-  group: 'block',
-  parseDOM: [{
-    tag: 'p',
-    getAttrs: getAttrs$2
-  }],
-  toDOM: toDOM$2
-}; // @ts-ignore
 
-function getAttrs$2(dom) {
-  let {
-    textAlign,
-    lineHeight
-  } = dom.style;
-  let align = dom.getAttribute('data-text-align') || textAlign || '';
-  align = ALIGN_PATTERN$1.test(align) ? align : null;
-  const indent = parseInt(dom.getAttribute('data-indent'), 10) || 0;
-  lineHeight = transformCSStoLineHeight(lineHeight) || null;
-  return {
-    textAlign: align,
-    indent,
-    lineHeight
-  };
-}
+  addGlobalAttributes() {
+    return [{
+      types: this.options.types,
+      attributes: {
+        fontSize: {
+          default: null,
+          renderHTML: attributes => {
+            if (!attributes.fontSize) {
+              return {};
+            }
 
-function toDOM$2(node) {
-  const {
-    textAlign,
-    indent,
-    lineHeight
-  } = node.attrs;
-  let style = '';
-  const attrs = {};
-
-  if (textAlign && textAlign !== 'left') {
-    style += `text-align: ${textAlign};`;
-  }
-
-  if (indent) {
-    attrs['data-indent'] = indent;
-  }
-
-  if (lineHeight) {
-    const cssLineHeight = transformLineHeightToCSS(lineHeight);
-    style += `line-height: ${cssLineHeight};`;
-  }
-
-  style && (attrs.style = style);
-  return ['p', attrs, 0];
-}
-
-class Paragraph extends tiptap.Paragraph {
-  get defaultOptions() {
-    return {
-      px: 12
-    };
-  }
-
-  get schema() {
-    return ParagraphNodeSpec;
-  }
-
-}
-const toParagraphDOM = toDOM$2;
-const getParagraphNodeAttrs = getAttrs$2;
-
-function getAttrs$1(dom) {
-  const attrs = getParagraphNodeAttrs(dom);
-  const level = dom.nodeName.match(/[H|h](\d)/)[1];
-  attrs.level = Number(level);
-  return attrs;
-}
-
-function toDOM$1(node) {
-  const dom = toParagraphDOM(node);
-  const level = node.attrs.level || 1;
-  dom[0] = `h${level}`;
-  return dom;
-}
-
-class Heading extends tiptapExtensions.Heading {
-  get schema() {
-    return { ...ParagraphNodeSpec,
-      attrs: { ...ParagraphNodeSpec.attrs,
-        level: {
-          default: 1
+            return {
+              style: `font-size: ${attributes.fontSize}px`
+            };
+          },
+          parseHTML: element => ({
+            fontSize: element.style.fontSize.replace(/['"px]+/g, '')
+          })
         }
+      }
+    }];
+  },
+
+  addCommands() {
+    return {
+      setFontSize: fontSize => ({
+        chain
+      }) => {
+        return chain().setMark('textStyle', {
+          fontSize
+        }).run();
       },
-      defining: true,
-      draggable: false,
-      parseDOM: this.options.levels.map(level => ({
-        tag: `h${level}`,
-        getAttrs: getAttrs$1
-      })),
-      toDOM: toDOM$1
+      unsetFontSize: () => ({
+        chain
+      }) => {
+        return chain().setMark('textStyle', {
+          fontSize: null
+        }).removeEmptyTextStyle().run();
+      }
     };
   }
 
-}
+});
 
-function findHeading(state) {
-  const {
-    heading
-  } = state.schema.nodes;
-  return prosemirrorUtils.findParentNodeOfType(heading)(state.selection);
-}
+var Image = Image__default['default'].extend({
+  addAttributes() {
+    return {
+      src: {
+        default: null
+      },
+      alt: {
+        default: null
+      },
+      width: {
+        default: 200
+      },
+      height: {
+        default: 'auto'
+      },
+      display: {
+        default: 'block',
+        renderHTML: ({
+          display
+        }) => {
+          if (!display) {
+            return {};
+          }
 
-function isHeadingActive(state, level) {
-  const result = findHeading(state);
-  if (level == null) return !!result;
-  return !!(result && result.node && result.node.attrs && result.node.attrs.level === level);
-}
+          const options = {
+            inline: 'display: inline',
+            block: 'display: block',
+            left: 'float: left',
+            right: 'float: right'
+          };
+          return {
+            style: options[display]
+          };
+        },
+        parseHTML: element => {
+          const display = element.style.float ? element.style.float.replace(/['"]+/g, '') : element.style.display.replace(/['"]+/g, '');
+          return {
+            display
+          };
+        }
+      }
+    };
+  }
+
+});
+
+var Indent = core.Extension.create({
+  name: 'indent',
+  defaultOptions: {
+    types: ['heading', 'paragraph']
+  },
+
+  addGlobalAttributes() {
+    return [{
+      types: this.options.types,
+      attributes: {
+        marginLeft: {
+          default: null,
+          renderHTML: attributes => {
+            if (!attributes.marginLeft) {
+              return {};
+            }
+
+            return {
+              style: `margin-left: ${attributes.marginLeft}px`
+            };
+          },
+          parseHTML: element => {
+            return {
+              marginLeft: Number(element.style.marginLeft.replace(/['"px]+/g, ''))
+            };
+          }
+        }
+      }
+    }];
+  },
+
+  addCommands() {
+    return {
+      indent: value => ({
+        commands,
+        state
+      }) => {
+        return this.options.types.every(type => {
+          let {
+            marginLeft = 0
+          } = core.getNodeAttributes(state, type);
+          marginLeft = marginLeft + value;
+          if (marginLeft > 200) marginLeft = 200;
+          return commands.updateAttributes(type, {
+            marginLeft
+          });
+        });
+      },
+      outdent: value => ({
+        commands,
+        state
+      }) => {
+        return this.options.types.every(type => {
+          let {
+            marginLeft = 0
+          } = core.getNodeAttributes(state, type);
+          marginLeft = marginLeft - value;
+          if (marginLeft < 0) return this.options.types.every(type => commands.resetAttributes(type, 'marginLeft'));
+          return commands.updateAttributes(type, {
+            marginLeft
+          });
+        });
+      }
+    };
+  }
+
+});
+
+var TextColor = core.Extension.create({
+  name: 'textColor',
+  defaultOptions: {
+    types: ['textStyle']
+  },
+
+  addGlobalAttributes() {
+    return [{
+      types: this.options.types,
+      attributes: {
+        color: {
+          default: null,
+          renderHTML: attributes => {
+            if (!attributes.color) {
+              return {};
+            }
+
+            return {
+              style: `color: ${attributes.color}`
+            };
+          },
+          parseHTML: element => ({
+            color: element.style.color.replace(/['"]+/g, '')
+          })
+        }
+      }
+    }];
+  },
+
+  addCommands() {
+    return {
+      setTextColor: color => ({
+        chain
+      }) => {
+        return chain().setMark('textStyle', {
+          color
+        }).run();
+      },
+      unsetTextColor: () => ({
+        chain
+      }) => {
+        return chain().setMark('textStyle', {
+          color: null
+        }).removeEmptyTextStyle().run();
+      }
+    };
+  }
+
+});
+
+var TextHighlight = core.Extension.create({
+  name: 'textHighlight',
+  defaultOptions: {
+    types: ['textStyle']
+  },
+
+  addGlobalAttributes() {
+    return [{
+      types: this.options.types,
+      attributes: {
+        backgroundColor: {
+          default: null,
+          renderHTML: attributes => {
+            if (!attributes.backgroundColor) {
+              return {};
+            }
+
+            return {
+              style: `background-color: ${attributes.backgroundColor}`
+            };
+          },
+          parseHTML: element => ({
+            backgroundColor: element.style.backgroundColor.replace(/['"]+/g, '')
+          })
+        }
+      }
+    }];
+  },
+
+  addCommands() {
+    return {
+      setTextHighlight: backgroundColor => ({
+        chain
+      }) => {
+        return chain().setMark('textStyle', {
+          backgroundColor
+        }).run();
+      },
+      unsetTextHighlight: () => ({
+        chain
+      }) => {
+        return chain().setMark('textStyle', {
+          backgroundColor: null
+        }).removeEmptyTextStyle().run();
+      }
+    };
+  }
+
+});
 
 //
-
-function clamp$1(val, min, max) {
-  if (val < min) return min;
-  if (val > max) return max;
-  return val;
-}
-
-const ResizeDirection = {
-  TOP_LEFT: 'tl',
-  TOP_RIGHT: 'tr',
-  BOTTOM_LEFT: 'bl',
-  BOTTOM_RIGHT: 'br'
-};
-const MIN_SIZE = 20;
-const MAX_SIZE = 100000;
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 var script$i = {
-  name: 'tce-tiptap-image-view',
+  name: 'tce-tiptap-menu-button',
   props: {
-    node: {
-      type: Object,
-      required: true
-    },
-    view: {
-      type: Object,
-      required: true
-    },
-    getPos: {
-      type: Function,
-      required: true
-    },
-    updateAttrs: {
-      type: Function,
-      required: true
-    },
-    selected: {
+    isActive: {
       type: Boolean,
+      default: false
+    },
+    icon: {
+      type: String,
       required: true
+    },
+    tooltip: {
+      type: String,
+      default: null
     }
-  },
-  data: vm => ({
-    maxSize: {
-      width: MAX_SIZE,
-      height: MAX_SIZE
-    },
-    originalSize: {
-      width: 0,
-      height: 0
-    },
-    resizeOb: new ResizeObserver(() => {
-      vm.getMaxSize();
-    }),
-    resizeDirections: [ResizeDirection.TOP_LEFT, ResizeDirection.TOP_RIGHT, ResizeDirection.BOTTOM_LEFT, ResizeDirection.BOTTOM_RIGHT],
-    resizing: false,
-    resizerState: {
-      x: 0,
-      y: 0,
-      w: 0,
-      h: 0,
-      dir: ''
-    }
-  }),
-  computed: {
-    src() {
-      return this.node.attrs.src;
-    },
-
-    width() {
-      return this.node.attrs.width;
-    },
-
-    height() {
-      return this.node.attrs.height;
-    },
-
-    display() {
-      return this.node.attrs.display;
-    },
-
-    imageViewClass() {
-      return ['image-view', `image-view--${this.display}`];
-    }
-
-  },
-  methods: {
-    onImageLoad(e) {
-      this.originalSize = {
-        width: e.target.width,
-        height: e.target.height
-      };
-    },
-
-    // https://github.com/scrumpy/tiptap/issues/361#issuecomment-540299541
-    selectImage() {
-      const {
-        state
-      } = this.view;
-      let {
-        tr
-      } = state;
-      const selection = prosemirrorState.NodeSelection.create(state.doc, this.getPos());
-      tr = tr.setSelection(selection);
-      this.view.dispatch(tr);
-    },
-
-    /* invoked when window or editor resize */
-    getMaxSize() {
-      const {
-        width
-      } = getComputedStyle(this.view.dom);
-      this.maxSize.width = parseInt(width, 10);
-    },
-
-    /* on resizer handler mousedown
-    * record the position where the event is triggered and resize direction
-    * calculate the initial width and height of the image
-    */
-    onMouseDown(e, dir) {
-      e.preventDefault();
-      e.stopPropagation();
-      this.resizerState.x = e.clientX;
-      this.resizerState.y = e.clientY;
-      const originalWidth = this.originalSize.width;
-      const originalHeight = this.originalSize.height;
-      const aspectRatio = originalWidth / originalHeight;
-      let {
-        width,
-        height
-      } = this.node.attrs;
-      const maxWidth = this.maxSize.width;
-
-      if (width && !height) {
-        width = width > maxWidth ? maxWidth : width;
-        height = Math.round(width / aspectRatio);
-      } else if (height && !width) {
-        width = Math.round(height * aspectRatio);
-        width = width > maxWidth ? maxWidth : width;
-      } else if (!width && !height) {
-        width = originalWidth > maxWidth ? maxWidth : originalWidth;
-        height = Math.round(width / aspectRatio);
-      } else {
-        width = width > maxWidth ? maxWidth : width;
-      }
-
-      this.resizerState.w = width;
-      this.resizerState.h = height;
-      this.resizerState.dir = dir;
-      this.resizing = true;
-      this.onEvents();
-    },
-
-    onMouseMove(e) {
-      e.preventDefault();
-      e.stopPropagation();
-      if (!this.resizing) return;
-      const {
-        x,
-        y,
-        w,
-        h,
-        dir
-      } = this.resizerState;
-      const dx = (e.clientX - x) * (/l/.test(dir) ? -1 : 1);
-      const dy = (e.clientY - y) * (/t/.test(dir) ? -1 : 1);
-      this.updateAttrs({
-        width: clamp$1(w + dx, MIN_SIZE, this.maxSize.width),
-        height: Math.max(h + dy, MIN_SIZE)
-      });
-    },
-
-    onMouseUp(e) {
-      e.preventDefault();
-      e.stopPropagation();
-      if (!this.resizing) return;
-      this.resizing = false;
-      this.resizerState = {
-        x: 0,
-        y: 0,
-        w: 0,
-        h: 0,
-        dir: ''
-      };
-      this.offEvents();
-      this.selectImage();
-    },
-
-    onEvents() {
-      document.addEventListener('mousemove', this.onMouseMove, true);
-      document.addEventListener('mouseup', this.onMouseUp, true);
-    },
-
-    offEvents() {
-      document.removeEventListener('mousemove', this.onMouseMove, true);
-      document.removeEventListener('mouseup', this.onMouseUp, true);
-    }
-
-  },
-
-  mounted() {
-    this.resizeOb.observe(this.view.dom);
-  },
-
-  beforeDestroy() {
-    this.resizeOb.disconnect();
   }
-
 };
 
 function normalizeComponent(template, style, script, scopeId, isFunctionalTemplate, moduleIdentifier /* server only */, shadowMode, createInjector, createInjectorSSR, createInjectorShadow) {
@@ -937,48 +471,35 @@ var __vue_render__$i = function () {
 
   var _c = _vm._self._c || _h;
 
-  return _c('span', {
-    class: _vm.imageViewClass
-  }, [_c('div', {
-    staticClass: "image-view__body",
-    class: {
-      'image-view__body--focused': _vm.selected,
-      'image-view__body--resizing': _vm.resizing
+  return _c('div', {
+    staticStyle: {
+      "position": "relative"
     }
-  }, [_c('img', {
-    staticClass: "image-view__body__image",
+  }, [_c('v-tooltip', {
     attrs: {
-      "src": _vm.src,
-      "alt": _vm.node.attrs.alt,
-      "width": _vm.width,
-      "height": _vm.height
+      "disabled": !_vm.tooltip,
+      "bottom": ""
     },
-    on: {
-      "load": _vm.onImageLoad,
-      "click": _vm.selectImage
-    }
-  }), _vm._v(" "), _vm.selected || _vm.resizing ? [_c('div', {
-    staticClass: "image-dimensions"
-  }, [_c('div', [_vm._v(_vm._s(_vm.width) + " x " + _vm._s(_vm.height))])])] : _vm._e(), _vm._v(" "), _vm.view.editable ? _c('div', {
-    directives: [{
-      name: "show",
-      rawName: "v-show",
-      value: _vm.selected || _vm.resizing,
-      expression: "selected || resizing"
-    }],
-    staticClass: "image-resizer"
-  }, _vm._l(_vm.resizeDirections, function (direction) {
-    return _c('span', {
-      key: direction,
-      staticClass: "image-resizer__handler",
-      class: "image-resizer__handler--" + direction,
-      on: {
-        "mousedown": function ($event) {
-          return _vm.onMouseDown($event, direction);
-        }
+    scopedSlots: _vm._u([{
+      key: "activator",
+      fn: function (ref) {
+        var on = ref.on;
+        var attrs = ref.attrs;
+        return [_c('v-btn', _vm._g(_vm._b({
+          staticClass: "menu-button mx-1",
+          class: {
+            'active': _vm.isActive
+          },
+          attrs: {
+            "text": "",
+            "rounded": ""
+          }
+        }, 'v-btn', Object.assign({}, _vm.$attrs, attrs), false), Object.assign({}, _vm.$listeners, on)), [_c('v-icon', [_vm._v(_vm._s("mdi-" + _vm.icon))]), _vm._v(" "), _c('span', {
+          staticClass: "slot"
+        }, [_vm._t("default")], 2)], 1)];
       }
-    });
-  }), 0) : _vm._e()], 2)]);
+    }], null, true)
+  }, [_vm._v(" "), _c('span', [_vm._v(_vm._s(_vm.tooltip))])])], 1);
 };
 
 var __vue_staticRenderFns__$i = [];
@@ -987,7 +508,7 @@ var __vue_staticRenderFns__$i = [];
 const __vue_inject_styles__$i = undefined;
 /* scoped */
 
-const __vue_scope_id__$i = "data-v-3382e2bc";
+const __vue_scope_id__$i = "data-v-32c11d74";
 /* module identifier */
 
 const __vue_module_identifier__$i = undefined;
@@ -1005,662 +526,11 @@ const __vue_component__$i = /*#__PURE__*/normalizeComponent({
   staticRenderFns: __vue_staticRenderFns__$i
 }, __vue_inject_styles__$i, __vue_script__$i, __vue_scope_id__$i, __vue_is_functional_template__$i, __vue_module_identifier__$i, false, undefined, undefined, undefined);
 
-const ImageDisplay = {
-  INLINE: 'inline',
-  BREAK_TEXT: 'block',
-  FLOAT_LEFT: 'left',
-  FLOAT_RIGHT: 'right'
-};
-const DEFAULT_IMAGE_URL_REGEX = /(https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9]+\.[^\s]{2,}|www\.[a-zA-Z0-9]+\.[^\s]{2,})/;
-const DEFAULT_IMAGE_WIDTH = 200;
-const DEFAULT_IMAGE_DISPLAY = ImageDisplay.INLINE;
-const updateAttrs = (attrs, editor, node) => {
-  const {
-    view
-  } = editor;
-  if (!view.editable) return;
-  const {
-    state
-  } = view;
-  const newAttrs = { ...node.attrs,
-    ...attrs
-  };
-  const {
-    from
-  } = state.selection;
-  const transaction = state.tr.setNodeMarkup(from, null, newAttrs);
-  view.dispatch(transaction);
-};
-
-function getAttrs(dom) {
-  const {
-    cssFloat,
-    display
-  } = dom.style;
-  let {
-    width,
-    height
-  } = dom.style;
-  let dp = dom.getAttribute('data-display') || dom.getAttribute('display');
-
-  if (dp) {
-    dp = /(inline|block|left|right)/.test(dp) ? dp : ImageDisplay.INLINE;
-  } else if (cssFloat === 'left' && !display) {
-    dp = ImageDisplay.FLOAT_LEFT;
-  } else if (cssFloat === 'right' && !display) {
-    dp = ImageDisplay.FLOAT_RIGHT;
-  } else if (!cssFloat && display === 'block') {
-    dp = ImageDisplay.BREAK_TEXT;
-  } else {
-    dp = ImageDisplay.INLINE;
-  }
-
-  width = width || dom.getAttribute('width') || null;
-  height = height || dom.getAttribute('height') || null;
-  return {
-    src: dom.getAttribute('src') || '',
-    title: dom.getAttribute('title') || '',
-    alt: dom.getAttribute('alt') || '',
-    width: !width ? null : parseInt(width, 10),
-    height: !height ? null : parseInt(height, 10),
-    display: dp
-  };
-}
-
-function toDOM(node) {
-  const {
-    src,
-    alt,
-    width,
-    height,
-    display
-  } = node.attrs;
-  const attrs = {
-    src,
-    alt,
-    width,
-    height
-  };
-  attrs['data-display'] = display;
-  attrs.class = 'test';
-  return ['img', attrs];
-}
-
-class Image extends tiptapExtensions.Image {
-  get defaultOptions() {
-    return {
-      defaultWidth: DEFAULT_IMAGE_WIDTH,
-      defaultDisplay: DEFAULT_IMAGE_DISPLAY,
-      urlPattern: DEFAULT_IMAGE_URL_REGEX,
-      uploadRequest: null
-    };
-  }
-
-  get schema() {
-    return {
-      inline: true,
-      attrs: {
-        src: {
-          default: ''
-        },
-        alt: {
-          default: ''
-        },
-        width: {
-          default: this.imageDefaultWidth > 0 ? this.imageDefaultWidth : DEFAULT_IMAGE_WIDTH
-        },
-        height: {
-          default: this.imageDefaultHeight > 0 ? this.imageDefaultHeight : null
-        },
-        display: {
-          default: /(inline|block|left|right)/.test(this.defaultDisplay) ? this.defaultDisplay : DEFAULT_IMAGE_DISPLAY
-        }
-      },
-      group: 'inline',
-      draggable: true,
-      parseDOM: [{
-        tag: 'img[src]',
-        getAttrs
-      }],
-      toDOM
-    };
-  }
-
-  get view() {
-    return __vue_component__$i;
-  }
-
-}
-
-function isBulletListNode(node) {
-  return node.type.name === 'bullet_list';
-}
-function isOrderedListNode(node) {
-  return node.type.name === 'order_list';
-}
-function isTodoListNode(node) {
-  return node.type.name === 'todo_list';
-}
-function isListNode(node) {
-  return isBulletListNode(node) || isOrderedListNode(node) || isTodoListNode(node);
-}
-
-function clamp(val, min, max) {
-  if (val < min) return min;
-  if (val > max) return max;
-  return val;
-}
-
-const IndentProps = {
-  max: 7,
-  min: 0,
-  more: 1,
-  less: -1
-};
-
-function updateIndentLevel(tr, delta) {
-  const {
-    doc,
-    selection
-  } = tr;
-  if (!doc || !selection) return tr;
-
-  if (!(selection instanceof prosemirrorState.TextSelection || selection instanceof prosemirrorState.AllSelection)) {
-    return tr;
-  }
-
-  const {
-    from,
-    to
-  } = selection;
-  doc.nodesBetween(from, to, (node, pos) => {
-    const nodeType = node.type;
-
-    if (nodeType.name === 'paragraph' || nodeType.name === 'heading' || nodeType.name === 'blockquote') {
-      tr = setNodeIndentMarkup(tr, pos, delta);
-      return false;
-    } else if (isListNode(node)) {
-      return false;
-    }
-
-    return true;
-  });
-  return tr;
-}
-
-function setNodeIndentMarkup(tr, pos, delta) {
-  if (!tr.doc) return tr;
-  const node = tr.doc.nodeAt(pos);
-  if (!node) return tr;
-  const minIndent = IndentProps.min;
-  const maxIndent = IndentProps.max;
-  const indent = clamp((node.attrs.indent || 0) + delta, minIndent, maxIndent);
-  if (indent === node.attrs.indent) return tr;
-  const nodeAttrs = { ...node.attrs,
-    indent
-  };
-  return tr.setNodeMarkup(pos, node.type, nodeAttrs, node.marks);
-}
-
-function createIndentCommand(delta) {
-  return (state, dispatch) => {
-    const {
-      selection
-    } = state;
-    let {
-      tr
-    } = state;
-    tr = tr.setSelection(selection);
-    tr = updateIndentLevel(tr, delta);
-
-    if (tr.docChanged) {
-      dispatch && dispatch(tr);
-      return true;
-    }
-
-    return false;
-  };
-}
-
-class Indent extends tiptap.Extension {
-  get name() {
-    return 'indent';
-  }
-
-  get defaultOptions() {
-    return {
-      minIndent: IndentProps.min,
-      maxIndent: IndentProps.max
-    };
-  }
-
-  commands() {
-    return {
-      indent: () => createIndentCommand(IndentProps.more),
-      outdent: () => createIndentCommand(IndentProps.less)
-    };
-  }
-
-  keys() {
-    return {
-      Tab: createIndentCommand(IndentProps.more),
-      'Shift-Tab': createIndentCommand(IndentProps.less)
-    };
-  }
-
-}
-
-class Link extends tiptap.Mark {
-  get name() {
-    return 'link';
-  }
-
-  get defaultOptions() {
-    return {
-      openOnClick: true,
-      target: null
-    };
-  }
-
-  get schema() {
-    return {
-      attrs: {
-        href: {
-          default: null
-        },
-        target: {
-          default: null
-        }
-      },
-      inclusive: false,
-      parseDOM: [{
-        tag: 'a[href]',
-        getAttrs: dom => ({
-          href: dom.getAttribute('href'),
-          target: dom.getAttribute('target')
-        })
-      }],
-      toDOM: node => ['a', { ...node.attrs,
-        rel: 'noopener noreferrer nofollow',
-        target: node.attrs.target || this.options.target
-      }, 0]
-    };
-  }
-
-  commands({
-    type
-  }) {
-    return attrs => {
-      if (attrs.href) {
-        return tiptapCommands.updateMark(type, attrs);
-      }
-
-      return tiptapCommands.removeMark(type);
-    };
-  }
-
-  pasteRules({
-    type
-  }) {
-    return [tiptapCommands.pasteRule(/https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z]{2,}\b([-a-zA-Z0-9@:%_+.~#?&//=,()!]*)/gi, type, url => ({
-      href: url
-    }))];
-  }
-
-  get plugins() {
-    if (!this.options.openOnClick) {
-      return [];
-    }
-  }
-
-}
-
-const Alignment = {
-  left: 'left',
-  center: 'center',
-  right: 'right',
-  justify: 'justify'
-};
-const ALIGN_PATTERN = new RegExp(`(${Alignment.left}|${Alignment.center}|${Alignment.right}|${Alignment.justify})`);
-class TextAlign extends tiptap.Extension {
-  get name() {
-    return 'textAlign';
-  }
-
-  get defaultOptions() {
-    return {
-      alignments: [Alignment.left, Alignment.center, Alignment.right, Alignment.justify]
-    };
-  }
-
-  commands() {
-    return this.options.alignments.reduce((commands, alignment) => {
-      if (!ALIGN_PATTERN.test(alignment)) return commands;
-      return { ...commands,
-        [`align_${alignment}`]: () => (state, dispatch) => {
-          const {
-            selection
-          } = state;
-          const tr = setTextAlign(state.tr.setSelection(selection), alignment === 'left' ? null : alignment);
-
-          if (tr.docChanged) {
-            dispatch && dispatch(tr);
-            return true;
-          } else {
-            return false;
-          }
-        }
-      };
-    }, {});
-  }
-
-}
-function isTextAlignActive(state, alignment) {
-  const {
-    selection,
-    doc
-  } = state;
-  const {
-    from,
-    to
-  } = selection;
-  let keepLooking = true;
-  let active = false;
-  doc.nodesBetween(from, to, node => {
-    if (keepLooking && node.attrs.textAlign === alignment) {
-      keepLooking = false;
-      active = true;
-    }
-
-    return keepLooking;
-  });
-  return active;
-}
-const ALLOWED_NODE_TYPES = ['paragraph', 'heading', 'list_item', 'todo_item', 'title'];
-function setTextAlign(tr, alignment) {
-  const {
-    selection,
-    doc
-  } = tr;
-
-  if (!selection || !doc) {
-    return tr;
-  }
-
-  const {
-    from,
-    to
-  } = selection;
-  const tasks = [];
-  alignment = alignment || null;
-  doc.nodesBetween(from, to, (node, pos) => {
-    const nodeType = node.type;
-
-    if (ALLOWED_NODE_TYPES.includes(nodeType.name)) {
-      const align = node.attrs.textAlign || null;
-
-      if (align !== alignment) {
-        tasks.push({
-          node,
-          pos,
-          nodeType
-        });
-        return nodeType.name !== 'list_item' && nodeType.name !== 'todo_item';
-      }
-    }
-
-    return true;
-  });
-  if (!tasks.length) return tr;
-  tasks.forEach(job => {
-    const {
-      node,
-      pos,
-      nodeType
-    } = job;
-    let {
-      attrs
-    } = node;
-    attrs = { ...attrs,
-      textAlign: alignment
-    };
-    tr = tr.setNodeMarkup(pos, nodeType, attrs, node.marks);
-  });
-  return tr;
-}
-
-// https://github.com/regexhq/hex-color-regex/blob/master/index.js
-function hexColorRegex() {
-  return /#([a-f0-9]{3}|[a-f0-9]{4}(?:[a-f0-9]{2}){0,2})\b/gi;
-}
-
-function isHexColor(color) {
-  return hexColorRegex().test(color);
-}
-
-class TextColor extends tiptap.Mark {
-  get name() {
-    return 'textColor';
-  }
-
-  get schema() {
-    return {
-      attrs: {
-        color: ''
-      },
-      inline: true,
-      group: 'inline',
-      parseDOM: [{
-        style: 'color',
-        getAttrs: color => {
-          return {
-            color
-          };
-        }
-      }],
-
-      toDOM(node) {
-        const {
-          color
-        } = node.attrs;
-        let style = '';
-
-        if (color) {
-          style += `color: ${color};`;
-        }
-
-        return ['span', {
-          style
-        }, 0];
-      }
-
-    };
-  }
-
-  commands() {
-    return color => (state, dispatch) => {
-      if (color !== undefined) {
-        const {
-          schema
-        } = state;
-        let {
-          tr
-        } = state;
-        const markType = schema.marks.textColor;
-        const attrs = color && isHexColor(color) ? {
-          color
-        } : null;
-        tr = applyMark(state.tr.setSelection(state.selection), markType, attrs);
-
-        if (tr.docChanged || tr.storedMarksSet) {
-          dispatch && dispatch(tr);
-          return true;
-        }
-      }
-
-      return false;
-    };
-  }
-
-}
-
-class TextHighlight extends tiptap.Mark {
-  get name() {
-    return 'textHighlight';
-  }
-
-  get schema() {
-    return {
-      attrs: {
-        highlightColor: ''
-      },
-      inline: true,
-      group: 'inline',
-      parseDOM: [{
-        tag: 'span[style*=background-color]',
-        getAttrs: dom => {
-          const {
-            backgroundColor
-          } = dom.style;
-          return {
-            highlightColor: backgroundColor
-          };
-        }
-      }],
-
-      toDOM(node) {
-        const {
-          highlightColor
-        } = node.attrs;
-        let style = '';
-
-        if (highlightColor) {
-          style += `background-color: ${highlightColor};`;
-        }
-
-        return ['span', {
-          style
-        }, 0];
-      }
-
-    };
-  }
-
-  commands() {
-    return color => (state, dispatch) => {
-      if (color !== undefined) {
-        const {
-          schema
-        } = state;
-        let {
-          tr
-        } = state;
-        const markType = schema.marks.textHighlight;
-        const attrs = color && isHexColor(color) ? {
-          highlightColor: color
-        } : null;
-        tr = applyMark(state.tr.setSelection(state.selection), markType, attrs);
-
-        if (tr.docChanged || tr.storedMarksSet) {
-          dispatch && dispatch(tr);
-          return true;
-        }
-      }
-
-      return false;
-    };
-  }
-
-}
-
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 //
 var script$h = {
-  name: 'tce-tiptap-menu-button',
-  props: {
-    command: {
-      type: Function,
-      default: () => {}
-    },
-    isActive: {
-      type: Boolean,
-      default: false
-    },
-    icon: {
-      type: String,
-      required: true
-    }
-  }
-};
-
-/* script */
-const __vue_script__$h = script$h;
-/* template */
-
-var __vue_render__$h = function () {
-  var _vm = this;
-
-  var _h = _vm.$createElement;
-
-  var _c = _vm._self._c || _h;
-
-  return _c('v-btn', _vm._g(_vm._b({
-    staticClass: "menu-button mx-1",
-    class: {
-      'active': _vm.isActive
-    },
-    attrs: {
-      "icon": ""
-    },
-    on: {
-      "click": _vm.command
-    }
-  }, 'v-btn', _vm.$attrs, false), _vm.$listeners), [_c('v-icon', [_vm._v(_vm._s("mdi-" + _vm.icon))])], 1);
-};
-
-var __vue_staticRenderFns__$h = [];
-/* style */
-
-const __vue_inject_styles__$h = undefined;
-/* scoped */
-
-const __vue_scope_id__$h = "data-v-0c09c69c";
-/* module identifier */
-
-const __vue_module_identifier__$h = undefined;
-/* functional template */
-
-const __vue_is_functional_template__$h = false;
-/* style inject */
-
-/* style inject SSR */
-
-/* style inject shadow dom */
-
-const __vue_component__$h = /*#__PURE__*/normalizeComponent({
-  render: __vue_render__$h,
-  staticRenderFns: __vue_staticRenderFns__$h
-}, __vue_inject_styles__$h, __vue_script__$h, __vue_scope_id__$h, __vue_is_functional_template__$h, __vue_module_identifier__$h, false, undefined, undefined, undefined);
-
-//
-var script$g = {
   name: 'tce-tiptap-image-display',
   props: {
-    node: {
-      type: Object,
-      required: true
-    },
-    editorContext: {
+    editor: {
       type: Object,
       required: true
     }
@@ -1669,18 +539,13 @@ var script$g = {
     display: ''
   }),
   computed: {
-    editor: ({
-      editorContext: {
-        editor
-      }
-    }) => editor,
-    alignments: () => Object.values(ImageDisplay)
+    alignments: () => ['inline', 'block', 'left', 'right']
   },
   methods: {
     updateAligment(display) {
-      updateAttrs({
+      this.editor.commands.updateAttributes('image', {
         display
-      }, this.editor, this.node);
+      });
     }
 
   },
@@ -1688,15 +553,15 @@ var script$g = {
     display: 'updateAligment'
   },
   components: {
-    MenuButton: __vue_component__$h
+    MenuButton: __vue_component__$i
   }
 };
 
 /* script */
-const __vue_script__$g = script$g;
+const __vue_script__$h = script$h;
 /* template */
 
-var __vue_render__$g = function () {
+var __vue_render__$h = function () {
   var _vm = this;
 
   var _h = _vm.$createElement;
@@ -1715,7 +580,8 @@ var __vue_render__$g = function () {
         var attrs = ref.attrs;
         return [_c('menu-button', _vm._g(_vm._b({
           attrs: {
-            "icon": "image-text"
+            "icon": "image-text",
+            "tooltip": "Align image"
           }
         }, 'menu-button', attrs, false), on))];
       }
@@ -1743,39 +609,35 @@ var __vue_render__$g = function () {
   }), 1)], 1)], 1);
 };
 
-var __vue_staticRenderFns__$g = [];
+var __vue_staticRenderFns__$h = [];
 /* style */
 
-const __vue_inject_styles__$g = undefined;
+const __vue_inject_styles__$h = undefined;
 /* scoped */
 
-const __vue_scope_id__$g = undefined;
+const __vue_scope_id__$h = undefined;
 /* module identifier */
 
-const __vue_module_identifier__$g = undefined;
+const __vue_module_identifier__$h = undefined;
 /* functional template */
 
-const __vue_is_functional_template__$g = false;
+const __vue_is_functional_template__$h = false;
 /* style inject */
 
 /* style inject SSR */
 
 /* style inject shadow dom */
 
-const __vue_component__$g = /*#__PURE__*/normalizeComponent({
-  render: __vue_render__$g,
-  staticRenderFns: __vue_staticRenderFns__$g
-}, __vue_inject_styles__$g, __vue_script__$g, __vue_scope_id__$g, __vue_is_functional_template__$g, __vue_module_identifier__$g, false, undefined, undefined, undefined);
+const __vue_component__$h = /*#__PURE__*/normalizeComponent({
+  render: __vue_render__$h,
+  staticRenderFns: __vue_staticRenderFns__$h
+}, __vue_inject_styles__$h, __vue_script__$h, __vue_scope_id__$h, __vue_is_functional_template__$h, __vue_module_identifier__$h, false, undefined, undefined, undefined);
 
 //
-var script$f = {
+var script$g = {
   name: 'tce-tiptap-image-edit',
   props: {
-    node: {
-      type: Object,
-      required: true
-    },
-    editorContext: {
+    editor: {
       type: Object,
       required: true
     }
@@ -1784,40 +646,32 @@ var script$f = {
     imageAttrs: {},
     menu: false
   }),
-  computed: {
-    editor: ({
-      editorContext: {
-        editor
-      }
-    }) => editor
-  },
   methods: {
     save() {
-      updateAttrs(this.imageAttrs, this.editor, this.node);
+      this.editor.commands.updateAttributes('image', this.imageAttrs);
+      this.close();
     },
 
     close() {
-      this.imageAttrs = {};
       this.menu = false;
     }
 
   },
 
-  async created() {
-    this.imageAttrs = { ...this.node.attrs
-    };
+  created() {
+    this.imageAttrs = this.editor.getAttributes('image');
   },
 
   components: {
-    MenuButton: __vue_component__$h
+    MenuButton: __vue_component__$i
   }
 };
 
 /* script */
-const __vue_script__$f = script$f;
+const __vue_script__$g = script$g;
 /* template */
 
-var __vue_render__$f = function () {
+var __vue_render__$g = function () {
   var _vm = this;
 
   var _h = _vm.$createElement;
@@ -1837,7 +691,8 @@ var __vue_render__$f = function () {
         var attrs = ref.attrs;
         return [_c('menu-button', _vm._g(_vm._b({
           attrs: {
-            "icon": "image-edit"
+            "icon": "image-edit",
+            "tooltip": "Edit image"
           }
         }, 'menu-button', attrs, false), on))];
       }
@@ -1926,6 +781,76 @@ var __vue_render__$f = function () {
   }, [_vm._v("\n        Cancel\n      ")])], 1)], 1)], 1);
 };
 
+var __vue_staticRenderFns__$g = [];
+/* style */
+
+const __vue_inject_styles__$g = undefined;
+/* scoped */
+
+const __vue_scope_id__$g = undefined;
+/* module identifier */
+
+const __vue_module_identifier__$g = undefined;
+/* functional template */
+
+const __vue_is_functional_template__$g = false;
+/* style inject */
+
+/* style inject SSR */
+
+/* style inject shadow dom */
+
+const __vue_component__$g = /*#__PURE__*/normalizeComponent({
+  render: __vue_render__$g,
+  staticRenderFns: __vue_staticRenderFns__$g
+}, __vue_inject_styles__$g, __vue_script__$g, __vue_scope_id__$g, __vue_is_functional_template__$g, __vue_module_identifier__$g, false, undefined, undefined, undefined);
+
+//
+var script$f = {
+  name: 'tce-tiptap-remove-image',
+  props: {
+    editor: {
+      type: Object,
+      required: true
+    }
+  },
+  methods: {
+    removeImage() {
+      const {
+        state,
+        dispatch
+      } = this.editor.view;
+      prosemirrorCommands.deleteSelection(state, dispatch);
+    }
+
+  },
+  components: {
+    MenuButton: __vue_component__$i
+  }
+};
+
+/* script */
+const __vue_script__$f = script$f;
+/* template */
+
+var __vue_render__$f = function () {
+  var _vm = this;
+
+  var _h = _vm.$createElement;
+
+  var _c = _vm._self._c || _h;
+
+  return _c('div', [_c('menu-button', {
+    attrs: {
+      "command": function () {
+        return _vm.removeImage();
+      },
+      "icon": "delete",
+      "tooltip": "Remove image"
+    }
+  })], 1);
+};
+
 var __vue_staticRenderFns__$f = [];
 /* style */
 
@@ -1952,36 +877,17 @@ const __vue_component__$f = /*#__PURE__*/normalizeComponent({
 
 //
 var script$e = {
-  name: 'tce-tiptap-remove-image',
+  name: 'tce-tiptap-image-menu',
   props: {
-    node: {
-      type: Object,
-      required: true
-    },
-    editorContext: {
+    editor: {
       type: Object,
       required: true
     }
-  },
-  computed: {
-    editor: ({
-      editorContext: {
-        editor
-      }
-    }) => editor
-  },
-  methods: {
-    removeImage() {
-      const {
-        state,
-        dispatch
-      } = this.editor.view;
-      prosemirrorCommands.deleteSelection(state, dispatch);
-    }
-
   },
   components: {
-    MenuButton: __vue_component__$h
+    ImageDisplay: __vue_component__$h,
+    ImageEdit: __vue_component__$g,
+    ImageRemove: __vue_component__$f
   }
 };
 
@@ -1996,12 +902,19 @@ var __vue_render__$e = function () {
 
   var _c = _vm._self._c || _h;
 
-  return _c('div', [_c('menu-button', {
+  return _c('div', {
+    staticClass: "d-flex"
+  }, [_c('image-display', {
     attrs: {
-      "command": function () {
-        return _vm.removeImage();
-      },
-      "icon": "delete"
+      "editor": _vm.editor
+    }
+  }), _vm._v(" "), _c('image-edit', {
+    attrs: {
+      "editor": _vm.editor
+    }
+  }), _vm._v(" "), _c('image-remove', {
+    attrs: {
+      "editor": _vm.editor
     }
   })], 1);
 };
@@ -2032,92 +945,9 @@ const __vue_component__$e = /*#__PURE__*/normalizeComponent({
 
 //
 var script$d = {
-  name: 'tce-tiptap-image-menu',
-  props: {
-    node: {
-      type: Object,
-      required: true
-    },
-    editorContext: {
-      type: Object,
-      required: true
-    }
-  },
-  components: {
-    ImageDisplay: __vue_component__$g,
-    ImageEdit: __vue_component__$f,
-    ImageRemove: __vue_component__$e
-  }
-};
-
-/* script */
-const __vue_script__$d = script$d;
-/* template */
-
-var __vue_render__$d = function () {
-  var _vm = this;
-
-  var _h = _vm.$createElement;
-
-  var _c = _vm._self._c || _h;
-
-  return _c('div', {
-    staticClass: "d-flex"
-  }, [_c('image-display', {
-    attrs: {
-      "node": _vm.node,
-      "editor-context": _vm.editorContext
-    }
-  }), _vm._v(" "), _c('image-edit', {
-    attrs: {
-      "node": _vm.node,
-      "editor-context": _vm.editorContext
-    }
-  }), _vm._v(" "), _c('image-remove', {
-    attrs: {
-      "node": _vm.node,
-      "editor-context": _vm.editorContext
-    }
-  })], 1);
-};
-
-var __vue_staticRenderFns__$d = [];
-/* style */
-
-const __vue_inject_styles__$d = undefined;
-/* scoped */
-
-const __vue_scope_id__$d = undefined;
-/* module identifier */
-
-const __vue_module_identifier__$d = undefined;
-/* functional template */
-
-const __vue_is_functional_template__$d = false;
-/* style inject */
-
-/* style inject SSR */
-
-/* style inject shadow dom */
-
-const __vue_component__$d = /*#__PURE__*/normalizeComponent({
-  render: __vue_render__$d,
-  staticRenderFns: __vue_staticRenderFns__$d
-}, __vue_inject_styles__$d, __vue_script__$d, __vue_scope_id__$d, __vue_is_functional_template__$d, __vue_module_identifier__$d, false, undefined, undefined, undefined);
-
-//
-var script$c = {
   name: 'tce-tiptap-link-button',
   props: {
-    command: {
-      type: Function,
-      required: true
-    },
-    isActive: {
-      type: Boolean,
-      default: false
-    },
-    linkAttributes: {
+    editor: {
       type: Object,
       required: true
     },
@@ -2132,60 +962,43 @@ var script$c = {
     menu: false
   }),
   methods: {
-    openMenu({
-      href,
-      target
-    }) {
-      this.url = href;
-      this.newTab = target === '_blank';
-      this.isMenuOpen = true;
-      this.$nextTick(() => {
-        this.$refs.url.focus();
-      });
-    },
-
     close() {
       this.url = null;
       this.menu = false;
     },
 
     save() {
-      this.command({
+      this.editor.chain().focus().setLink({
         href: this.url,
         target: this.newTab ? '_blank' : '_self'
-      });
+      }).run();
       this.close();
     },
 
     remove() {
-      this.command({
-        href: null,
-        target: null
-      });
+      this.editor.commands.unsetLink();
       this.close();
     }
 
   },
   watch: {
     menu() {
-      this.url = this.linkAttributes.href;
-      this.newTab = this.linkAttributes.target === '_blank';
-      this.$nextTick(() => {
-        this.$refs.url.focus();
-      });
+      const attributes = this.editor.getAttributes('link');
+      this.url = attributes.href || null;
+      this.newTab = attributes && attributes.target === '_blank';
     }
 
   },
   components: {
-    MenuButton: __vue_component__$h
+    MenuButton: __vue_component__$i
   }
 };
 
 /* script */
-const __vue_script__$c = script$c;
+const __vue_script__$d = script$d;
 /* template */
 
-var __vue_render__$c = function () {
+var __vue_render__$d = function () {
   var _vm = this;
 
   var _h = _vm.$createElement;
@@ -2205,8 +1018,9 @@ var __vue_render__$c = function () {
         var attrs = ref.attrs;
         return [_c('menu-button', _vm._g(_vm._b({
           attrs: {
-            "is-active": _vm.isActive,
-            "icon": _vm.icon
+            "is-active": _vm.editor.isActive('link'),
+            "icon": _vm.icon,
+            "tooltip": _vm.editor.isActive('link') ? 'Edit link' : 'Insert link'
           }
         }, 'menu-button', attrs, false), on))];
       }
@@ -2258,10 +1072,10 @@ var __vue_render__$c = function () {
     },
     on: {
       "click": function ($event) {
-        return _vm.save(_vm.command);
+        return _vm.save();
       }
     }
-  }, [_vm._v("Save")]), _vm._v(" "), _vm.linkAttributes.href ? _c('v-btn', {
+  }, [_vm._v("Save")]), _vm._v(" "), _vm.url ? _c('v-btn', {
     attrs: {
       "text": ""
     },
@@ -2280,13 +1094,110 @@ var __vue_render__$c = function () {
   }, [_vm._v("Cancel")])], 1)], 1)], 1);
 };
 
+var __vue_staticRenderFns__$d = [];
+/* style */
+
+const __vue_inject_styles__$d = undefined;
+/* scoped */
+
+const __vue_scope_id__$d = "data-v-1d510dee";
+/* module identifier */
+
+const __vue_module_identifier__$d = undefined;
+/* functional template */
+
+const __vue_is_functional_template__$d = false;
+/* style inject */
+
+/* style inject SSR */
+
+/* style inject shadow dom */
+
+const __vue_component__$d = /*#__PURE__*/normalizeComponent({
+  render: __vue_render__$d,
+  staticRenderFns: __vue_staticRenderFns__$d
+}, __vue_inject_styles__$d, __vue_script__$d, __vue_scope_id__$d, __vue_is_functional_template__$d, __vue_module_identifier__$d, false, undefined, undefined, undefined);
+
+//
+var script$c = {
+  name: 'tce-tiptap-link-menu',
+  props: {
+    editor: {
+      type: Object,
+      required: true
+    },
+    isLinkSelection: {
+      type: Boolean,
+      default: false
+    },
+    linkAttributes: {
+      type: Object,
+      default: () => ({})
+    }
+  },
+  methods: {
+    openLink() {
+      window.open(this.linkAttributes.href, '_blank');
+    }
+
+  },
+  components: {
+    LinkButton: __vue_component__$d,
+    MenuButton: __vue_component__$i
+  }
+};
+
+/* script */
+const __vue_script__$c = script$c;
+/* template */
+
+var __vue_render__$c = function () {
+  var _vm = this;
+
+  var _h = _vm.$createElement;
+
+  var _c = _vm._self._c || _h;
+
+  return _c('div', {
+    staticClass: "d-flex"
+  }, [_c('link-button', {
+    attrs: {
+      "editor": _vm.editor,
+      "icon": _vm.isLinkSelection ? 'pencil' : 'link'
+    }
+  }), _vm._v(" "), _vm.isLinkSelection ? [_c('menu-button', {
+    staticClass: "menu-button",
+    attrs: {
+      "icon": "eye"
+    },
+    on: {
+      "click": _vm.openLink
+    }
+  }), _vm._v(" "), _c('menu-button', {
+    staticClass: "menu-button",
+    attrs: {
+      "icon": "link-off"
+    },
+    on: {
+      "click": function ($event) {
+        return _vm.editor.commands.unsetLink();
+      }
+    }
+  }), _vm._v(" "), _c('v-divider', {
+    staticClass: "mx-1",
+    attrs: {
+      "vertical": ""
+    }
+  })] : _vm._e()], 2);
+};
+
 var __vue_staticRenderFns__$c = [];
 /* style */
 
 const __vue_inject_styles__$c = undefined;
 /* scoped */
 
-const __vue_scope_id__$c = "data-v-ab843b2a";
+const __vue_scope_id__$c = undefined;
 /* module identifier */
 
 const __vue_module_identifier__$c = undefined;
@@ -2306,39 +1217,53 @@ const __vue_component__$c = /*#__PURE__*/normalizeComponent({
 
 //
 var script$b = {
-  name: 'tce-tiptap-link-menu',
+  name: 'tce-tiptap-bubble-menu',
   props: {
-    editorContext: {
+    editor: {
       type: Object,
-      required: true
-    },
-    isLinkSelection: {
-      type: Boolean,
-      required: true
+      default: null
     }
   },
-  computed: {
-    linkAttributes() {
-      return this.editorContext.getMarkAttrs('link');
-    }
-
-  },
+  data: () => ({
+    isLink: false,
+    isImage: false,
+    isText: false,
+    linkAttributes: {}
+  }),
   methods: {
-    openLink() {
-      window.open(this.linkAttributes.href, '_blank');
+    isLinkSelection() {
+      this.linkAttributes = this.editor.getAttributes('link');
+      this.isLink = !!this.linkAttributes.href;
     },
 
-    removeLink() {
-      this.editorContext.commands.link({
-        href: null,
-        target: null
-      });
+    isImageSelection(selection) {
+      if (!selection.node) {
+        this.isImage = false;
+        return;
+      }
+
+      this.isImage = selection.node.type.name === 'image';
+    },
+
+    isTextSelection(selection) {
+      this.isText = selection instanceof prosemirrorState.TextSelection;
+    },
+
+    getSelectionType(selection) {
+      this.isTextSelection(selection);
+      this.isLinkSelection(selection);
+      this.isImageSelection(selection);
     }
 
+  },
+  watch: {
+    'editor.state.selection': 'getSelectionType'
   },
   components: {
-    LinkButton: __vue_component__$c,
-    MenuButton: __vue_component__$h
+    BubbleMenu: vue2.BubbleMenu,
+    ImageMenu: __vue_component__$e,
+    LinkMenu: __vue_component__$c,
+    MenuButton: __vue_component__$i
   }
 };
 
@@ -2353,33 +1278,67 @@ var __vue_render__$b = function () {
 
   var _c = _vm._self._c || _h;
 
-  return _c('div', {
-    staticClass: "d-flex"
-  }, [_c('link-button', {
+  return _vm.editor ? _c('bubble-menu', {
     attrs: {
-      "command": _vm.editorContext.commands.link,
-      "is-active": _vm.editorContext.isActive.link(),
-      "link-attributes": _vm.linkAttributes,
-      "icon": _vm.isLinkSelection ? 'pencil' : 'link'
+      "editor": _vm.editor
     }
-  }), _vm._v(" "), _vm.isLinkSelection ? [_c('menu-button', {
-    staticClass: "menu-button",
+  }, [_c('v-card', [_c('v-card-text', {
+    staticClass: "d-flex pa-1"
+  }, [_vm.isImage ? _c('image-menu', {
     attrs: {
-      "command": _vm.openLink,
-      "icon": "eye"
+      "editor": _vm.editor
+    }
+  }) : [_c('link-menu', {
+    attrs: {
+      "editor": _vm.editor,
+      "is-link-selection": _vm.isLink,
+      "link-attributes": _vm.linkAttributes
     }
   }), _vm._v(" "), _c('menu-button', {
-    staticClass: "menu-button",
     attrs: {
-      "command": _vm.removeLink,
-      "icon": "link-off"
+      "is-active": _vm.editor.isActive('bold'),
+      "icon": "format-bold",
+      "tooltip": "Bold"
+    },
+    on: {
+      "click": function ($event) {
+        _vm.editor.chain().focus().toggleBold().run();
+      }
     }
-  }), _vm._v(" "), _c('v-divider', {
-    staticClass: "mx-1",
+  }), _vm._v(" "), _c('menu-button', {
     attrs: {
-      "vertical": ""
+      "is-active": _vm.editor.isActive('italic'),
+      "icon": "format-italic",
+      "tooltip": "italic"
+    },
+    on: {
+      "click": function ($event) {
+        _vm.editor.chain().focus().toggleItalic().run();
+      }
     }
-  })] : _vm._e()], 2);
+  }), _vm._v(" "), _c('menu-button', {
+    attrs: {
+      "is-active": _vm.editor.isActive('underline'),
+      "icon": "format-underline",
+      "tooltip": "Underline"
+    },
+    on: {
+      "click": function ($event) {
+        _vm.editor.chain().focus().toggleUnderline().run();
+      }
+    }
+  }), _vm._v(" "), _c('menu-button', {
+    attrs: {
+      "is-active": _vm.editor.isActive('strike'),
+      "icon": "format-strikethrough",
+      "tooltip": "Strikethrough"
+    },
+    on: {
+      "click": function ($event) {
+        _vm.editor.chain().focus().toggleStrike().run();
+      }
+    }
+  })]], 2)], 1)], 1) : _vm._e();
 };
 
 var __vue_staticRenderFns__$b = [];
@@ -2388,7 +1347,7 @@ var __vue_staticRenderFns__$b = [];
 const __vue_inject_styles__$b = undefined;
 /* scoped */
 
-const __vue_scope_id__$b = undefined;
+const __vue_scope_id__$b = "data-v-128262c1";
 /* module identifier */
 
 const __vue_module_identifier__$b = undefined;
@@ -2408,191 +1367,6 @@ const __vue_component__$b = /*#__PURE__*/normalizeComponent({
 
 //
 var script$a = {
-  name: 'tce-tiptap-bubble-menu',
-  props: {
-    editor: {
-      type: Object,
-      default: null
-    }
-  },
-  data: () => ({
-    isLink: false,
-    isImage: false,
-    isText: false,
-    imageNode: null,
-    opened: true,
-    left: null
-  }),
-  methods: {
-    isLinkSelection(selection) {
-      const {
-        schema
-      } = this.editor;
-      const linkType = schema.marks.link;
-
-      if (!linkType || !selection) {
-        this.isLink = false;
-        return;
-      }
-
-      const {
-        $from,
-        $to
-      } = selection;
-      const range = tiptapUtils.getMarkRange($from, linkType);
-
-      if (!range) {
-        this.isLink = false;
-        return;
-      }
-
-      this.isLink = range.to === $to.pos;
-      this.left = null;
-    },
-
-    isImageSelection(selection) {
-      if (!selection.node) {
-        this.isImage = false;
-        return;
-      }
-
-      this.isImage = selection.node.type.name === 'image';
-      this.isText = false;
-      this.imageNode = selection.node;
-      const {
-        from,
-        to
-      } = selection;
-      const imageWidth = selection.node.attrs.width;
-      const start = this.editor.view.coordsAtPos(from);
-      const end = this.editor.view.coordsAtPos(to);
-      const box = this.editor.view.dom.getBoundingClientRect();
-      const left = Math.max((start.left + end.left) / 2, start.left + 3);
-      this.left = left - box.left + imageWidth / 2;
-    },
-
-    isTextSelection(selection) {
-      this.isText = selection instanceof prosemirrorState.TextSelection;
-      this.left = null;
-    },
-
-    getSelectionType(selection) {
-      this.isTextSelection(selection);
-      this.isLinkSelection(selection);
-      this.isImageSelection(selection);
-    }
-
-  },
-  watch: {
-    'editor.state.selection': 'getSelectionType'
-  },
-  components: {
-    EditorMenuBubble: tiptap.EditorMenuBubble,
-    ImageMenu: __vue_component__$d,
-    LinkMenu: __vue_component__$b,
-    MenuButton: __vue_component__$h
-  }
-};
-
-/* script */
-const __vue_script__$a = script$a;
-/* template */
-
-var __vue_render__$a = function () {
-  var _vm = this;
-
-  var _h = _vm.$createElement;
-
-  var _c = _vm._self._c || _h;
-
-  return _vm.editor ? _c('editor-menu-bubble', {
-    staticClass: "editor-bubble-menu",
-    attrs: {
-      "editor": _vm.editor
-    },
-    scopedSlots: _vm._u([{
-      key: "default",
-      fn: function (ref) {
-        var commands = ref.commands;
-        var isActive = ref.isActive;
-        var getMarkAttrs = ref.getMarkAttrs;
-        var menu = ref.menu;
-        return [_c('v-card', {
-          staticClass: "bubble-menu",
-          class: {
-            'is-active': menu.isActive
-          },
-          style: "left: " + (_vm.left || menu.left) + "px; bottom: " + menu.bottom + "px;"
-        }, [_c('v-card-text', {
-          staticClass: "d-flex pa-1"
-        }, [_vm.isImage ? [_c('image-menu', {
-          attrs: {
-            "node": _vm.imageNode,
-            "editor-context": {
-              commands: commands,
-              isActive: isActive,
-              editor: _vm.editor
-            }
-          }
-        })] : _vm._e(), _vm._v(" "), _vm.isText ? [_c('link-menu', {
-          attrs: {
-            "is-link-selection": _vm.isLink,
-            "editor-context": {
-              commands: commands,
-              isActive: isActive,
-              getMarkAttrs: getMarkAttrs
-            }
-          }
-        }), _vm._v(" "), _c('menu-button', {
-          attrs: {
-            "command": commands.bold,
-            "is-active": isActive.bold(),
-            "icon": "format-bold"
-          }
-        }), _vm._v(" "), _c('menu-button', {
-          attrs: {
-            "command": commands.italic,
-            "is-active": isActive.italic(),
-            "icon": "format-italic"
-          }
-        }), _vm._v(" "), _c('menu-button', {
-          attrs: {
-            "command": commands.underline,
-            "is-active": isActive.underline(),
-            "icon": "format-underline"
-          }
-        })] : _vm._e()], 2)], 1)];
-      }
-    }], null, false, 1584768679)
-  }) : _vm._e();
-};
-
-var __vue_staticRenderFns__$a = [];
-/* style */
-
-const __vue_inject_styles__$a = undefined;
-/* scoped */
-
-const __vue_scope_id__$a = "data-v-b2491d14";
-/* module identifier */
-
-const __vue_module_identifier__$a = undefined;
-/* functional template */
-
-const __vue_is_functional_template__$a = false;
-/* style inject */
-
-/* style inject SSR */
-
-/* style inject shadow dom */
-
-const __vue_component__$a = /*#__PURE__*/normalizeComponent({
-  render: __vue_render__$a,
-  staticRenderFns: __vue_staticRenderFns__$a
-}, __vue_inject_styles__$a, __vue_script__$a, __vue_scope_id__$a, __vue_is_functional_template__$a, __vue_module_identifier__$a, false, undefined, undefined, undefined);
-
-//
-var script$9 = {
   name: 'tce-tiptap-html',
   inject: ['$elementBus'],
   props: {
@@ -2678,15 +1452,15 @@ var script$9 = {
   },
 
   mounted() {
-    this.editor = new tiptap.Editor({
+    this.editor = new vue2.Editor({
       content: this.content,
-      extensions: [new tiptapExtensions.Blockquote(), new tiptapExtensions.Bold(), new tiptapExtensions.Code(), new FormatClear(), new tiptapExtensions.Italic(), new tiptapExtensions.HardBreak(), new Indent(), new Heading({
-        levels: [1, 2, 3, 4, 5]
-      }), new tiptapExtensions.HorizontalRule(), new tiptapExtensions.History(), new tiptapExtensions.ListItem(), new tiptapExtensions.OrderedList(), new tiptapExtensions.BulletList(), new tiptapExtensions.Strike(), new tiptapExtensions.Underline(), new tiptapExtensions.Table(), new tiptapExtensions.TableCell(), new tiptapExtensions.TableHeader(), new tiptapExtensions.TableRow(), new Paragraph(), new Image(), new Link(), new FontSize(), new FontType(), new TextColor(), new TextHighlight(), new TextAlign()],
-      onUpdate: ({
-        getHTML
-      }) => {
-        this.content = getHTML();
+      extensions: [BubbleMenuExtension__default['default'], Blockquote__default['default'], Bold__default['default'], BulletList__default['default'], Code__default['default'], CodeBlock__default['default'], Document__default['default'], Dropcursor__default['default'], Gapcursor__default['default'], HardBreak__default['default'], Heading__default['default'], History__default['default'], HorizontalRule__default['default'], Indent, Image, Italic__default['default'], ListItem__default['default'], Link__default['default'].configure({
+        openOnClick: false
+      }), OrderedList__default['default'], Paragraph__default['default'], Strike__default['default'], Text__default['default'], TextStyle__default['default'], FontFamily__default['default'], FontSize, Underline__default['default'], Table__default['default'].configure({
+        resizable: true
+      }), TableRow__default['default'], TableHeader__default['default'], TableCell__default['default'], TextAlign__default['default'], TextColor, TextHighlight],
+      onUpdate: () => {
+        this.content = this.editor.getHTML();
       }
     });
   },
@@ -2696,16 +1470,16 @@ var script$9 = {
   },
 
   components: {
-    EditorContent: tiptap.EditorContent,
-    BubbleMenu: __vue_component__$a
+    EditorContent: vue2.EditorContent,
+    BubbleMenu: __vue_component__$b
   }
 };
 
 /* script */
-const __vue_script__$9 = script$9;
+const __vue_script__$a = script$a;
 /* template */
 
-var __vue_render__$9 = function () {
+var __vue_render__$a = function () {
   var _vm = this;
 
   var _h = _vm.$createElement;
@@ -2729,14 +1503,14 @@ var __vue_render__$9 = function () {
     attrs: {
       "editor": _vm.editor
     }
-  }), _vm._v(" "), _c('bubble-menu', {
+  }), _vm._v(" "), _vm.editor ? _c('bubble-menu', {
     attrs: {
       "editor": _vm.editor
     }
-  })]], 2);
+  }) : _vm._e()]], 2);
 };
 
-var __vue_staticRenderFns__$9 = [function () {
+var __vue_staticRenderFns__$a = [function () {
   var _vm = this;
 
   var _h = _vm.$createElement;
@@ -2751,10 +1525,131 @@ var __vue_staticRenderFns__$9 = [function () {
 }];
 /* style */
 
+const __vue_inject_styles__$a = undefined;
+/* scoped */
+
+const __vue_scope_id__$a = "data-v-650a9097";
+/* module identifier */
+
+const __vue_module_identifier__$a = undefined;
+/* functional template */
+
+const __vue_is_functional_template__$a = false;
+/* style inject */
+
+/* style inject SSR */
+
+/* style inject shadow dom */
+
+const __vue_component__$a = /*#__PURE__*/normalizeComponent({
+  render: __vue_render__$a,
+  staticRenderFns: __vue_staticRenderFns__$a
+}, __vue_inject_styles__$a, __vue_script__$a, __vue_scope_id__$a, __vue_is_functional_template__$a, __vue_module_identifier__$a, false, undefined, undefined, undefined);
+
+//
+
+const fontFamilies = () => ['Arial', 'Arial Black', 'Georgia', 'Impact', 'Tahoma', 'Times New Roman', 'Verdana', 'Courier New', 'Lucida Console', 'Monaco', 'monospace'];
+
+var script$9 = {
+  name: 'tce-tiptap-font-family',
+  props: {
+    editor: {
+      type: Object,
+      required: true
+    }
+  },
+  data: () => ({
+    font: ''
+  }),
+  computed: {
+    fontFamilies
+  },
+  methods: {
+    toggleFontFamily(font) {
+      this.editor.chain().focus().setFontFamily(font).run();
+    }
+
+  },
+  watch: {
+    font: 'toggleFontFamily'
+  },
+  components: {
+    MenuButton: __vue_component__$i
+  }
+};
+
+/* script */
+const __vue_script__$9 = script$9;
+/* template */
+
+var __vue_render__$9 = function () {
+  var _vm = this;
+
+  var _h = _vm.$createElement;
+
+  var _c = _vm._self._c || _h;
+
+  return _c('v-menu', {
+    attrs: {
+      "transition": "slide-y-transition",
+      "bottom": ""
+    },
+    scopedSlots: _vm._u([{
+      key: "activator",
+      fn: function (ref) {
+        var on = ref.on;
+        var attrs = ref.attrs;
+        return [_c('menu-button', _vm._g(_vm._b({
+          attrs: {
+            "is-active": !!_vm.editor.getAttributes('textStyle').fontFamily,
+            "icon": "format-font",
+            "tooltip": "Font family"
+          }
+        }, 'menu-button', attrs, false), on), [_c('v-icon', {
+          staticClass: "ml-1",
+          attrs: {
+            "size": "14"
+          }
+        }, [_vm._v("mdi-chevron-down")])], 1)];
+      }
+    }])
+  }, [_vm._v(" "), _c('v-list', {
+    staticClass: "font-types",
+    attrs: {
+      "dense": ""
+    }
+  }, [_c('v-list-item-group', {
+    model: {
+      value: _vm.font,
+      callback: function ($$v) {
+        _vm.font = $$v;
+      },
+      expression: "font"
+    }
+  }, _vm._l(_vm.fontFamilies, function (fontFamily) {
+    return _c('v-list-item', {
+      key: fontFamily,
+      class: {
+        'active': _vm.editor.isActive('textStyle', {
+          fontFamily: fontFamily
+        })
+      },
+      attrs: {
+        "value": fontFamily
+      }
+    }, [_c('v-list-item-title', [_c('span', {
+      style: "font-family: " + fontFamily
+    }, [_vm._v(_vm._s(fontFamily))])])], 1);
+  }), 1)], 1)], 1);
+};
+
+var __vue_staticRenderFns__$9 = [];
+/* style */
+
 const __vue_inject_styles__$9 = undefined;
 /* scoped */
 
-const __vue_scope_id__$9 = "data-v-8df55fbe";
+const __vue_scope_id__$9 = "data-v-0f427584";
 /* module identifier */
 
 const __vue_module_identifier__$9 = undefined;
@@ -2774,29 +1669,30 @@ const __vue_component__$9 = /*#__PURE__*/normalizeComponent({
 
 //
 var script$8 = {
-  name: 'tce-tiptap-color-picker',
+  name: 'tce-tiptap-font-size',
   props: {
-    command: {
-      type: Function,
-      default: () => {}
-    },
-    isActive: {
-      type: Boolean,
-      default: false
-    },
-    icon: {
-      type: String,
-      default: 'palette'
+    editor: {
+      type: Object,
+      required: true
     }
   },
+  data: () => ({
+    size: 14
+  }),
+  computed: {
+    fontSizes: () => FONT_SIZES
+  },
   methods: {
-    onColorChange(color) {
-      this.command(color.hex);
+    toggleFontSize(size) {
+      this.editor.chain().focus().setFontSize(size).run();
     }
 
   },
+  watch: {
+    size: 'toggleFontSize'
+  },
   components: {
-    MenuButton: __vue_component__$h
+    MenuButton: __vue_component__$i
   }
 };
 
@@ -2823,23 +1719,44 @@ var __vue_render__$8 = function () {
         var attrs = ref.attrs;
         return [_c('menu-button', _vm._g(_vm._b({
           attrs: {
-            "is-active": _vm.isActive,
-            "icon": _vm.icon
+            "is-active": !!_vm.editor.getAttributes('textStyle').fontSize,
+            "icon": "format-size",
+            "tooltip": "Font size"
           }
-        }, 'menu-button', attrs, false), on))];
+        }, 'menu-button', attrs, false), on), [_c('v-icon', {
+          staticClass: "ml-1",
+          attrs: {
+            "size": "14"
+          }
+        }, [_vm._v("mdi-chevron-down")])], 1)];
       }
     }])
-  }, [_vm._v(" "), _c('v-color-picker', {
+  }, [_vm._v(" "), _c('v-list', {
+    staticClass: "font-sizes",
     attrs: {
-      "dot-size": "25",
-      "mode": "hexa",
-      "show-swatches": "",
-      "swatches-max-height": "200"
-    },
-    on: {
-      "input": _vm.onColorChange
+      "dense": ""
     }
-  })], 1);
+  }, [_c('v-list-item-group', {
+    model: {
+      value: _vm.size,
+      callback: function ($$v) {
+        _vm.size = $$v;
+      },
+      expression: "size"
+    }
+  }, _vm._l(_vm.fontSizes, function (fontSize) {
+    return _c('v-list-item', {
+      key: fontSize,
+      class: {
+        'active': _vm.editor.isActive('textStyle', {
+          fontSize: fontSize
+        })
+      },
+      attrs: {
+        "value": fontSize
+      }
+    }, [_c('v-list-item-title', [_vm._v(_vm._s(fontSize))])], 1);
+  }), 1)], 1)], 1);
 };
 
 var __vue_staticRenderFns__$8 = [];
@@ -2848,7 +1765,7 @@ var __vue_staticRenderFns__$8 = [];
 const __vue_inject_styles__$8 = undefined;
 /* scoped */
 
-const __vue_scope_id__$8 = "data-v-0f4002f4";
+const __vue_scope_id__$8 = "data-v-609d512c";
 /* module identifier */
 
 const __vue_module_identifier__$8 = undefined;
@@ -2868,50 +1785,30 @@ const __vue_component__$8 = /*#__PURE__*/normalizeComponent({
 
 //
 var script$7 = {
-  name: 'tce-tiptap-font-size',
+  name: 'tce-tiptap-heading',
   props: {
-    editorContext: {
+    editor: {
       type: Object,
       required: true
     }
   },
   data: () => ({
-    size: 14
+    level: 0
   }),
-  computed: {
-    fontSizes: () => FONT_SIZES,
-    editor: ({
-      editorContext: {
-        editor
-      }
-    }) => editor,
-    activeFontSize: ({
-      editor
-    }) => findActiveFontSize(editor.state),
-    isActive: ({
-      editorContext: {
-        isActive
-      }
-    }) => isActive.fontSize()
-  },
   methods: {
-    toggleFontSize(size) {
-      const {
-        activeFontSize,
-        editorContext: {
-          commands
-        }
-      } = this;
-      if (size === activeFontSize) return commands.fontSize(DEFAULT_FONT_SIZE);
-      commands.fontSize(size);
+    toggleHeading(level) {
+      if (level) return this.editor.chain().focus().toggleHeading({
+        level
+      }).run();
+      this.editor.commands.setNode('paragraph');
     }
 
   },
   watch: {
-    size: 'toggleFontSize'
+    level: 'toggleHeading'
   },
   components: {
-    MenuButton: __vue_component__$h
+    MenuButton: __vue_component__$i
   }
 };
 
@@ -2938,36 +1835,50 @@ var __vue_render__$7 = function () {
         var attrs = ref.attrs;
         return [_c('menu-button', _vm._g(_vm._b({
           attrs: {
-            "is-active": _vm.isActive,
-            "icon": "format-size"
+            "is-active": _vm.editor.isActive('heading'),
+            "icon": "format-pilcrow",
+            "tooltip": "Heading"
           }
-        }, 'menu-button', attrs, false), on))];
+        }, 'menu-button', attrs, false), on), [_c('v-icon', {
+          staticClass: "ml-1",
+          attrs: {
+            "size": "14"
+          }
+        }, [_vm._v("mdi-chevron-down")])], 1)];
       }
     }])
   }, [_vm._v(" "), _c('v-list', {
-    staticClass: "font-sizes",
+    staticClass: "headings",
     attrs: {
       "dense": ""
     }
   }, [_c('v-list-item-group', {
     model: {
-      value: _vm.size,
+      value: _vm.level,
       callback: function ($$v) {
-        _vm.size = $$v;
+        _vm.level = $$v;
       },
-      expression: "size"
+      expression: "level"
     }
-  }, _vm._l(_vm.fontSizes, function (fontSize) {
+  }, [_c('v-list-item', {
+    attrs: {
+      "value": 0
+    }
+  }, [_vm._v("Normal")]), _vm._v(" "), _vm._l([1, 2, 3, 4, 5, 6], function (l) {
     return _c('v-list-item', {
-      key: fontSize,
+      key: l,
       class: {
-        'active': fontSize === _vm.activeFontSize
+        'active': _vm.editor.isActive('heading', {
+          level: l
+        })
       },
       attrs: {
-        "value": fontSize
+        "value": l
       }
-    }, [_c('v-list-item-title', [_vm._v(_vm._s(fontSize))])], 1);
-  }), 1)], 1)], 1);
+    }, [_c('v-list-item-title', [_c("h" + l, {
+      tag: "component"
+    }, [_vm._v("Heading " + _vm._s(l))])], 1)], 1);
+  })], 2)], 1)], 1);
 };
 
 var __vue_staticRenderFns__$7 = [];
@@ -2976,7 +1887,7 @@ var __vue_staticRenderFns__$7 = [];
 const __vue_inject_styles__$7 = undefined;
 /* scoped */
 
-const __vue_scope_id__$7 = "data-v-66459d8d";
+const __vue_scope_id__$7 = "data-v-a6a1cb78";
 /* module identifier */
 
 const __vue_module_identifier__$7 = undefined;
@@ -2996,50 +1907,35 @@ const __vue_component__$7 = /*#__PURE__*/normalizeComponent({
 
 //
 var script$6 = {
-  name: 'tce-tiptap-font-type',
+  name: 'tce-tiptap-image',
   props: {
-    editorContext: {
+    editor: {
       type: Object,
       required: true
     }
   },
   data: () => ({
-    type: ''
+    menu: false,
+    imageAttrs: {
+      src: null,
+      alt: null
+    }
   }),
-  computed: {
-    fontTypes: () => FONT_TYPES,
-    editor: ({
-      editorContext: {
-        editor
-      }
-    }) => editor,
-    activeFontType: ({
-      editor
-    }) => findActiveFontType(editor.state),
-    isActive: ({
-      editorContext: {
-        isActive
-      }
-    }) => isActive.fontType()
-  },
   methods: {
-    toggleFontType(type) {
-      const {
-        activeFontType,
-        editorContext: {
-          commands
-        }
-      } = this;
-      if (type === activeFontType) return commands.fontType('');
-      commands.fontType(type);
+    save() {
+      this.menu = false;
+      this.editor.chain().focus().setImage(this.imageAttrs).run();
     }
 
   },
   watch: {
-    type: 'toggleFontType'
+    menu() {
+      this.imageAttrs = this.editor.getAttributes('image');
+    }
+
   },
   components: {
-    MenuButton: __vue_component__$h
+    MenuButton: __vue_component__$i
   }
 };
 
@@ -3057,6 +1953,7 @@ var __vue_render__$6 = function () {
   return _c('v-menu', {
     attrs: {
       "transition": "slide-y-transition",
+      "close-on-content-click": false,
       "bottom": ""
     },
     scopedSlots: _vm._u([{
@@ -3066,38 +1963,70 @@ var __vue_render__$6 = function () {
         var attrs = ref.attrs;
         return [_c('menu-button', _vm._g(_vm._b({
           attrs: {
-            "is-active": _vm.isActive,
-            "icon": "format-font"
+            "is-active": _vm.editor.isActive('image'),
+            "icon": "image-plus",
+            "tooltip": "Insert image"
           }
         }, 'menu-button', attrs, false), on))];
       }
-    }])
-  }, [_vm._v(" "), _c('v-list', {
-    staticClass: "font-types",
-    attrs: {
-      "dense": ""
-    }
-  }, [_c('v-list-item-group', {
+    }]),
     model: {
-      value: _vm.type,
+      value: _vm.menu,
       callback: function ($$v) {
-        _vm.type = $$v;
+        _vm.menu = $$v;
       },
-      expression: "type"
+      expression: "menu"
     }
-  }, _vm._l(_vm.fontTypes, function (fontType) {
-    return _c('v-list-item', {
-      key: fontType,
-      class: {
-        'active': fontType === _vm.activeFontType
+  }, [_vm._v(" "), _c('v-card', {
+    attrs: {
+      "min-width": "300"
+    }
+  }, [_c('v-card-text', {
+    staticClass: "pb-0"
+  }, [_c('v-text-field', {
+    ref: "imageUrl",
+    attrs: {
+      "label": "Url",
+      "placeholder": "https://example.com",
+      "type": "url"
+    },
+    model: {
+      value: _vm.imageAttrs.src,
+      callback: function ($$v) {
+        _vm.$set(_vm.imageAttrs, "src", $$v);
       },
-      attrs: {
-        "value": fontType
+      expression: "imageAttrs.src"
+    }
+  }), _vm._v(" "), _c('v-text-field', {
+    attrs: {
+      "label": "Alt text"
+    },
+    model: {
+      value: _vm.imageAttrs.alt,
+      callback: function ($$v) {
+        _vm.$set(_vm.imageAttrs, "alt", $$v);
+      },
+      expression: "imageAttrs.alt"
+    }
+  })], 1), _vm._v(" "), _c('v-card-actions', {
+    staticClass: "pt-0"
+  }, [_c('v-spacer'), _vm._v(" "), _c('v-btn', {
+    attrs: {
+      "text": ""
+    },
+    on: {
+      "click": _vm.save
+    }
+  }, [_vm._v("\n        Save\n      ")]), _vm._v(" "), _c('v-btn', {
+    attrs: {
+      "text": ""
+    },
+    on: {
+      "click": function ($event) {
+        _vm.menu = false;
       }
-    }, [_c('v-list-item-title', [_c('span', {
-      style: "font-family: " + fontType
-    }, [_vm._v(_vm._s(fontType))])])], 1);
-  }), 1)], 1)], 1);
+    }
+  }, [_vm._v("\n        Close\n      ")])], 1)], 1)], 1);
 };
 
 var __vue_staticRenderFns__$6 = [];
@@ -3106,7 +2035,7 @@ var __vue_staticRenderFns__$6 = [];
 const __vue_inject_styles__$6 = undefined;
 /* scoped */
 
-const __vue_scope_id__$6 = "data-v-4fa03809";
+const __vue_scope_id__$6 = undefined;
 /* module identifier */
 
 const __vue_module_identifier__$6 = undefined;
@@ -3126,43 +2055,21 @@ const __vue_component__$6 = /*#__PURE__*/normalizeComponent({
 
 //
 var script$5 = {
-  name: 'tce-tiptap-heading',
+  name: 'tce-tiptap-text-align',
   props: {
-    editorContext: {
+    editor: {
       type: Object,
       required: true
     }
   },
   data: () => ({
-    level: 0
+    alignment: 'left'
   }),
   computed: {
-    editor: ({
-      editorContext: {
-        editor
-      }
-    }) => editor,
-    levels: ({
-      editor
-    }) => editor.extensions.options.heading.levels
-  },
-  methods: {
-    isHeadingActive(level) {
-      return isHeadingActive(this.editor.state, level);
-    },
-
-    toggleHeading(level) {
-      level > 0 ? this.editorContext.commands.heading({
-        level
-      }) : this.editorContext.commands.paragraph();
-    }
-
-  },
-  watch: {
-    level: 'toggleHeading'
+    alignments: () => ['left', 'center', 'right', 'justify']
   },
   components: {
-    MenuButton: __vue_component__$h
+    MenuButton: __vue_component__$i
   }
 };
 
@@ -3189,45 +2096,55 @@ var __vue_render__$5 = function () {
         var attrs = ref.attrs;
         return [_c('menu-button', _vm._g(_vm._b({
           attrs: {
-            "is-active": _vm.isHeadingActive(),
-            "icon": "format-pilcrow"
+            "icon": "format-align-left",
+            "tooltip": "Align text"
           }
-        }, 'menu-button', attrs, false), on))];
+        }, 'menu-button', attrs, false), on), [_c('v-icon', {
+          staticClass: "ml-1",
+          attrs: {
+            "size": "14"
+          }
+        }, [_vm._v("mdi-chevron-down")])], 1)];
       }
     }])
   }, [_vm._v(" "), _c('v-list', {
-    staticClass: "font-sizes",
+    staticClass: "text-alignment",
     attrs: {
       "dense": ""
     }
   }, [_c('v-list-item-group', {
     model: {
-      value: _vm.level,
+      value: _vm.alignment,
       callback: function ($$v) {
-        _vm.level = $$v;
+        _vm.alignment = $$v;
       },
-      expression: "level"
+      expression: "alignment"
     }
-  }, [_c('v-list-item', {
-    class: {
-      'active': _vm.isHeadingActive(0)
-    },
-    attrs: {
-      "value": 0
-    }
-  }, [_vm._v("\n        Normal\n      ")]), _vm._v(" "), _vm._l(_vm.levels, function (l) {
+  }, _vm._l(_vm.alignments, function (it) {
     return _c('v-list-item', {
-      key: l,
+      key: it,
       class: {
-        'active': _vm.isHeadingActive(l)
+        'active': _vm.editor.isActive({
+          textAlign: it
+        })
       },
       attrs: {
-        "value": l
+        "value": it
       }
-    }, [_c('v-list-item-title', [_c("h" + l, {
-      tag: "component"
-    }, [_vm._v("Heading " + _vm._s(l))])], 1)], 1);
-  })], 2)], 1)], 1);
+    }, [_c('v-list-item-title', [_c('menu-button', {
+      attrs: {
+        "is-active": _vm.editor.isActive({
+          textAlign: it
+        }),
+        "icon": "format-align-" + it
+      },
+      on: {
+        "click": function ($event) {
+          _vm.editor.chain().focus().setTextAlign(it).run();
+        }
+      }
+    })], 1)], 1);
+  }), 1)], 1)], 1);
 };
 
 var __vue_staticRenderFns__$5 = [];
@@ -3236,7 +2153,7 @@ var __vue_staticRenderFns__$5 = [];
 const __vue_inject_styles__$5 = undefined;
 /* scoped */
 
-const __vue_scope_id__$5 = undefined;
+const __vue_scope_id__$5 = "data-v-206fbff0";
 /* module identifier */
 
 const __vue_module_identifier__$5 = undefined;
@@ -3256,41 +2173,25 @@ const __vue_component__$5 = /*#__PURE__*/normalizeComponent({
 
 //
 var script$4 = {
-  name: 'tce-tiptap-image',
+  name: 'tce-tiptap-text-color',
   props: {
-    editorContext: {
+    editor: {
       type: Object,
       required: true
+    },
+    isActive: {
+      type: Boolean,
+      default: false
     }
   },
-  data: () => ({
-    menu: false,
-    imageUrl: '',
-    alt: ''
-  }),
-  computed: {
-    editor: ({
-      editorContext: {
-        editor
-      }
-    }) => editor
-  },
   methods: {
-    save() {
-      const {
-        imageUrl: src,
-        alt
-      } = this;
-      this.menu = false;
-      this.editorContext.commands.image({
-        src,
-        alt
-      });
+    onColorChange(color) {
+      this.editor.chain().focus().setTextColor(color.hex).run();
     }
 
   },
   components: {
-    MenuButton: __vue_component__$h
+    MenuButton: __vue_component__$i
   }
 };
 
@@ -3308,7 +2209,6 @@ var __vue_render__$4 = function () {
   return _c('v-menu', {
     attrs: {
       "transition": "slide-y-transition",
-      "close-on-content-click": false,
       "bottom": ""
     },
     scopedSlots: _vm._u([{
@@ -3318,60 +2218,24 @@ var __vue_render__$4 = function () {
         var attrs = ref.attrs;
         return [_c('menu-button', _vm._g(_vm._b({
           attrs: {
-            "icon": "image-plus"
+            "is-active": !!_vm.editor.getAttributes('textStyle').color,
+            "icon": "palette",
+            "tooltip": "Add text color"
           }
         }, 'menu-button', attrs, false), on))];
       }
-    }]),
-    model: {
-      value: _vm.menu,
-      callback: function ($$v) {
-        _vm.menu = $$v;
-      },
-      expression: "menu"
-    }
-  }, [_vm._v(" "), _c('v-card', {
+    }])
+  }, [_vm._v(" "), _c('v-color-picker', {
     attrs: {
-      "min-width": "300"
-    }
-  }, [_c('v-card-text', {
-    staticClass: "pb-0"
-  }, [_c('v-text-field', {
-    ref: "imageUrl",
-    attrs: {
-      "label": "Url",
-      "placeholder": "https://example.com",
-      "type": "url"
-    },
-    model: {
-      value: _vm.imageUrl,
-      callback: function ($$v) {
-        _vm.imageUrl = $$v;
-      },
-      expression: "imageUrl"
-    }
-  }), _vm._v(" "), _c('v-text-field', {
-    attrs: {
-      "label": "Alt text"
-    },
-    model: {
-      value: _vm.alt,
-      callback: function ($$v) {
-        _vm.alt = $$v;
-      },
-      expression: "alt"
-    }
-  })], 1), _vm._v(" "), _c('v-card-actions', {
-    staticClass: "pt-0"
-  }, [_c('v-spacer'), _vm._v(" "), _c('v-btn', {
-    attrs: {
-      "disabled": !_vm.imageUrl,
-      "text": ""
+      "dot-size": "25",
+      "mode": "hexa",
+      "show-swatches": "",
+      "swatches-max-height": "200"
     },
     on: {
-      "click": _vm.save
+      "input": _vm.onColorChange
     }
-  }, [_vm._v("\n        Save\n      ")])], 1)], 1)], 1);
+  })], 1);
 };
 
 var __vue_staticRenderFns__$4 = [];
@@ -3380,7 +2244,7 @@ var __vue_staticRenderFns__$4 = [];
 const __vue_inject_styles__$4 = undefined;
 /* scoped */
 
-const __vue_scope_id__$4 = undefined;
+const __vue_scope_id__$4 = "data-v-1059d05a";
 /* module identifier */
 
 const __vue_module_identifier__$4 = undefined;
@@ -3400,31 +2264,25 @@ const __vue_component__$4 = /*#__PURE__*/normalizeComponent({
 
 //
 var script$3 = {
-  name: 'tce-tiptap-heading',
+  name: 'tce-tiptap-text-hightlight',
   props: {
-    editorContext: {
+    editor: {
       type: Object,
       required: true
+    },
+    isActive: {
+      type: Boolean,
+      default: false
     }
   },
-  data: () => ({
-    alignment: 'left'
-  }),
-  computed: {
-    editor: ({
-      editorContext: {
-        editor
-      }
-    }) => editor,
-    alignments: ({
-      editor
-    }) => editor.extensions.options.textAlign.alignments
-  },
   methods: {
-    isTextAlignActive
+    onColorChange(color) {
+      this.editor.chain().focus().setTextHighlight(color.hex).run();
+    }
+
   },
   components: {
-    MenuButton: __vue_component__$h
+    MenuButton: __vue_component__$i
   }
 };
 
@@ -3451,41 +2309,24 @@ var __vue_render__$3 = function () {
         var attrs = ref.attrs;
         return [_c('menu-button', _vm._g(_vm._b({
           attrs: {
-            "icon": "format-align-left"
+            "is-active": !!_vm.editor.getAttributes('textStyle').backgroundColor,
+            "icon": "format-color-highlight",
+            "tooltip": "Highlight text"
           }
         }, 'menu-button', attrs, false), on))];
       }
     }])
-  }, [_vm._v(" "), _c('v-list', {
-    staticClass: "text-alignment",
+  }, [_vm._v(" "), _c('v-color-picker', {
     attrs: {
-      "dense": ""
+      "dot-size": "25",
+      "mode": "hexa",
+      "show-swatches": "",
+      "swatches-max-height": "200"
+    },
+    on: {
+      "input": _vm.onColorChange
     }
-  }, [_c('v-list-item-group', {
-    model: {
-      value: _vm.alignment,
-      callback: function ($$v) {
-        _vm.alignment = $$v;
-      },
-      expression: "alignment"
-    }
-  }, _vm._l(_vm.alignments, function (it) {
-    return _c('v-list-item', {
-      key: it,
-      class: {
-        'active': _vm.isTextAlignActive(_vm.editor.state, it)
-      },
-      attrs: {
-        "value": it
-      }
-    }, [_c('v-list-item-title', [_c('menu-button', {
-      attrs: {
-        "command": _vm.editorContext.commands["align_" + it],
-        "is-active": _vm.isTextAlignActive(_vm.editor.state, it),
-        "icon": "format-align-" + it
-      }
-    })], 1)], 1);
-  }), 1)], 1)], 1);
+  })], 1);
 };
 
 var __vue_staticRenderFns__$3 = [];
@@ -3494,7 +2335,7 @@ var __vue_staticRenderFns__$3 = [];
 const __vue_inject_styles__$3 = undefined;
 /* scoped */
 
-const __vue_scope_id__$3 = "data-v-4c1156cc";
+const __vue_scope_id__$3 = "data-v-422b3b39";
 /* module identifier */
 
 const __vue_module_identifier__$3 = undefined;
@@ -3511,37 +2352,6 @@ const __vue_component__$3 = /*#__PURE__*/normalizeComponent({
   render: __vue_render__$3,
   staticRenderFns: __vue_staticRenderFns__$3
 }, __vue_inject_styles__$3, __vue_script__$3, __vue_scope_id__$3, __vue_is_functional_template__$3, __vue_module_identifier__$3, false, undefined, undefined, undefined);
-
-function isTableActive(state) {
-  if (!state) return false;
-  const {
-    selection,
-    doc
-  } = state;
-  const {
-    from,
-    to
-  } = selection;
-  let keepLooking = true;
-  let active = false;
-  doc.nodesBetween(from, to, node => {
-    const name = node.type.name;
-
-    if (keepLooking && (name === 'table' || name === 'table_row' || name === 'table_column' || name === 'table_cell')) {
-      keepLooking = false;
-      active = true;
-    }
-
-    return keepLooking;
-  });
-  return active;
-}
-function enableMergeCells(state) {
-  return isTableActive(state) && prosemirrorTables.mergeCells(state);
-}
-function enableSplitCell(state) {
-  return isTableActive(state) && prosemirrorTables.splitCell(state);
-}
 
 //
 //
@@ -3690,25 +2500,52 @@ const __vue_component__$2 = /*#__PURE__*/normalizeComponent({
 }, __vue_inject_styles__$2, __vue_script__$2, __vue_scope_id__$2, __vue_is_functional_template__$2, __vue_module_identifier__$2, false, undefined, undefined, undefined);
 
 //
+
+function isTableActive(state) {
+  if (!state) return false;
+  const {
+    selection,
+    doc
+  } = state;
+  const {
+    from,
+    to
+  } = selection;
+  let keepLooking = true;
+  let active = false;
+  doc.nodesBetween(from, to, node => {
+    const name = node.type.name;
+
+    if (keepLooking && (name === 'table' || name === 'table_row' || name === 'table_column' || name === 'table_cell')) {
+      keepLooking = false;
+      active = true;
+    }
+
+    return keepLooking;
+  });
+  return active;
+}
+
+function enableMergeCells(state) {
+  return isTableActive(state) && prosemirrorTables.mergeCells(state);
+}
+
+function enableSplitCell(state) {
+  return isTableActive(state) && prosemirrorTables.splitCell(state);
+}
+
 var script$1 = {
   name: 'tce-tiptap-table',
   props: {
-    editorContext: {
+    editor: {
       type: Object,
       required: true
     }
   },
   computed: {
-    editor: ({
-      editorContext: {
-        editor
-      }
-    }) => editor,
     isActive: ({
-      editorContext: {
-        isActive
-      }
-    }) => isActive.table(),
+      editor
+    }) => editor.isActive('table'),
     isTableActive: ({
       editor
     }) => isTableActive(editor.state),
@@ -3724,16 +2561,16 @@ var script$1 = {
       row,
       col
     }) {
-      this.editorContext.commands.createTable({
+      this.editor.chain().focus().insertTable({
         rowsCount: row,
         colsCount: col,
         withHeaderRow: true
-      });
+      }).run();
     }
 
   },
   components: {
-    MenuButton: __vue_component__$h,
+    MenuButton: __vue_component__$i,
     TableGrid: __vue_component__$2
   }
 };
@@ -3762,9 +2599,15 @@ var __vue_render__$1 = function () {
         return [_c('menu-button', _vm._g(_vm._b({
           attrs: {
             "is-active": _vm.isActive,
-            "icon": "table"
+            "icon": "table",
+            "tooltip": "Insert table"
           }
-        }, 'menu-button', attrs, false), on))];
+        }, 'menu-button', attrs, false), on), [_c('v-icon', {
+          staticClass: "ml-1",
+          attrs: {
+            "size": "14"
+          }
+        }, [_vm._v("mdi-chevron-down")])], 1)];
       }
     }])
   }, [_vm._v(" "), _c('v-list', {
@@ -3798,7 +2641,9 @@ var __vue_render__$1 = function () {
       "disabled": !_vm.isTableActive
     },
     on: {
-      "click": _vm.editorContext.commands.addColumnBefore
+      "click": function ($event) {
+        _vm.editor.chain().focus().addColumnBefore().run();
+      }
     }
   }, [_c('v-icon', {
     staticClass: "mr-3",
@@ -3811,7 +2656,9 @@ var __vue_render__$1 = function () {
       "disabled": !_vm.isTableActive
     },
     on: {
-      "click": _vm.editorContext.commands.addColumnAfter
+      "click": function ($event) {
+        _vm.editor.chain().focus().addColumnAfter().run();
+      }
     }
   }, [_c('v-icon', {
     staticClass: "mr-3",
@@ -3824,7 +2671,9 @@ var __vue_render__$1 = function () {
       "disabled": !_vm.isTableActive
     },
     on: {
-      "click": _vm.editorContext.commands.deleteColumn
+      "click": function ($event) {
+        _vm.editor.chain().focus().deleteColumn().run();
+      }
     }
   }, [_c('v-icon', {
     staticClass: "mr-3",
@@ -3837,7 +2686,9 @@ var __vue_render__$1 = function () {
       "disabled": !_vm.isTableActive
     },
     on: {
-      "click": _vm.editorContext.commands.addRowBefore
+      "click": function ($event) {
+        _vm.editor.chain().focus().addRowBefore().run();
+      }
     }
   }, [_c('v-icon', {
     staticClass: "mr-3",
@@ -3850,7 +2701,9 @@ var __vue_render__$1 = function () {
       "disabled": !_vm.isTableActive
     },
     on: {
-      "click": _vm.editorContext.commands.addRowAfter
+      "click": function ($event) {
+        _vm.editor.chain().focus().addRowAfter().run();
+      }
     }
   }, [_c('v-icon', {
     staticClass: "mr-3",
@@ -3863,7 +2716,9 @@ var __vue_render__$1 = function () {
       "disabled": !_vm.isTableActive
     },
     on: {
-      "click": _vm.editorContext.commands.deleteRow
+      "click": function ($event) {
+        _vm.editor.chain().focus().deleteRow().run();
+      }
     }
   }, [_c('v-icon', {
     staticClass: "mr-3",
@@ -3876,7 +2731,9 @@ var __vue_render__$1 = function () {
       "disabled": !_vm.isMergeCellsEnabled
     },
     on: {
-      "click": _vm.editorContext.commands.mergeCells
+      "click": function ($event) {
+        _vm.editor.chain().focus().mergeCells().run();
+      }
     }
   }, [_c('v-icon', {
     staticClass: "mr-3",
@@ -3889,7 +2746,9 @@ var __vue_render__$1 = function () {
       "disabled": !_vm.isSplitCellEnabled
     },
     on: {
-      "click": _vm.editorContext.commands.splitCell
+      "click": function ($event) {
+        _vm.editor.chain().focus().splitCell().run();
+      }
     }
   }, [_c('v-icon', {
     staticClass: "mr-3",
@@ -3902,7 +2761,9 @@ var __vue_render__$1 = function () {
       "disabled": !_vm.isTableActive
     },
     on: {
-      "click": _vm.editorContext.commands.deleteTable
+      "click": function ($event) {
+        _vm.editor.chain().focus().deleteTable().run();
+      }
     }
   }, [_c('v-icon', {
     staticClass: "mr-3",
@@ -3952,16 +2813,16 @@ var script = {
   },
 
   components: {
-    ColorPicker: __vue_component__$8,
-    EditorMenuBar: tiptap.EditorMenuBar,
-    FontSize: __vue_component__$7,
-    FontType: __vue_component__$6,
-    Heading: __vue_component__$5,
-    TceImage: __vue_component__$4,
-    MenuButton: __vue_component__$h,
-    LinkButton: __vue_component__$c,
+    TextColor: __vue_component__$4,
+    TextHighlight: __vue_component__$3,
+    FontSize: __vue_component__$8,
+    FontFamily: __vue_component__$9,
+    Heading: __vue_component__$7,
+    TceImage: __vue_component__$6,
+    MenuButton: __vue_component__$i,
+    LinkButton: __vue_component__$d,
     TiptapTable: __vue_component__$1,
-    TextAlign: __vue_component__$3
+    TextAlign: __vue_component__$5
   }
 };
 
@@ -3976,201 +2837,227 @@ var __vue_render__ = function () {
 
   var _c = _vm._self._c || _h;
 
-  return _c('div', [_vm.editor ? _c('editor-menu-bar', {
+  return _vm.editor ? _c('div', {
+    staticClass: "toolbar"
+  }, [_c('menu-button', {
+    attrs: {
+      "is-active": _vm.editor.isActive('code'),
+      "icon": "code-tags",
+      "tooltip": "Code"
+    },
+    on: {
+      "click": function ($event) {
+        _vm.editor.chain().focus().toggleCode().run();
+      }
+    }
+  }), _vm._v(" "), _c('v-divider', {
+    attrs: {
+      "vertical": ""
+    }
+  }), _vm._v(" "), _c('menu-button', {
+    attrs: {
+      "icon": "undo",
+      "tooltip": "Undo"
+    },
+    on: {
+      "click": function ($event) {
+        _vm.editor.chain().focus().undo().run();
+      }
+    }
+  }), _vm._v(" "), _c('menu-button', {
+    attrs: {
+      "icon": "redo",
+      "tooltip": "Redo"
+    },
+    on: {
+      "click": function ($event) {
+        _vm.editor.chain().focus().redo().run();
+      }
+    }
+  }), _vm._v(" "), _c('v-divider', {
+    attrs: {
+      "vertical": ""
+    }
+  }), _vm._v(" "), _c('heading', {
     attrs: {
       "editor": _vm.editor
+    }
+  }), _vm._v(" "), _c('font-family', {
+    attrs: {
+      "editor": _vm.editor
+    }
+  }), _vm._v(" "), _c('font-size', {
+    attrs: {
+      "editor": _vm.editor
+    }
+  }), _vm._v(" "), _c('v-divider', {
+    attrs: {
+      "vertical": ""
+    }
+  }), _vm._v(" "), _c('menu-button', {
+    attrs: {
+      "is-active": _vm.editor.isActive('bold'),
+      "icon": "format-bold",
+      "tooltip": "Bold"
     },
-    scopedSlots: _vm._u([{
-      key: "default",
-      fn: function (ref) {
-        var commands = ref.commands;
-        var isActive = ref.isActive;
-        var getMarkAttrs = ref.getMarkAttrs;
-        return [_c('div', {
-          staticClass: "toolbar"
-        }, [_c('menu-button', {
-          attrs: {
-            "command": commands.code,
-            "is-active": isActive.code(),
-            "icon": "code-tags"
-          }
-        }), _vm._v(" "), _c('v-divider', {
-          attrs: {
-            "vertical": ""
-          }
-        }), _vm._v(" "), _c('menu-button', {
-          attrs: {
-            "command": commands.undo,
-            "icon": "undo"
-          }
-        }), _vm._v(" "), _c('menu-button', {
-          attrs: {
-            "command": commands.redo,
-            "icon": "redo"
-          }
-        }), _vm._v(" "), _c('v-divider', {
-          attrs: {
-            "vertical": ""
-          }
-        }), _vm._v(" "), _c('heading', {
-          attrs: {
-            "editor-context": {
-              editor: _vm.editor,
-              commands: commands,
-              isActive: isActive
-            }
-          }
-        }), _vm._v(" "), _c('font-size', {
-          attrs: {
-            "editor-context": {
-              editor: _vm.editor,
-              commands: commands,
-              isActive: isActive
-            }
-          }
-        }), _vm._v(" "), _c('font-type', {
-          attrs: {
-            "editor-context": {
-              editor: _vm.editor,
-              commands: commands,
-              isActive: isActive
-            }
-          }
-        }), _vm._v(" "), _c('v-divider', {
-          attrs: {
-            "vertical": ""
-          }
-        }), _vm._v(" "), _c('menu-button', {
-          attrs: {
-            "command": commands.bold,
-            "is-active": isActive.bold(),
-            "icon": "format-bold"
-          }
-        }), _vm._v(" "), _c('menu-button', {
-          attrs: {
-            "command": commands.italic,
-            "is-active": isActive.italic(),
-            "icon": "format-italic"
-          }
-        }), _vm._v(" "), _c('menu-button', {
-          attrs: {
-            "command": commands.underline,
-            "is-active": isActive.underline(),
-            "icon": "format-underline"
-          }
-        }), _vm._v(" "), _c('menu-button', {
-          attrs: {
-            "command": commands.strike,
-            "is-active": isActive.strike(),
-            "icon": "format-strikethrough"
-          }
-        }), _vm._v(" "), _c('v-divider', {
-          attrs: {
-            "vertical": ""
-          }
-        }), _vm._v(" "), _c('color-picker', {
-          attrs: {
-            "command": commands.textColor,
-            "is-active": isActive.textColor()
-          }
-        }), _vm._v(" "), _c('color-picker', {
-          attrs: {
-            "command": commands.textHighlight,
-            "is-active": isActive.textHighlight(),
-            "icon": "format-color-highlight"
-          }
-        }), _vm._v(" "), _c('v-divider', {
-          attrs: {
-            "vertical": ""
-          }
-        }), _vm._v(" "), _c('menu-button', {
-          attrs: {
-            "command": commands.bullet_list,
-            "is-active": isActive.bullet_list(),
-            "icon": "format-list-bulleted"
-          }
-        }), _vm._v(" "), _c('menu-button', {
-          attrs: {
-            "command": commands.ordered_list,
-            "is-active": isActive.ordered_list(),
-            "icon": "format-list-numbered"
-          }
-        }), _vm._v(" "), _c('menu-button', {
-          attrs: {
-            "command": commands.ordered_list,
-            "is-active": isActive.ordered_list(),
-            "icon": "format-list-numbered"
-          }
-        }), _vm._v(" "), _c('menu-button', {
-          attrs: {
-            "command": commands.outdent,
-            "icon": "format-indent-decrease"
-          }
-        }), _vm._v(" "), _c('menu-button', {
-          attrs: {
-            "command": commands.indent,
-            "icon": "format-indent-increase"
-          }
-        }), _vm._v(" "), _c('text-align', {
-          attrs: {
-            "editor-context": {
-              editor: _vm.editor,
-              commands: commands,
-              isActive: isActive
-            }
-          }
-        }), _vm._v(" "), _c('v-divider', {
-          attrs: {
-            "vertical": ""
-          }
-        }), _vm._v(" "), _c('link-button', {
-          attrs: {
-            "command": commands.link,
-            "is-active": isActive.link(),
-            "link-attributes": getMarkAttrs('link'),
-            "icon": "link"
-          }
-        }), _vm._v(" "), _c('tiptap-table', {
-          attrs: {
-            "editor-context": {
-              editor: _vm.editor,
-              commands: commands,
-              isActive: isActive
-            }
-          }
-        }), _vm._v(" "), _c('tce-image', {
-          attrs: {
-            "editor-context": {
-              editor: _vm.editor,
-              commands: commands,
-              isActive: isActive
-            }
-          }
-        }), _vm._v(" "), _c('menu-button', {
-          attrs: {
-            "command": commands.horizontal_rule,
-            "is-active": isActive.horizontal_rule(),
-            "icon": "minus"
-          }
-        }), _vm._v(" "), _c('menu-button', {
-          attrs: {
-            "command": commands.blockquote,
-            "is-active": isActive.blockquote(),
-            "icon": "format-quote-close"
-          }
-        }), _vm._v(" "), _c('v-divider', {
-          attrs: {
-            "vertical": ""
-          }
-        }), _vm._v(" "), _c('menu-button', {
-          attrs: {
-            "command": commands.clearFormat,
-            "icon": "format-clear"
-          }
-        })], 1)];
+    on: {
+      "click": function ($event) {
+        _vm.editor.chain().focus().toggleBold().run();
       }
-    }], null, false, 3917240205)
-  }) : _vm._e()], 1);
+    }
+  }), _vm._v(" "), _c('menu-button', {
+    attrs: {
+      "is-active": _vm.editor.isActive('italic'),
+      "icon": "format-italic",
+      "tooltip": "Italic"
+    },
+    on: {
+      "click": function ($event) {
+        _vm.editor.chain().focus().toggleItalic().run();
+      }
+    }
+  }), _vm._v(" "), _c('menu-button', {
+    attrs: {
+      "is-active": _vm.editor.isActive('underline'),
+      "icon": "format-underline",
+      "tooltip": "Underline"
+    },
+    on: {
+      "click": function ($event) {
+        _vm.editor.chain().focus().toggleUnderline().run();
+      }
+    }
+  }), _vm._v(" "), _c('menu-button', {
+    attrs: {
+      "is-active": _vm.editor.isActive('strike'),
+      "icon": "format-strikethrough",
+      "tooltip": "Strikethrough"
+    },
+    on: {
+      "click": function ($event) {
+        _vm.editor.chain().focus().toggleStrike().run();
+      }
+    }
+  }), _vm._v(" "), _c('v-divider', {
+    attrs: {
+      "vertical": ""
+    }
+  }), _vm._v(" "), _c('tiptap-table', {
+    attrs: {
+      "editor": _vm.editor
+    }
+  }), _vm._v(" "), _c('text-color', {
+    attrs: {
+      "editor": _vm.editor
+    }
+  }), _vm._v(" "), _c('text-highlight', {
+    attrs: {
+      "editor": _vm.editor
+    }
+  }), _vm._v(" "), _c('v-divider', {
+    attrs: {
+      "vertical": ""
+    }
+  }), _vm._v(" "), _c('menu-button', {
+    attrs: {
+      "is-active": _vm.editor.isActive('bulletList'),
+      "icon": "format-list-bulleted",
+      "tooltip": "Bullet list"
+    },
+    on: {
+      "click": function ($event) {
+        _vm.editor.chain().focus().toggleBulletList().run();
+      }
+    }
+  }), _vm._v(" "), _c('menu-button', {
+    attrs: {
+      "is-active": _vm.editor.isActive('orderedList'),
+      "icon": "format-list-numbered",
+      "tooltip": "Numbered list"
+    },
+    on: {
+      "click": function ($event) {
+        _vm.editor.chain().focus().toggleOrderedList().run();
+      }
+    }
+  }), _vm._v(" "), _c('text-align', {
+    attrs: {
+      "editor": _vm.editor
+    }
+  }), _vm._v(" "), _c('menu-button', {
+    attrs: {
+      "icon": "format-indent-decrease",
+      "tooltip": "Outdent"
+    },
+    on: {
+      "click": function ($event) {
+        _vm.editor.chain().focus().outdent(5).run();
+      }
+    }
+  }), _vm._v(" "), _c('menu-button', {
+    attrs: {
+      "icon": "format-indent-increase",
+      "tooltip": "Indent"
+    },
+    on: {
+      "click": function ($event) {
+        _vm.editor.chain().focus().indent(5).run();
+      }
+    }
+  }), _vm._v(" "), _c('v-divider', {
+    attrs: {
+      "vertical": ""
+    }
+  }), _vm._v(" "), _c('menu-button', {
+    attrs: {
+      "is-active": _vm.editor.isActive('horizontalRule'),
+      "icon": "minus",
+      "tooltip": "Horizontal rule"
+    },
+    on: {
+      "click": function ($event) {
+        _vm.editor.chain().focus().setHorizontalRule().run();
+      }
+    }
+  }), _vm._v(" "), _c('menu-button', {
+    attrs: {
+      "is-active": _vm.editor.isActive('blockquote'),
+      "icon": "format-quote-close",
+      "tooltip": "Blockquote"
+    },
+    on: {
+      "click": function ($event) {
+        _vm.editor.chain().focus().toggleBlockquote().run();
+      }
+    }
+  }), _vm._v(" "), _c('v-divider', {
+    attrs: {
+      "vertical": ""
+    }
+  }), _vm._v(" "), _c('link-button', {
+    attrs: {
+      "editor": _vm.editor,
+      "icon": "link"
+    }
+  }), _vm._v(" "), _c('tce-image', {
+    attrs: {
+      "editor": _vm.editor
+    }
+  }), _vm._v(" "), _c('v-divider', {
+    attrs: {
+      "vertical": ""
+    }
+  }), _vm._v(" "), _c('menu-button', {
+    attrs: {
+      "icon": "format-clear",
+      "tooltip": "Clear formating"
+    },
+    on: {
+      "click": function ($event) {
+        _vm.editor.chain().focus().unsetAllMarks().run();
+      }
+    }
+  })], 1) : _vm._e();
 };
 
 var __vue_staticRenderFns__ = [];
@@ -4179,7 +3066,7 @@ var __vue_staticRenderFns__ = [];
 const __vue_inject_styles__ = undefined;
 /* scoped */
 
-const __vue_scope_id__ = "data-v-80dd0402";
+const __vue_scope_id__ = "data-v-d8b596e2";
 /* module identifier */
 
 const __vue_module_identifier__ = undefined;
@@ -4200,14 +3087,14 @@ const __vue_component__ = /*#__PURE__*/normalizeComponent({
 var plugin__default = {
   initState: () => ({}),
   components: {
-    Edit: __vue_component__$9,
+    Edit: __vue_component__$a,
     Toolbar: __vue_component__
   }
 };
 
 var plugin = /*#__PURE__*/Object.freeze({
   __proto__: null,
-  Edit: __vue_component__$9,
+  Edit: __vue_component__$a,
   Toolbar: __vue_component__,
   'default': plugin__default
 });
@@ -4395,7 +3282,7 @@ var install = function install(Vue) {
   });
 };
 
-exports.Edit = __vue_component__$9;
+exports.Edit = __vue_component__$a;
 exports.Toolbar = __vue_component__;
 exports.default = install;
 exports.install = install;

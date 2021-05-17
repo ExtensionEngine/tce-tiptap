@@ -1,11 +1,24 @@
 (function (global, factory) {
-  typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('tiptap-extensions'), require('tiptap'), require('prosemirror-utils')) :
-  typeof define === 'function' && define.amd ? define(['exports', 'tiptap-extensions', 'tiptap', 'prosemirror-utils'], factory) :
-  (global = typeof globalThis !== 'undefined' ? globalThis : global || self, factory((global.__TAILOR_CONTENT_ELEMENTS__ = global.__TAILOR_CONTENT_ELEMENTS__ || {}, global.__TAILOR_CONTENT_ELEMENTS__['@extensionengine/tce-tiptap'] = {}), global.tiptapExtensions, global.tiptap, global.prosemirrorUtils));
-}(this, (function (exports, tiptapExtensions, tiptap, prosemirrorUtils) { 'use strict';
+  typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('@tiptap/vue-2'), require('@tiptap/extension-image'), require('@tiptap/extension-text-style'), require('@tiptap/extension-font-family'), require('@tiptap/extension-link'), require('@tiptap/extension-table'), require('@tiptap/extension-table-cell'), require('@tiptap/extension-table-header'), require('@tiptap/extension-table-row'), require('@tiptap/extension-text-align'), require('@tiptap/extension-underline')) :
+  typeof define === 'function' && define.amd ? define(['exports', '@tiptap/vue-2', '@tiptap/extension-image', '@tiptap/extension-text-style', '@tiptap/extension-font-family', '@tiptap/extension-link', '@tiptap/extension-table', '@tiptap/extension-table-cell', '@tiptap/extension-table-header', '@tiptap/extension-table-row', '@tiptap/extension-text-align', '@tiptap/extension-underline'], factory) :
+  (global = typeof globalThis !== 'undefined' ? globalThis : global || self, factory((global.__TAILOR_CONTENT_ELEMENTS__ = global.__TAILOR_CONTENT_ELEMENTS__ || {}, global.__TAILOR_CONTENT_ELEMENTS__['@extensionengine/tce-tiptap'] = {}), global.vue2, global.Image$1, global.TextStyle, global.FontFamily, global.Link, global.Table, global.TableCell, global.TableHeader, global.TableRow, global.TextAlign, global.Underline));
+}(this, (function (exports, vue2, Image$1, TextStyle, FontFamily, Link, Table, TableCell, TableHeader, TableRow, TextAlign, Underline) { 'use strict';
+
+  function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
+
+  var Image__default = /*#__PURE__*/_interopDefaultLegacy(Image$1);
+  var TextStyle__default = /*#__PURE__*/_interopDefaultLegacy(TextStyle);
+  var FontFamily__default = /*#__PURE__*/_interopDefaultLegacy(FontFamily);
+  var Link__default = /*#__PURE__*/_interopDefaultLegacy(Link);
+  var Table__default = /*#__PURE__*/_interopDefaultLegacy(Table);
+  var TableCell__default = /*#__PURE__*/_interopDefaultLegacy(TableCell);
+  var TableHeader__default = /*#__PURE__*/_interopDefaultLegacy(TableHeader);
+  var TableRow__default = /*#__PURE__*/_interopDefaultLegacy(TableRow);
+  var TextAlign__default = /*#__PURE__*/_interopDefaultLegacy(TextAlign);
+  var Underline__default = /*#__PURE__*/_interopDefaultLegacy(Underline);
 
   var name = "@extensionengine/tce-tiptap";
-  var version = "0.0.1";
+  var version = "0.1.0";
   var tailor = {
   	label: "Html",
   	type: "TIPTAP_HTML",
@@ -14,59 +27,6 @@
   		forceFullWidth: false
   	}
   };
-
-  const ALLOWED_NODE_TYPES$2 = ['paragraph', 'heading', 'list_item', 'todo_item', 'title'];
-  function setTextAlign$1(tr, alignment) {
-    const {
-      selection,
-      doc
-    } = tr;
-
-    if (!selection || !doc) {
-      return tr;
-    }
-
-    const {
-      from,
-      to
-    } = selection;
-    const tasks = [];
-    alignment = alignment || null;
-    doc.nodesBetween(from, to, (node, pos) => {
-      const nodeType = node.type;
-
-      if (ALLOWED_NODE_TYPES$2.includes(nodeType.name)) {
-        const align = node.attrs.textAlign || null;
-
-        if (align !== alignment) {
-          tasks.push({
-            node,
-            pos,
-            nodeType
-          });
-          return nodeType.name !== 'list_item' && nodeType.name !== 'todo_item';
-        }
-      }
-
-      return true;
-    });
-    if (!tasks.length) return tr;
-    tasks.forEach(job => {
-      const {
-        node,
-        pos,
-        nodeType
-      } = job;
-      let {
-        attrs
-      } = node;
-      attrs = { ...attrs,
-        textAlign: alignment
-      };
-      tr = tr.setNodeMarkup(pos, nodeType, attrs, node.marks);
-    });
-    return tr;
-  }
 
   function findDiffStart(a, b, pos) {
     for (var i = 0;; i++) {
@@ -430,7 +390,7 @@
   // (such as the target of the link). Marks are created through a
   // `Schema`, which controls which types exist and which
   // attributes they have.
-  var Mark = function Mark(type, attrs) {
+  var Mark$1 = function Mark(type, attrs) {
     // :: MarkType
     // The type of this mark.
     this.type = type;
@@ -445,7 +405,7 @@
   // the set itself is returned. If any marks that are set to be
   // [exclusive](#model.MarkSpec.excludes) with this mark are present,
   // those are replaced by this one.
-  Mark.prototype.addToSet = function addToSet (set) {
+  Mark$1.prototype.addToSet = function addToSet (set) {
     var copy, placed = false;
     for (var i = 0; i < set.length; i++) {
       var other = set[i];
@@ -471,7 +431,7 @@
   // :: ([Mark]) → [Mark]
   // Remove this mark from the given set, returning a new set. If this
   // mark is not in the set, the set itself is returned.
-  Mark.prototype.removeFromSet = function removeFromSet (set) {
+  Mark$1.prototype.removeFromSet = function removeFromSet (set) {
     for (var i = 0; i < set.length; i++)
       { if (this.eq(set[i]))
         { return set.slice(0, i).concat(set.slice(i + 1)) } }
@@ -480,7 +440,7 @@
 
   // :: ([Mark]) → bool
   // Test whether this mark is in the given set of marks.
-  Mark.prototype.isInSet = function isInSet (set) {
+  Mark$1.prototype.isInSet = function isInSet (set) {
     for (var i = 0; i < set.length; i++)
       { if (this.eq(set[i])) { return true } }
     return false
@@ -489,14 +449,14 @@
   // :: (Mark) → bool
   // Test whether this mark has the same type and attributes as
   // another mark.
-  Mark.prototype.eq = function eq (other) {
+  Mark$1.prototype.eq = function eq (other) {
     return this == other ||
       (this.type == other.type && compareDeep(this.attrs, other.attrs))
   };
 
   // :: () → Object
   // Convert this mark to a JSON-serializeable representation.
-  Mark.prototype.toJSON = function toJSON () {
+  Mark$1.prototype.toJSON = function toJSON () {
     var obj = {type: this.type.name};
     for (var _ in this.attrs) {
       obj.attrs = this.attrs;
@@ -506,7 +466,7 @@
   };
 
   // :: (Schema, Object) → Mark
-  Mark.fromJSON = function fromJSON (schema, json) {
+  Mark$1.fromJSON = function fromJSON (schema, json) {
     if (!json) { throw new RangeError("Invalid input for Mark.fromJSON") }
     var type = schema.marks[json.type];
     if (!type) { throw new RangeError(("There is no mark type " + (json.type) + " in this schema")) }
@@ -515,7 +475,7 @@
 
   // :: ([Mark], [Mark]) → bool
   // Test whether two sets of marks are identical.
-  Mark.sameSet = function sameSet (a, b) {
+  Mark$1.sameSet = function sameSet (a, b) {
     if (a == b) { return true }
     if (a.length != b.length) { return false }
     for (var i = 0; i < a.length; i++)
@@ -526,16 +486,16 @@
   // :: (?union<Mark, [Mark]>) → [Mark]
   // Create a properly sorted mark set from null, a single mark, or an
   // unsorted array of marks.
-  Mark.setFrom = function setFrom (marks) {
-    if (!marks || marks.length == 0) { return Mark.none }
-    if (marks instanceof Mark) { return [marks] }
+  Mark$1.setFrom = function setFrom (marks) {
+    if (!marks || marks.length == 0) { return Mark$1.none }
+    if (marks instanceof Mark$1) { return [marks] }
     var copy = marks.slice();
     copy.sort(function (a, b) { return a.type.rank - b.type.rank; });
     return copy
   };
 
   // :: [Mark] The empty set of marks.
-  Mark.none = [];
+  Mark$1.none = [];
 
   // ReplaceError:: class extends Error
   // Error type raised by [`Node.replace`](#model.Node.replace) when
@@ -657,7 +617,7 @@
   // The empty slice.
   Slice.empty = new Slice(Fragment.empty, 0, 0);
 
-  function replace($from, $to, slice) {
+  function replace$2($from, $to, slice) {
     if (slice.openStart > $from.depth)
       { throw new ReplaceError("Inserted content deeper than insertion position") }
     if ($from.depth - slice.openStart != $to.depth - slice.openEnd)
@@ -905,7 +865,7 @@
     var parent = this.parent, index = this.index();
 
     // In an empty parent, return the empty array
-    if (parent.content.size == 0) { return Mark.none }
+    if (parent.content.size == 0) { return Mark$1.none }
 
     // When inside a text node, just return the text node's marks
     if (this.textOffset) { return parent.child(index).marks }
@@ -1073,7 +1033,7 @@
   //
   // **Do not** directly mutate the properties of a `Node` object. See
   // [the guide](/docs/guide/#doc) for more information.
-  var Node = function Node(type, attrs, content, marks) {
+  var Node$1 = function Node(type, attrs, content, marks) {
     // :: NodeType
     // The type of node that this is.
     this.type = type;
@@ -1091,7 +1051,7 @@
     // :: [Mark]
     // The marks (things like whether it is emphasized or part of a
     // link) applied to this node.
-    this.marks = marks || Mark.none;
+    this.marks = marks || Mark$1.none;
   };
 
   var prototypeAccessors$3$1 = { nodeSize: { configurable: true },childCount: { configurable: true },textContent: { configurable: true },firstChild: { configurable: true },lastChild: { configurable: true },isBlock: { configurable: true },isTextblock: { configurable: true },inlineContent: { configurable: true },isInline: { configurable: true },isText: { configurable: true },isLeaf: { configurable: true },isAtom: { configurable: true } };
@@ -1114,16 +1074,16 @@
   // :: (number) → Node
   // Get the child node at the given index. Raises an error when the
   // index is out of range.
-  Node.prototype.child = function child (index) { return this.content.child(index) };
+  Node$1.prototype.child = function child (index) { return this.content.child(index) };
 
   // :: (number) → ?Node
   // Get the child node at the given index, if it exists.
-  Node.prototype.maybeChild = function maybeChild (index) { return this.content.maybeChild(index) };
+  Node$1.prototype.maybeChild = function maybeChild (index) { return this.content.maybeChild(index) };
 
   // :: ((node: Node, offset: number, index: number))
   // Call `f` for every child node, passing the node, its offset
   // into this parent node, and its index.
-  Node.prototype.forEach = function forEach (f) { this.content.forEach(f); };
+  Node$1.prototype.forEach = function forEach (f) { this.content.forEach(f); };
 
   // :: (number, number, (node: Node, pos: number, parent: Node, index: number) → ?bool, ?number)
   // Invoke a callback for all descendant nodes recursively between
@@ -1133,7 +1093,7 @@
   // When the callback returns false for a given node, that node's
   // children will not be recursed over. The last parameter can be
   // used to specify a starting position to count from.
-  Node.prototype.nodesBetween = function nodesBetween (from, to, f, startPos) {
+  Node$1.prototype.nodesBetween = function nodesBetween (from, to, f, startPos) {
       if ( startPos === void 0 ) startPos = 0;
 
     this.content.nodesBetween(from, to, f, startPos, this);
@@ -1142,7 +1102,7 @@
   // :: ((node: Node, pos: number, parent: Node) → ?bool)
   // Call the given callback for every descendant node. Doesn't
   // descend into a node when the callback returns `false`.
-  Node.prototype.descendants = function descendants (f) {
+  Node$1.prototype.descendants = function descendants (f) {
     this.nodesBetween(0, this.content.size, f);
   };
 
@@ -1156,7 +1116,7 @@
   // `blockSeparator` is given, it will be inserted whenever a new
   // block node is started. When `leafText` is given, it'll be
   // inserted for every non-text leaf node encountered.
-  Node.prototype.textBetween = function textBetween (from, to, blockSeparator, leafText) {
+  Node$1.prototype.textBetween = function textBetween (from, to, blockSeparator, leafText) {
     return this.content.textBetween(from, to, blockSeparator, leafText)
   };
 
@@ -1172,30 +1132,30 @@
 
   // :: (Node) → bool
   // Test whether two nodes represent the same piece of document.
-  Node.prototype.eq = function eq (other) {
+  Node$1.prototype.eq = function eq (other) {
     return this == other || (this.sameMarkup(other) && this.content.eq(other.content))
   };
 
   // :: (Node) → bool
   // Compare the markup (type, attributes, and marks) of this node to
   // those of another. Returns `true` if both have the same markup.
-  Node.prototype.sameMarkup = function sameMarkup (other) {
+  Node$1.prototype.sameMarkup = function sameMarkup (other) {
     return this.hasMarkup(other.type, other.attrs, other.marks)
   };
 
   // :: (NodeType, ?Object, ?[Mark]) → bool
   // Check whether this node's markup correspond to the given type,
   // attributes, and marks.
-  Node.prototype.hasMarkup = function hasMarkup (type, attrs, marks) {
+  Node$1.prototype.hasMarkup = function hasMarkup (type, attrs, marks) {
     return this.type == type &&
       compareDeep(this.attrs, attrs || type.defaultAttrs || emptyAttrs) &&
-      Mark.sameSet(this.marks, marks || Mark.none)
+      Mark$1.sameSet(this.marks, marks || Mark$1.none)
   };
 
   // :: (?Fragment) → Node
   // Create a new node with the same markup as this node, containing
   // the given content (or empty, if no content is given).
-  Node.prototype.copy = function copy (content) {
+  Node$1.prototype.copy = function copy (content) {
       if ( content === void 0 ) content = null;
 
     if (content == this.content) { return this }
@@ -1205,7 +1165,7 @@
   // :: ([Mark]) → Node
   // Create a copy of this node, with the given set of marks instead
   // of the node's own marks.
-  Node.prototype.mark = function mark (marks) {
+  Node$1.prototype.mark = function mark (marks) {
     return marks == this.marks ? this : new this.constructor(this.type, this.attrs, this.content, marks)
   };
 
@@ -1213,7 +1173,7 @@
   // Create a copy of this node with only the content between the
   // given positions. If `to` is not given, it defaults to the end of
   // the node.
-  Node.prototype.cut = function cut (from, to) {
+  Node$1.prototype.cut = function cut (from, to) {
     if (from == 0 && to == this.content.size) { return this }
     return this.copy(this.content.cut(from, to))
   };
@@ -1221,7 +1181,7 @@
   // :: (number, ?number) → Slice
   // Cut out the part of the document between the given positions, and
   // return it as a `Slice` object.
-  Node.prototype.slice = function slice (from, to, includeParents) {
+  Node$1.prototype.slice = function slice (from, to, includeParents) {
       if ( to === void 0 ) to = this.content.size;
       if ( includeParents === void 0 ) includeParents = false;
 
@@ -1241,13 +1201,13 @@
   // content nodes must be valid children for the node they are placed
   // into. If any of this is violated, an error of type
   // [`ReplaceError`](#model.ReplaceError) is thrown.
-  Node.prototype.replace = function replace$1 (from, to, slice) {
-    return replace(this.resolve(from), this.resolve(to), slice)
+  Node$1.prototype.replace = function replace$1 (from, to, slice) {
+    return replace$2(this.resolve(from), this.resolve(to), slice)
   };
 
   // :: (number) → ?Node
   // Find the node directly after the given position.
-  Node.prototype.nodeAt = function nodeAt (pos) {
+  Node$1.prototype.nodeAt = function nodeAt (pos) {
     for (var node = this;;) {
       var ref = node.content.findIndex(pos);
         var index = ref.index;
@@ -1263,7 +1223,7 @@
   // Find the (direct) child node after the given offset, if any,
   // and return it along with its index and offset relative to this
   // node.
-  Node.prototype.childAfter = function childAfter (pos) {
+  Node$1.prototype.childAfter = function childAfter (pos) {
     var ref = this.content.findIndex(pos);
       var index = ref.index;
       var offset = ref.offset;
@@ -1274,7 +1234,7 @@
   // Find the (direct) child node before the given offset, if any,
   // and return it along with its index and offset relative to this
   // node.
-  Node.prototype.childBefore = function childBefore (pos) {
+  Node$1.prototype.childBefore = function childBefore (pos) {
     if (pos == 0) { return {node: null, index: 0, offset: 0} }
     var ref = this.content.findIndex(pos);
       var index = ref.index;
@@ -1287,14 +1247,14 @@
   // :: (number) → ResolvedPos
   // Resolve the given position in the document, returning an
   // [object](#model.ResolvedPos) with information about its context.
-  Node.prototype.resolve = function resolve (pos) { return ResolvedPos.resolveCached(this, pos) };
+  Node$1.prototype.resolve = function resolve (pos) { return ResolvedPos.resolveCached(this, pos) };
 
-  Node.prototype.resolveNoCache = function resolveNoCache (pos) { return ResolvedPos.resolve(this, pos) };
+  Node$1.prototype.resolveNoCache = function resolveNoCache (pos) { return ResolvedPos.resolve(this, pos) };
 
   // :: (number, number, union<Mark, MarkType>) → bool
   // Test whether a given mark or mark type occurs in this document
   // between the two given positions.
-  Node.prototype.rangeHasMark = function rangeHasMark (from, to, type) {
+  Node$1.prototype.rangeHasMark = function rangeHasMark (from, to, type) {
     var found = false;
     if (to > from) { this.nodesBetween(from, to, function (node) {
       if (type.isInSet(node.marks)) { found = true; }
@@ -1340,7 +1300,7 @@
   // :: () → string
   // Return a string representation of this node for debugging
   // purposes.
-  Node.prototype.toString = function toString () {
+  Node$1.prototype.toString = function toString () {
     if (this.type.spec.toDebugString) { return this.type.spec.toDebugString(this) }
     var name = this.type.name;
     if (this.content.size)
@@ -1350,7 +1310,7 @@
 
   // :: (number) → ContentMatch
   // Get the content match in this node at the given index.
-  Node.prototype.contentMatchAt = function contentMatchAt (index) {
+  Node$1.prototype.contentMatchAt = function contentMatchAt (index) {
     var match = this.type.contentMatch.matchFragment(this.content, 0, index);
     if (!match) { throw new Error("Called contentMatchAt on a node with invalid content") }
     return match
@@ -1362,7 +1322,7 @@
   // to the empty fragment) would leave the node's content valid. You
   // can optionally pass `start` and `end` indices into the
   // replacement fragment.
-  Node.prototype.canReplace = function canReplace (from, to, replacement, start, end) {
+  Node$1.prototype.canReplace = function canReplace (from, to, replacement, start, end) {
       if ( replacement === void 0 ) replacement = Fragment.empty;
       if ( start === void 0 ) start = 0;
       if ( end === void 0 ) end = replacement.childCount;
@@ -1377,7 +1337,7 @@
   // :: (number, number, NodeType, ?[Mark]) → bool
   // Test whether replacing the range `from` to `to` (by index) with a
   // node of the given type would leave the node's content valid.
-  Node.prototype.canReplaceWith = function canReplaceWith (from, to, type, marks) {
+  Node$1.prototype.canReplaceWith = function canReplaceWith (from, to, type, marks) {
     if (marks && !this.type.allowsMarks(marks)) { return false }
     var start = this.contentMatchAt(from).matchType(type);
     var end = start && start.matchFragment(this.content, to);
@@ -1389,7 +1349,7 @@
   // node. If that node is empty, this will only return true if there
   // is at least one node type that can appear in both nodes (to avoid
   // merging completely incompatible nodes).
-  Node.prototype.canAppend = function canAppend (other) {
+  Node$1.prototype.canAppend = function canAppend (other) {
     if (other.content.size) { return this.canReplace(this.childCount, this.childCount, other.content) }
     else { return this.type.compatibleContent(other.type) }
   };
@@ -1397,19 +1357,19 @@
   // :: ()
   // Check whether this node and its descendants conform to the
   // schema, and raise error when they do not.
-  Node.prototype.check = function check () {
+  Node$1.prototype.check = function check () {
     if (!this.type.validContent(this.content))
       { throw new RangeError(("Invalid content for node " + (this.type.name) + ": " + (this.content.toString().slice(0, 50)))) }
-    var copy = Mark.none;
+    var copy = Mark$1.none;
     for (var i = 0; i < this.marks.length; i++) { copy = this.marks[i].addToSet(copy); }
-    if (!Mark.sameSet(copy, this.marks))
+    if (!Mark$1.sameSet(copy, this.marks))
       { throw new RangeError(("Invalid collection of marks for node " + (this.type.name) + ": " + (this.marks.map(function (m) { return m.type.name; })))) }
     this.content.forEach(function (node) { return node.check(); });
   };
 
   // :: () → Object
   // Return a JSON-serializeable representation of this node.
-  Node.prototype.toJSON = function toJSON () {
+  Node$1.prototype.toJSON = function toJSON () {
     var obj = {type: this.type.name};
     for (var _ in this.attrs) {
       obj.attrs = this.attrs;
@@ -1424,7 +1384,7 @@
 
   // :: (Schema, Object) → Node
   // Deserialize a node from its JSON representation.
-  Node.fromJSON = function fromJSON (schema, json) {
+  Node$1.fromJSON = function fromJSON (schema, json) {
     if (!json) { throw new RangeError("Invalid input for Node.fromJSON") }
     var marks = null;
     if (json.marks) {
@@ -1439,7 +1399,7 @@
     return schema.nodeType(json.type).create(json.attrs, content, marks)
   };
 
-  Object.defineProperties( Node.prototype, prototypeAccessors$3$1 );
+  Object.defineProperties( Node$1.prototype, prototypeAccessors$3$1 );
 
   function wrapMarks(marks, str) {
     for (var i = marks.length - 1; i >= 0; i--)
@@ -1973,7 +1933,7 @@
   // set of marks.
   NodeType$1.prototype.create = function create (attrs, content, marks) {
     if (this.isText) { throw new Error("NodeType.create can't construct text nodes") }
-    return new Node(this, this.computeAttrs(attrs), Fragment.from(content), Mark.setFrom(marks))
+    return new Node$1(this, this.computeAttrs(attrs), Fragment.from(content), Mark$1.setFrom(marks))
   };
 
   // :: (?Object, ?union<Fragment, Node, [Node]>, ?[Mark]) → Node
@@ -1984,7 +1944,7 @@
     content = Fragment.from(content);
     if (!this.validContent(content))
       { throw new RangeError("Invalid content for node " + this.name) }
-    return new Node(this, this.computeAttrs(attrs), content, Mark.setFrom(marks))
+    return new Node$1(this, this.computeAttrs(attrs), content, Mark$1.setFrom(marks))
   };
 
   // :: (?Object, ?union<Fragment, Node, [Node]>, ?[Mark]) → ?Node
@@ -2004,7 +1964,7 @@
     }
     var after = this.contentMatch.matchFragment(content).fillBefore(Fragment.empty, true);
     if (!after) { return null }
-    return new Node(this, attrs, content.append(after), Mark.setFrom(marks))
+    return new Node$1(this, attrs, content.append(after), Mark$1.setFrom(marks))
   };
 
   // :: (Fragment) → bool
@@ -2044,7 +2004,7 @@
         copy.push(marks[i]);
       }
     }
-    return !copy ? marks : copy.length ? copy : Mark.empty
+    return !copy ? marks : copy.length ? copy : Mark$1.empty
   };
 
   NodeType$1.compile = function compile (nodes, schema) {
@@ -2100,7 +2060,7 @@
     this.rank = rank;
     this.excluded = null;
     var defaults = defaultAttrs(this.attrs);
-    this.instance = defaults && new Mark(this, defaults);
+    this.instance = defaults && new Mark$1(this, defaults);
   };
 
   // :: (?Object) → Mark
@@ -2109,7 +2069,7 @@
   // they have defaults, will be added.
   MarkType.prototype.create = function create (attrs) {
     if (!attrs && this.instance) { return this.instance }
-    return new Mark(this, computeAttrs(this.attrs, attrs))
+    return new Mark$1(this, computeAttrs(this.attrs, attrs))
   };
 
   MarkType.compile = function compile (marks, schema) {
@@ -2452,7 +2412,7 @@
     // Marks applied to this node itself
     this.marks = marks;
     // Marks applied to its children
-    this.activeMarks = Mark.none;
+    this.activeMarks = Mark$1.none;
     // Marks that can't apply here, but will be used in children if possible
     this.pendingMarks = pendingMarks;
     // Nested Marks with same type
@@ -2517,12 +2477,12 @@
     var topNode = options.topNode, topContext;
     var topOptions = wsOptionsFor(options.preserveWhitespace) | (open ? OPT_OPEN_LEFT : 0);
     if (topNode)
-      { topContext = new NodeContext(topNode.type, topNode.attrs, Mark.none, Mark.none, true,
+      { topContext = new NodeContext(topNode.type, topNode.attrs, Mark$1.none, Mark$1.none, true,
                                    options.topMatch || topNode.type.contentMatch, topOptions); }
     else if (open)
-      { topContext = new NodeContext(null, null, Mark.none, Mark.none, true, null, topOptions); }
+      { topContext = new NodeContext(null, null, Mark$1.none, Mark$1.none, true, null, topOptions); }
     else
-      { topContext = new NodeContext(parser.schema.topNodeType, null, Mark.none, Mark.none, true, null, topOptions); }
+      { topContext = new NodeContext(parser.schema.topNodeType, null, Mark$1.none, Mark$1.none, true, null, topOptions); }
     this.nodes = [topContext];
     // : [Mark] The current set of marks
     this.open = 0;
@@ -2555,7 +2515,9 @@
   ParseContext.prototype.addTextNode = function addTextNode (dom) {
     var value = dom.nodeValue;
     var top = this.top;
-    if ((top.type ? top.type.inlineContent : top.content.length && top.content[0].isInline) || /[^ \t\r\n\u000c]/.test(value)) {
+    if (top.options & OPT_PRESERVE_WS_FULL ||
+        (top.type ? top.type.inlineContent : top.content.length && top.content[0].isInline) ||
+        /[^ \t\r\n\u000c]/.test(value)) {
       if (!(top.options & OPT_PRESERVE_WS)) {
         value = value.replace(/[ \t\r\n\u000c]+/g, " ");
         // If this starts with whitespace, and there is no node before it, or
@@ -2628,7 +2590,7 @@
   // return an array of marks, or null to indicate some of the styles
   // had a rule with `ignore` set.
   ParseContext.prototype.readStyles = function readStyles (styles) {
-    var marks = Mark.none;
+    var marks = Mark$1.none;
     style: for (var i = 0; i < styles.length; i += 2) {
       for (var after = null;;) {
         var rule = this.parser.matchStyle(styles[i], styles[i + 1], this, after);
@@ -3844,6 +3806,49 @@
                                            before.size - openStart, true))
   };
 
+  // :: (NodeRange, NodeType, ?Object, ?NodeRange) → ?[{type: NodeType, attrs: ?Object}]
+  // Try to find a valid way to wrap the content in the given range in a
+  // node of the given type. May introduce extra nodes around and inside
+  // the wrapper node, if necessary. Returns null if no valid wrapping
+  // could be found. When `innerRange` is given, that range's content is
+  // used as the content to fit into the wrapping, instead of the
+  // content of `range`.
+  function findWrapping(range, nodeType, attrs, innerRange) {
+    if ( innerRange === void 0 ) innerRange = range;
+
+    var around = findWrappingOutside(range, nodeType);
+    var inner = around && findWrappingInside(innerRange, nodeType);
+    if (!inner) { return null }
+    return around.map(withAttrs).concat({type: nodeType, attrs: attrs}).concat(inner.map(withAttrs))
+  }
+
+  function withAttrs(type) { return {type: type, attrs: null} }
+
+  function findWrappingOutside(range, type) {
+    var parent = range.parent;
+    var startIndex = range.startIndex;
+    var endIndex = range.endIndex;
+    var around = parent.contentMatchAt(startIndex).findWrapping(type);
+    if (!around) { return null }
+    var outer = around.length ? around[0] : type;
+    return parent.canReplaceWith(startIndex, endIndex, outer) ? around : null
+  }
+
+  function findWrappingInside(range, type) {
+    var parent = range.parent;
+    var startIndex = range.startIndex;
+    var endIndex = range.endIndex;
+    var inner = parent.child(startIndex);
+    var inside = type.contentMatch.findWrapping(inner.type);
+    if (!inside) { return null }
+    var lastType = inside.length ? inside[inside.length - 1] : type;
+    var innerMatch = lastType.contentMatch;
+    for (var i = startIndex; innerMatch && i < endIndex; i++)
+      { innerMatch = innerMatch.matchType(parent.child(i).type); }
+    if (!innerMatch || !innerMatch.validEnd) { return null }
+    return inside
+  }
+
   // :: (NodeRange, [{type: NodeType, attrs: ?Object}]) → this
   // Wrap the given [range](#model.NodeRange) in the given set of wrappers.
   // The wrappers are assumed to be valid in this position, and should
@@ -4877,7 +4882,7 @@
         var mapping = tr.mapping.slice(mapFrom);
       tr.replaceRange(mapping.map($from.pos), mapping.map($to.pos), i$1 ? Slice.empty : content);
       if (i$1 == 0)
-        { selectionToInsertionEnd(tr, mapFrom, (lastNode ? lastNode.isInline : lastParent && lastParent.isTextblock) ? -1 : 1); }
+        { selectionToInsertionEnd$1(tr, mapFrom, (lastNode ? lastNode.isInline : lastParent && lastParent.isTextblock) ? -1 : 1); }
     }
   };
 
@@ -4896,7 +4901,7 @@
         tr.deleteRange(from, to);
       } else {
         tr.replaceRangeWith(from, to, node);
-        selectionToInsertionEnd(tr, mapFrom, node.isInline ? -1 : 1);
+        selectionToInsertionEnd$1(tr, mapFrom, node.isInline ? -1 : 1);
       }
     }
   };
@@ -5274,7 +5279,7 @@
     }
   }
 
-  function selectionToInsertionEnd(tr, startLen, bias) {
+  function selectionToInsertionEnd$1(tr, startLen, bias) {
     var last = tr.steps.length - 1;
     if (last < startLen) { return }
     var step = tr.steps[last];
@@ -5374,7 +5379,7 @@
     // at the selection, match the given set of marks. Does nothing if
     // this is already the case.
     Transaction.prototype.ensureMarks = function ensureMarks (marks) {
-      if (!Mark.sameSet(this.storedMarks || this.selection.$from.marks(), marks))
+      if (!Mark$1.sameSet(this.storedMarks || this.selection.$from.marks(), marks))
         { this.setStoredMarks(marks); }
       return this
     };
@@ -5424,7 +5429,7 @@
     Transaction.prototype.replaceSelectionWith = function replaceSelectionWith (node, inheritMarks) {
       var selection = this.selection;
       if (inheritMarks !== false)
-        { node = node.mark(this.storedMarks || (selection.empty ? selection.$from.marks() : (selection.$from.marksAcross(selection.$to) || Mark.none))); }
+        { node = node.mark(this.storedMarks || (selection.empty ? selection.$from.marks() : (selection.$from.marksAcross(selection.$to) || Mark$1.none))); }
       selection.replaceWith(this, node);
       return this
     };
@@ -5745,7 +5750,7 @@
     var instance = new EditorState($config);
     $config.fields.forEach(function (field) {
       if (field.name == "doc") {
-        instance.doc = Node.fromJSON(config.schema, json.doc);
+        instance.doc = Node$1.fromJSON(config.schema, json.doc);
       } else if (field.name == "selection") {
         instance.selection = Selection.fromJSON(instance.doc, json.selection);
       } else if (field.name == "storedMarks") {
@@ -5913,4721 +5918,6 @@
   // Get the plugin's state from an editor state.
   PluginKey.prototype.getState = function getState (state) { return state[this.key] };
 
-  const LINE_HEIGHT_100 = 1.7;
-  const DEFAULT_LINE_HEIGHT = '100%';
-  const ALLOWED_NODE_TYPES$1 = ['paragraph', 'heading', 'list_item', 'todo_item'];
-  const NUMBER_VALUE_PATTERN = /^\d+(.\d+)?$/;
-  function transformLineHeightToCSS(value) {
-    if (!value) return '';
-    let strValue = String(value);
-
-    if (NUMBER_VALUE_PATTERN.test(strValue)) {
-      const numValue = parseFloat(strValue);
-      strValue = String(Math.round(numValue * 100)) + '%';
-    }
-
-    return parseFloat(strValue) * LINE_HEIGHT_100 + '%';
-  }
-  function transformCSStoLineHeight(value) {
-    if (!value) return '';
-    if (value === DEFAULT_LINE_HEIGHT) return '';
-    let strValue = value;
-
-    if (NUMBER_VALUE_PATTERN.test(value)) {
-      const numValue = parseFloat(value);
-      strValue = String(Math.round(numValue * 100)) + '%';
-      if (strValue === DEFAULT_LINE_HEIGHT) return '';
-    }
-
-    return parseFloat(strValue) / LINE_HEIGHT_100 + '%';
-  }
-  function setTextLineHeight(tr, lineHeight) {
-    const {
-      selection,
-      doc
-    } = tr;
-    if (!selection || !doc) return tr;
-
-    if (!(selection instanceof TextSelection || selection instanceof AllSelection)) {
-      return tr;
-    }
-
-    const {
-      from,
-      to
-    } = selection;
-    const tasks = [];
-    const lineHeightValue = lineHeight && lineHeight !== DEFAULT_LINE_HEIGHT ? lineHeight : null;
-    doc.nodesBetween(from, to, (node, pos) => {
-      const nodeType = node.type;
-
-      if (ALLOWED_NODE_TYPES$1.includes(nodeType.name)) {
-        const lineHeight = node.attrs.lineHeight || null;
-
-        if (lineHeight !== lineHeightValue) {
-          tasks.push({
-            node,
-            pos,
-            nodeType
-          });
-        }
-
-        return nodeType.name !== 'list_item' && nodeType.name !== 'todo_item';
-      }
-
-      return true;
-    });
-    if (!tasks.length) return tr;
-    tasks.forEach(task => {
-      const {
-        node,
-        pos,
-        nodeType
-      } = task;
-      let {
-        attrs
-      } = node;
-      attrs = { ...attrs,
-        lineHeight: lineHeightValue
-      };
-      tr = tr.setNodeMarkup(pos, nodeType, attrs, node.marks);
-    });
-    return tr;
-  }
-
-  const FORMAT_MARKS = {
-    bold: 'bold',
-    italic: 'italic',
-    underline: 'underline',
-    strike: 'strike',
-    link: 'link',
-    textColor: 'textColor',
-    textHighlight: 'textHighlight',
-    fontSize: 'fontSize',
-    fontType: 'fontType'
-  };
-  function clearMarks(tr, schema) {
-    const {
-      doc,
-      selection
-    } = tr;
-    if (!selection || !doc) return tr;
-    const {
-      from,
-      to,
-      empty
-    } = selection;
-    if (empty) return tr;
-    const markTypesToRemove = new Set(Object.values(FORMAT_MARKS).map(n => schema.marks[n]).filter(Boolean));
-    if (!markTypesToRemove.size) return tr;
-    const tasks = [];
-    doc.nodesBetween(from, to, (node, pos) => {
-      if (node.marks && node.marks.length) {
-        node.marks.some(mark => {
-          if (markTypesToRemove.has(mark.type)) {
-            tasks.push({
-              node,
-              pos,
-              mark
-            });
-          }
-        });
-        return true;
-      }
-
-      return true;
-    });
-    tasks.forEach(job => {
-      const {
-        node,
-        mark,
-        pos
-      } = job;
-      tr = tr.removeMark(pos, pos + node.nodeSize, mark.type);
-    });
-    tr = setTextAlign$1(tr, null);
-    tr = setTextLineHeight(tr, null);
-    return tr;
-  }
-  class FormatClear extends tiptap.Extension {
-    get name() {
-      return 'clearFormat';
-    }
-
-    commands() {
-      return () => (state, dispatch) => {
-        const tr = clearMarks(state.tr.setSelection(state.selection), state.schema);
-
-        if (dispatch && tr.docChanged) {
-          dispatch(tr);
-          return true;
-        }
-
-        return false;
-      };
-    }
-
-  }
-
-  function markApplies(doc, ranges, type) {
-    for (let i = 0; i < ranges.length; i++) {
-      const {
-        $from,
-        $to
-      } = ranges[i];
-      let can = $from.depth === 0 ? doc.type.allowsMarkType(type) : false;
-      doc.nodesBetween($from.pos, $to.pos, node => {
-        if (can) return false;
-        can = node.inlineContent && node.type.allowsMarkType(type);
-        return true;
-      });
-      if (can) return true;
-    }
-
-    return false;
-  } // https://github.com/ProseMirror/prosemirror-commands/blob/master/src/commands.js
-
-
-  function applyMark(tr, markType, attrs) {
-    if (!tr.selection || !tr.doc || !markType) return tr;
-    const {
-      empty,
-      $cursor,
-      ranges
-    } = tr.selection;
-    if (empty && !$cursor || !markApplies(tr.doc, ranges, markType)) return tr;
-
-    if ($cursor) {
-      tr = tr.removeStoredMark(markType);
-      return attrs ? tr.addStoredMark(markType.create(attrs)) : tr;
-    }
-
-    let has = false;
-
-    for (let i = 0; !has && i < ranges.length; i++) {
-      const {
-        $from,
-        $to
-      } = ranges[i];
-      has = tr.doc.rangeHasMark($from.pos, $to.pos, markType);
-    }
-
-    for (let i = 0; i < ranges.length; i++) {
-      const {
-        $from,
-        $to
-      } = ranges[i];
-
-      if (has) {
-        tr = tr.removeMark($from.pos, $to.pos, markType);
-      }
-
-      if (attrs) {
-        tr = tr.addMark($from.pos, $to.pos, markType.create(attrs));
-      }
-    }
-
-    return tr;
-  }
-
-  function getMarkAttrs(state, type) {
-    const {
-      from,
-      to
-    } = state.selection;
-    let marks = [];
-    state.doc.nodesBetween(from, to, node => {
-      marks = [...marks, ...node.marks];
-    });
-    const mark = marks.find(markItem => markItem.type.name === type.name);
-
-    if (mark) {
-      return mark.attrs;
-    }
-
-    return {};
-  }
-
-  function getMarkRange($pos = null, type = null) {
-    if (!$pos || !type) {
-      return false;
-    }
-
-    const start = $pos.parent.childAfter($pos.parentOffset);
-
-    if (!start.node) {
-      return false;
-    }
-
-    const link = start.node.marks.find(mark => mark.type === type);
-
-    if (!link) {
-      return false;
-    }
-
-    let startIndex = $pos.index();
-    let startPos = $pos.start() + start.offset;
-    let endIndex = startIndex + 1;
-    let endPos = startPos + start.node.nodeSize;
-
-    while (startIndex > 0 && link.isInSet($pos.parent.child(startIndex - 1).marks)) {
-      startIndex -= 1;
-      startPos -= $pos.parent.child(startIndex).nodeSize;
-    }
-
-    while (endIndex < $pos.parent.childCount && link.isInSet($pos.parent.child(endIndex).marks)) {
-      endPos += $pos.parent.child(endIndex).nodeSize;
-      endIndex += 1;
-    }
-
-    return {
-      from: startPos,
-      to: endPos
-    };
-  }
-
-  const FONT_SIZES = ['8', '10', '12', '14', '16', '18', '20', '24', '30', '36', '48', '60', '72'];
-  const DEFAULT_FONT_SIZE = 'default';
-  class FontSize extends tiptap.Mark {
-    get name() {
-      return 'fontSize';
-    }
-
-    get defaultOptions() {
-      return {
-        fontSizes: FONT_SIZES
-      };
-    }
-
-    get schema() {
-      return {
-        attrs: {
-          px: ''
-        },
-        inline: true,
-        group: 'inline',
-        parseDOM: [{
-          style: 'font-size',
-          getAttrs: fontSize => {
-            const attrs = {};
-            if (!fontSize) return attrs;
-            const px = convertToPX(fontSize);
-            if (!px) return attrs;
-            return {
-              px
-            };
-          }
-        }],
-
-        toDOM(node) {
-          const {
-            px
-          } = node.attrs;
-          const attrs = {};
-          if (px) attrs.style = `font-size: ${px}px`;
-          return ['span', attrs, 0];
-        }
-
-      };
-    }
-
-    commands({
-      type
-    }) {
-      return fontSize => (state, dispatch) => {
-        let {
-          tr
-        } = state;
-        tr = setFontSize(state.tr.setSelection(state.selection), type, fontSize);
-
-        if (tr.docChanged || tr.storedMarksSet) {
-          dispatch && dispatch(tr);
-          return true;
-        }
-
-        return false;
-      };
-    }
-
-  }
-  const SIZE_PATTERN = /([\d.]+)px/i;
-  function convertToPX(styleValue) {
-    const matches = styleValue.match(SIZE_PATTERN);
-    if (!matches) return '';
-    const value = matches[1];
-    if (!value) return '';
-    return value;
-  }
-  function setFontSize(tr, type, fontSize) {
-    const {
-      selection
-    } = tr;
-    if (!isCorrectSelection$1(selection)) return tr;
-    const attrs = fontSize && fontSize !== DEFAULT_FONT_SIZE ? {
-      px: fontSize
-    } : null;
-    tr = applyMark(tr, type, attrs);
-    return tr;
-  }
-  function findActiveFontSize(state) {
-    const {
-      schema,
-      selection
-    } = state;
-    const markType = schema.marks.fontSize;
-    if (!markType) return DEFAULT_FONT_SIZE;
-    if (selection.empty) return resolveEmptyState(state, markType);
-    const attrs = getMarkAttrs(state, markType);
-    const fontSize = attrs.px;
-    if (fontSize) return String(fontSize);
-    return DEFAULT_FONT_SIZE;
-  }
-
-  function resolveEmptyState(state, markType) {
-    const {
-      selection,
-      tr
-    } = state;
-    const storedMarks = tr.storedMarks || state.storedMarks || selection instanceof TextSelection && selection.$cursor && selection.$cursor.marks && selection.$cursor.marks() || [];
-    const sm = storedMarks.find(m => m.type === markType);
-    return sm ? String(sm.attrs.px || DEFAULT_FONT_SIZE) : DEFAULT_FONT_SIZE;
-  }
-
-  const isCorrectSelection$1 = selection => selection instanceof TextSelection || selection instanceof AllSelection;
-
-  const FONT_TYPES = ['Arial', 'Arial Black', 'Georgia', 'Impact', 'Tahoma', 'Times New Roman', 'Verdana', 'Courier New', 'Lucida Console', 'Monaco', 'monospace'].reduce((acc, font) => {
-    acc[font] = font;
-    return acc;
-  }, {});
-  const DEFAULT_FONT = '';
-  class FontType extends tiptap.Mark {
-    get name() {
-      return 'fontType';
-    }
-
-    get defaultOptions() {
-      return {
-        fontTypes: FONT_TYPES
-      };
-    }
-
-    get schema() {
-      return {
-        attrs: {
-          name: ''
-        },
-        inline: true,
-        group: 'inline',
-        parseDOM: [{
-          style: 'font-family',
-          getAttrs: name => {
-            return {
-              name: name ? name.replace(/["']/g, '') : ''
-            };
-          }
-        }],
-
-        toDOM(node) {
-          const {
-            name
-          } = node.attrs;
-          const attrs = {};
-
-          if (name) {
-            attrs.style = `font-family: ${name}`;
-          }
-
-          return ['span', attrs, 0];
-        }
-
-      };
-    }
-
-    commands({
-      type
-    }) {
-      return name => (state, dispatch) => {
-        let {
-          tr
-        } = state;
-        tr = setFontType(state.tr.setSelection(state.selection), type, name);
-
-        if (tr.docChanged || tr.storedMarksSet) {
-          dispatch && dispatch(tr);
-          return true;
-        }
-
-        return false;
-      };
-    }
-
-  }
-  function findActiveFontType(state) {
-    const {
-      schema,
-      selection
-    } = state;
-    const markType = schema.marks.fontType;
-    if (!markType) return DEFAULT_FONT;
-    if (selection.empty) return resolveEmptySelection(state, markType);
-    const attrs = getMarkAttrs(state, markType);
-    const fontName = attrs.name;
-    if (!fontName) return DEFAULT_FONT;
-    return fontName;
-  }
-
-  function setFontType(tr, type, name) {
-    const {
-      selection
-    } = tr;
-    if (!isCorrectSelection(selection)) return tr;
-    const attrs = name ? {
-      name
-    } : null;
-    tr = applyMark(tr, type, attrs);
-    return tr;
-  }
-
-  function resolveEmptySelection(state, markType) {
-    const {
-      tr,
-      selection
-    } = state;
-    const storedMarks = tr.storedMarks || state.storedMarks || selection instanceof TextSelection && selection.$cursor && selection.$cursor.marks && selection.$cursor.marks() || [];
-    const sm = storedMarks.find(m => m.type === markType);
-    return sm && sm.attrs.name || DEFAULT_FONT;
-  }
-
-  const isCorrectSelection = selection => selection instanceof TextSelection || selection instanceof AllSelection;
-
-  const Alignment$1 = {
-    left: 'left',
-    center: 'center',
-    right: 'right',
-    justify: 'justify'
-  };
-  const ALIGN_PATTERN$1 = new RegExp(`(${Alignment$1.left}|${Alignment$1.center}|${Alignment$1.right}|${Alignment$1.justify})`);
-  const ParagraphNodeSpec = {
-    attrs: {
-      textAlign: {
-        default: null
-      },
-      indent: {
-        default: null
-      },
-      lineHeight: {
-        default: null
-      }
-    },
-    content: 'inline*',
-    group: 'block',
-    parseDOM: [{
-      tag: 'p',
-      getAttrs: getAttrs$2
-    }],
-    toDOM: toDOM$2
-  }; // @ts-ignore
-
-  function getAttrs$2(dom) {
-    let {
-      textAlign,
-      lineHeight
-    } = dom.style;
-    let align = dom.getAttribute('data-text-align') || textAlign || '';
-    align = ALIGN_PATTERN$1.test(align) ? align : null;
-    const indent = parseInt(dom.getAttribute('data-indent'), 10) || 0;
-    lineHeight = transformCSStoLineHeight(lineHeight) || null;
-    return {
-      textAlign: align,
-      indent,
-      lineHeight
-    };
-  }
-
-  function toDOM$2(node) {
-    const {
-      textAlign,
-      indent,
-      lineHeight
-    } = node.attrs;
-    let style = '';
-    const attrs = {};
-
-    if (textAlign && textAlign !== 'left') {
-      style += `text-align: ${textAlign};`;
-    }
-
-    if (indent) {
-      attrs['data-indent'] = indent;
-    }
-
-    if (lineHeight) {
-      const cssLineHeight = transformLineHeightToCSS(lineHeight);
-      style += `line-height: ${cssLineHeight};`;
-    }
-
-    style && (attrs.style = style);
-    return ['p', attrs, 0];
-  }
-
-  class Paragraph extends tiptap.Paragraph {
-    get defaultOptions() {
-      return {
-        px: 12
-      };
-    }
-
-    get schema() {
-      return ParagraphNodeSpec;
-    }
-
-  }
-  const toParagraphDOM = toDOM$2;
-  const getParagraphNodeAttrs = getAttrs$2;
-
-  function getAttrs$1(dom) {
-    const attrs = getParagraphNodeAttrs(dom);
-    const level = dom.nodeName.match(/[H|h](\d)/)[1];
-    attrs.level = Number(level);
-    return attrs;
-  }
-
-  function toDOM$1(node) {
-    const dom = toParagraphDOM(node);
-    const level = node.attrs.level || 1;
-    dom[0] = `h${level}`;
-    return dom;
-  }
-
-  class Heading extends tiptapExtensions.Heading {
-    get schema() {
-      return { ...ParagraphNodeSpec,
-        attrs: { ...ParagraphNodeSpec.attrs,
-          level: {
-            default: 1
-          }
-        },
-        defining: true,
-        draggable: false,
-        parseDOM: this.options.levels.map(level => ({
-          tag: `h${level}`,
-          getAttrs: getAttrs$1
-        })),
-        toDOM: toDOM$1
-      };
-    }
-
-  }
-
-  function findHeading(state) {
-    const {
-      heading
-    } = state.schema.nodes;
-    return prosemirrorUtils.findParentNodeOfType(heading)(state.selection);
-  }
-
-  function isHeadingActive(state, level) {
-    const result = findHeading(state);
-    if (level == null) return !!result;
-    return !!(result && result.node && result.node.attrs && result.node.attrs.level === level);
-  }
-
-  //
-
-  function clamp$1(val, min, max) {
-    if (val < min) return min;
-    if (val > max) return max;
-    return val;
-  }
-
-  const ResizeDirection = {
-    TOP_LEFT: 'tl',
-    TOP_RIGHT: 'tr',
-    BOTTOM_LEFT: 'bl',
-    BOTTOM_RIGHT: 'br'
-  };
-  const MIN_SIZE = 20;
-  const MAX_SIZE = 100000;
-  var script$i = {
-    name: 'tce-tiptap-image-view',
-    props: {
-      node: {
-        type: Object,
-        required: true
-      },
-      view: {
-        type: Object,
-        required: true
-      },
-      getPos: {
-        type: Function,
-        required: true
-      },
-      updateAttrs: {
-        type: Function,
-        required: true
-      },
-      selected: {
-        type: Boolean,
-        required: true
-      }
-    },
-    data: vm => ({
-      maxSize: {
-        width: MAX_SIZE,
-        height: MAX_SIZE
-      },
-      originalSize: {
-        width: 0,
-        height: 0
-      },
-      resizeOb: new ResizeObserver(() => {
-        vm.getMaxSize();
-      }),
-      resizeDirections: [ResizeDirection.TOP_LEFT, ResizeDirection.TOP_RIGHT, ResizeDirection.BOTTOM_LEFT, ResizeDirection.BOTTOM_RIGHT],
-      resizing: false,
-      resizerState: {
-        x: 0,
-        y: 0,
-        w: 0,
-        h: 0,
-        dir: ''
-      }
-    }),
-    computed: {
-      src() {
-        return this.node.attrs.src;
-      },
-
-      width() {
-        return this.node.attrs.width;
-      },
-
-      height() {
-        return this.node.attrs.height;
-      },
-
-      display() {
-        return this.node.attrs.display;
-      },
-
-      imageViewClass() {
-        return ['image-view', `image-view--${this.display}`];
-      }
-
-    },
-    methods: {
-      onImageLoad(e) {
-        this.originalSize = {
-          width: e.target.width,
-          height: e.target.height
-        };
-      },
-
-      // https://github.com/scrumpy/tiptap/issues/361#issuecomment-540299541
-      selectImage() {
-        const {
-          state
-        } = this.view;
-        let {
-          tr
-        } = state;
-        const selection = NodeSelection.create(state.doc, this.getPos());
-        tr = tr.setSelection(selection);
-        this.view.dispatch(tr);
-      },
-
-      /* invoked when window or editor resize */
-      getMaxSize() {
-        const {
-          width
-        } = getComputedStyle(this.view.dom);
-        this.maxSize.width = parseInt(width, 10);
-      },
-
-      /* on resizer handler mousedown
-      * record the position where the event is triggered and resize direction
-      * calculate the initial width and height of the image
-      */
-      onMouseDown(e, dir) {
-        e.preventDefault();
-        e.stopPropagation();
-        this.resizerState.x = e.clientX;
-        this.resizerState.y = e.clientY;
-        const originalWidth = this.originalSize.width;
-        const originalHeight = this.originalSize.height;
-        const aspectRatio = originalWidth / originalHeight;
-        let {
-          width,
-          height
-        } = this.node.attrs;
-        const maxWidth = this.maxSize.width;
-
-        if (width && !height) {
-          width = width > maxWidth ? maxWidth : width;
-          height = Math.round(width / aspectRatio);
-        } else if (height && !width) {
-          width = Math.round(height * aspectRatio);
-          width = width > maxWidth ? maxWidth : width;
-        } else if (!width && !height) {
-          width = originalWidth > maxWidth ? maxWidth : originalWidth;
-          height = Math.round(width / aspectRatio);
-        } else {
-          width = width > maxWidth ? maxWidth : width;
-        }
-
-        this.resizerState.w = width;
-        this.resizerState.h = height;
-        this.resizerState.dir = dir;
-        this.resizing = true;
-        this.onEvents();
-      },
-
-      onMouseMove(e) {
-        e.preventDefault();
-        e.stopPropagation();
-        if (!this.resizing) return;
-        const {
-          x,
-          y,
-          w,
-          h,
-          dir
-        } = this.resizerState;
-        const dx = (e.clientX - x) * (/l/.test(dir) ? -1 : 1);
-        const dy = (e.clientY - y) * (/t/.test(dir) ? -1 : 1);
-        this.updateAttrs({
-          width: clamp$1(w + dx, MIN_SIZE, this.maxSize.width),
-          height: Math.max(h + dy, MIN_SIZE)
-        });
-      },
-
-      onMouseUp(e) {
-        e.preventDefault();
-        e.stopPropagation();
-        if (!this.resizing) return;
-        this.resizing = false;
-        this.resizerState = {
-          x: 0,
-          y: 0,
-          w: 0,
-          h: 0,
-          dir: ''
-        };
-        this.offEvents();
-        this.selectImage();
-      },
-
-      onEvents() {
-        document.addEventListener('mousemove', this.onMouseMove, true);
-        document.addEventListener('mouseup', this.onMouseUp, true);
-      },
-
-      offEvents() {
-        document.removeEventListener('mousemove', this.onMouseMove, true);
-        document.removeEventListener('mouseup', this.onMouseUp, true);
-      }
-
-    },
-
-    mounted() {
-      this.resizeOb.observe(this.view.dom);
-    },
-
-    beforeDestroy() {
-      this.resizeOb.disconnect();
-    }
-
-  };
-
-  function normalizeComponent(template, style, script, scopeId, isFunctionalTemplate, moduleIdentifier /* server only */, shadowMode, createInjector, createInjectorSSR, createInjectorShadow) {
-      if (typeof shadowMode !== 'boolean') {
-          createInjectorSSR = createInjector;
-          createInjector = shadowMode;
-          shadowMode = false;
-      }
-      // Vue.extend constructor export interop.
-      const options = typeof script === 'function' ? script.options : script;
-      // render functions
-      if (template && template.render) {
-          options.render = template.render;
-          options.staticRenderFns = template.staticRenderFns;
-          options._compiled = true;
-          // functional template
-          if (isFunctionalTemplate) {
-              options.functional = true;
-          }
-      }
-      // scopedId
-      if (scopeId) {
-          options._scopeId = scopeId;
-      }
-      let hook;
-      if (moduleIdentifier) {
-          // server build
-          hook = function (context) {
-              // 2.3 injection
-              context =
-                  context || // cached call
-                      (this.$vnode && this.$vnode.ssrContext) || // stateful
-                      (this.parent && this.parent.$vnode && this.parent.$vnode.ssrContext); // functional
-              // 2.2 with runInNewContext: true
-              if (!context && typeof __VUE_SSR_CONTEXT__ !== 'undefined') {
-                  context = __VUE_SSR_CONTEXT__;
-              }
-              // inject component styles
-              if (style) {
-                  style.call(this, createInjectorSSR(context));
-              }
-              // register component module identifier for async chunk inference
-              if (context && context._registeredComponents) {
-                  context._registeredComponents.add(moduleIdentifier);
-              }
-          };
-          // used by ssr in case component is cached and beforeCreate
-          // never gets called
-          options._ssrRegister = hook;
-      }
-      else if (style) {
-          hook = shadowMode
-              ? function (context) {
-                  style.call(this, createInjectorShadow(context, this.$root.$options.shadowRoot));
-              }
-              : function (context) {
-                  style.call(this, createInjector(context));
-              };
-      }
-      if (hook) {
-          if (options.functional) {
-              // register for functional component in vue file
-              const originalRender = options.render;
-              options.render = function renderWithStyleInjection(h, context) {
-                  hook.call(context);
-                  return originalRender(h, context);
-              };
-          }
-          else {
-              // inject component registration as beforeCreate hook
-              const existing = options.beforeCreate;
-              options.beforeCreate = existing ? [].concat(existing, hook) : [hook];
-          }
-      }
-      return script;
-  }
-
-  /* script */
-  const __vue_script__$i = script$i;
-  /* template */
-
-  var __vue_render__$i = function () {
-    var _vm = this;
-
-    var _h = _vm.$createElement;
-
-    var _c = _vm._self._c || _h;
-
-    return _c('span', {
-      class: _vm.imageViewClass
-    }, [_c('div', {
-      staticClass: "image-view__body",
-      class: {
-        'image-view__body--focused': _vm.selected,
-        'image-view__body--resizing': _vm.resizing
-      }
-    }, [_c('img', {
-      staticClass: "image-view__body__image",
-      attrs: {
-        "src": _vm.src,
-        "alt": _vm.node.attrs.alt,
-        "width": _vm.width,
-        "height": _vm.height
-      },
-      on: {
-        "load": _vm.onImageLoad,
-        "click": _vm.selectImage
-      }
-    }), _vm._v(" "), _vm.selected || _vm.resizing ? [_c('div', {
-      staticClass: "image-dimensions"
-    }, [_c('div', [_vm._v(_vm._s(_vm.width) + " x " + _vm._s(_vm.height))])])] : _vm._e(), _vm._v(" "), _vm.view.editable ? _c('div', {
-      directives: [{
-        name: "show",
-        rawName: "v-show",
-        value: _vm.selected || _vm.resizing,
-        expression: "selected || resizing"
-      }],
-      staticClass: "image-resizer"
-    }, _vm._l(_vm.resizeDirections, function (direction) {
-      return _c('span', {
-        key: direction,
-        staticClass: "image-resizer__handler",
-        class: "image-resizer__handler--" + direction,
-        on: {
-          "mousedown": function ($event) {
-            return _vm.onMouseDown($event, direction);
-          }
-        }
-      });
-    }), 0) : _vm._e()], 2)]);
-  };
-
-  var __vue_staticRenderFns__$i = [];
-  /* style */
-
-  const __vue_inject_styles__$i = undefined;
-  /* scoped */
-
-  const __vue_scope_id__$i = "data-v-3382e2bc";
-  /* module identifier */
-
-  const __vue_module_identifier__$i = undefined;
-  /* functional template */
-
-  const __vue_is_functional_template__$i = false;
-  /* style inject */
-
-  /* style inject SSR */
-
-  /* style inject shadow dom */
-
-  const __vue_component__$i = /*#__PURE__*/normalizeComponent({
-    render: __vue_render__$i,
-    staticRenderFns: __vue_staticRenderFns__$i
-  }, __vue_inject_styles__$i, __vue_script__$i, __vue_scope_id__$i, __vue_is_functional_template__$i, __vue_module_identifier__$i, false, undefined, undefined, undefined);
-
-  const ImageDisplay = {
-    INLINE: 'inline',
-    BREAK_TEXT: 'block',
-    FLOAT_LEFT: 'left',
-    FLOAT_RIGHT: 'right'
-  };
-  const DEFAULT_IMAGE_URL_REGEX = /(https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9]+\.[^\s]{2,}|www\.[a-zA-Z0-9]+\.[^\s]{2,})/;
-  const DEFAULT_IMAGE_WIDTH = 200;
-  const DEFAULT_IMAGE_DISPLAY = ImageDisplay.INLINE;
-  const updateAttrs = (attrs, editor, node) => {
-    const {
-      view
-    } = editor;
-    if (!view.editable) return;
-    const {
-      state
-    } = view;
-    const newAttrs = { ...node.attrs,
-      ...attrs
-    };
-    const {
-      from
-    } = state.selection;
-    const transaction = state.tr.setNodeMarkup(from, null, newAttrs);
-    view.dispatch(transaction);
-  };
-
-  function getAttrs(dom) {
-    const {
-      cssFloat,
-      display
-    } = dom.style;
-    let {
-      width,
-      height
-    } = dom.style;
-    let dp = dom.getAttribute('data-display') || dom.getAttribute('display');
-
-    if (dp) {
-      dp = /(inline|block|left|right)/.test(dp) ? dp : ImageDisplay.INLINE;
-    } else if (cssFloat === 'left' && !display) {
-      dp = ImageDisplay.FLOAT_LEFT;
-    } else if (cssFloat === 'right' && !display) {
-      dp = ImageDisplay.FLOAT_RIGHT;
-    } else if (!cssFloat && display === 'block') {
-      dp = ImageDisplay.BREAK_TEXT;
-    } else {
-      dp = ImageDisplay.INLINE;
-    }
-
-    width = width || dom.getAttribute('width') || null;
-    height = height || dom.getAttribute('height') || null;
-    return {
-      src: dom.getAttribute('src') || '',
-      title: dom.getAttribute('title') || '',
-      alt: dom.getAttribute('alt') || '',
-      width: !width ? null : parseInt(width, 10),
-      height: !height ? null : parseInt(height, 10),
-      display: dp
-    };
-  }
-
-  function toDOM(node) {
-    const {
-      src,
-      alt,
-      width,
-      height,
-      display
-    } = node.attrs;
-    const attrs = {
-      src,
-      alt,
-      width,
-      height
-    };
-    attrs['data-display'] = display;
-    attrs.class = 'test';
-    return ['img', attrs];
-  }
-
-  class Image extends tiptapExtensions.Image {
-    get defaultOptions() {
-      return {
-        defaultWidth: DEFAULT_IMAGE_WIDTH,
-        defaultDisplay: DEFAULT_IMAGE_DISPLAY,
-        urlPattern: DEFAULT_IMAGE_URL_REGEX,
-        uploadRequest: null
-      };
-    }
-
-    get schema() {
-      return {
-        inline: true,
-        attrs: {
-          src: {
-            default: ''
-          },
-          alt: {
-            default: ''
-          },
-          width: {
-            default: this.imageDefaultWidth > 0 ? this.imageDefaultWidth : DEFAULT_IMAGE_WIDTH
-          },
-          height: {
-            default: this.imageDefaultHeight > 0 ? this.imageDefaultHeight : null
-          },
-          display: {
-            default: /(inline|block|left|right)/.test(this.defaultDisplay) ? this.defaultDisplay : DEFAULT_IMAGE_DISPLAY
-          }
-        },
-        group: 'inline',
-        draggable: true,
-        parseDOM: [{
-          tag: 'img[src]',
-          getAttrs
-        }],
-        toDOM
-      };
-    }
-
-    get view() {
-      return __vue_component__$i;
-    }
-
-  }
-
-  function isBulletListNode(node) {
-    return node.type.name === 'bullet_list';
-  }
-  function isOrderedListNode(node) {
-    return node.type.name === 'order_list';
-  }
-  function isTodoListNode(node) {
-    return node.type.name === 'todo_list';
-  }
-  function isListNode(node) {
-    return isBulletListNode(node) || isOrderedListNode(node) || isTodoListNode(node);
-  }
-
-  function clamp(val, min, max) {
-    if (val < min) return min;
-    if (val > max) return max;
-    return val;
-  }
-
-  const IndentProps = {
-    max: 7,
-    min: 0,
-    more: 1,
-    less: -1
-  };
-
-  function updateIndentLevel(tr, delta) {
-    const {
-      doc,
-      selection
-    } = tr;
-    if (!doc || !selection) return tr;
-
-    if (!(selection instanceof TextSelection || selection instanceof AllSelection)) {
-      return tr;
-    }
-
-    const {
-      from,
-      to
-    } = selection;
-    doc.nodesBetween(from, to, (node, pos) => {
-      const nodeType = node.type;
-
-      if (nodeType.name === 'paragraph' || nodeType.name === 'heading' || nodeType.name === 'blockquote') {
-        tr = setNodeIndentMarkup(tr, pos, delta);
-        return false;
-      } else if (isListNode(node)) {
-        return false;
-      }
-
-      return true;
-    });
-    return tr;
-  }
-
-  function setNodeIndentMarkup(tr, pos, delta) {
-    if (!tr.doc) return tr;
-    const node = tr.doc.nodeAt(pos);
-    if (!node) return tr;
-    const minIndent = IndentProps.min;
-    const maxIndent = IndentProps.max;
-    const indent = clamp((node.attrs.indent || 0) + delta, minIndent, maxIndent);
-    if (indent === node.attrs.indent) return tr;
-    const nodeAttrs = { ...node.attrs,
-      indent
-    };
-    return tr.setNodeMarkup(pos, node.type, nodeAttrs, node.marks);
-  }
-
-  function createIndentCommand(delta) {
-    return (state, dispatch) => {
-      const {
-        selection
-      } = state;
-      let {
-        tr
-      } = state;
-      tr = tr.setSelection(selection);
-      tr = updateIndentLevel(tr, delta);
-
-      if (tr.docChanged) {
-        dispatch && dispatch(tr);
-        return true;
-      }
-
-      return false;
-    };
-  }
-
-  class Indent extends tiptap.Extension {
-    get name() {
-      return 'indent';
-    }
-
-    get defaultOptions() {
-      return {
-        minIndent: IndentProps.min,
-        maxIndent: IndentProps.max
-      };
-    }
-
-    commands() {
-      return {
-        indent: () => createIndentCommand(IndentProps.more),
-        outdent: () => createIndentCommand(IndentProps.less)
-      };
-    }
-
-    keys() {
-      return {
-        Tab: createIndentCommand(IndentProps.more),
-        'Shift-Tab': createIndentCommand(IndentProps.less)
-      };
-    }
-
-  }
-
-  // :: (EditorState, ?(tr: Transaction)) → bool
-  // Delete the selection, if there is one.
-  function deleteSelection(state, dispatch) {
-    if (state.selection.empty) { return false }
-    if (dispatch) { dispatch(state.tr.deleteSelection().scrollIntoView()); }
-    return true
-  }
-
-  // :: (EditorState, ?(tr: Transaction), ?EditorView) → bool
-  // If the selection is empty and at the start of a textblock, try to
-  // reduce the distance between that block and the one before it—if
-  // there's a block directly before it that can be joined, join them.
-  // If not, try to move the selected block closer to the next one in
-  // the document structure by lifting it out of its parent or moving it
-  // into a parent of the previous block. Will use the view for accurate
-  // (bidi-aware) start-of-textblock detection if given.
-  function joinBackward(state, dispatch, view) {
-    var ref = state.selection;
-    var $cursor = ref.$cursor;
-    if (!$cursor || (view ? !view.endOfTextblock("backward", state)
-                          : $cursor.parentOffset > 0))
-      { return false }
-
-    var $cut = findCutBefore($cursor);
-
-    // If there is no node before this, try to lift
-    if (!$cut) {
-      var range = $cursor.blockRange(), target = range && liftTarget(range);
-      if (target == null) { return false }
-      if (dispatch) { dispatch(state.tr.lift(range, target).scrollIntoView()); }
-      return true
-    }
-
-    var before = $cut.nodeBefore;
-    // Apply the joining algorithm
-    if (!before.type.spec.isolating && deleteBarrier(state, $cut, dispatch))
-      { return true }
-
-    // If the node below has no content and the node above is
-    // selectable, delete the node below and select the one above.
-    if ($cursor.parent.content.size == 0 &&
-        (textblockAt(before, "end") || NodeSelection.isSelectable(before))) {
-      if (dispatch) {
-        var tr = state.tr.deleteRange($cursor.before(), $cursor.after());
-        tr.setSelection(textblockAt(before, "end") ? Selection.findFrom(tr.doc.resolve(tr.mapping.map($cut.pos, -1)), -1)
-                        : NodeSelection.create(tr.doc, $cut.pos - before.nodeSize));
-        dispatch(tr.scrollIntoView());
-      }
-      return true
-    }
-
-    // If the node before is an atom, delete it
-    if (before.isAtom && $cut.depth == $cursor.depth - 1) {
-      if (dispatch) { dispatch(state.tr.delete($cut.pos - before.nodeSize, $cut.pos).scrollIntoView()); }
-      return true
-    }
-
-    return false
-  }
-
-  function textblockAt(node, side) {
-    for (; node; node = (side == "start" ? node.firstChild : node.lastChild))
-      { if (node.isTextblock) { return true } }
-    return false
-  }
-
-  // :: (EditorState, ?(tr: Transaction), ?EditorView) → bool
-  // When the selection is empty and at the start of a textblock, select
-  // the node before that textblock, if possible. This is intended to be
-  // bound to keys like backspace, after
-  // [`joinBackward`](#commands.joinBackward) or other deleting
-  // commands, as a fall-back behavior when the schema doesn't allow
-  // deletion at the selected point.
-  function selectNodeBackward(state, dispatch, view) {
-    var ref = state.selection;
-    var $head = ref.$head;
-    var empty = ref.empty;
-    var $cut = $head;
-    if (!empty) { return false }
-
-    if ($head.parent.isTextblock) {
-      if (view ? !view.endOfTextblock("backward", state) : $head.parentOffset > 0) { return false }
-      $cut = findCutBefore($head);
-    }
-    var node = $cut && $cut.nodeBefore;
-    if (!node || !NodeSelection.isSelectable(node)) { return false }
-    if (dispatch)
-      { dispatch(state.tr.setSelection(NodeSelection.create(state.doc, $cut.pos - node.nodeSize)).scrollIntoView()); }
-    return true
-  }
-
-  function findCutBefore($pos) {
-    if (!$pos.parent.type.spec.isolating) { for (var i = $pos.depth - 1; i >= 0; i--) {
-      if ($pos.index(i) > 0) { return $pos.doc.resolve($pos.before(i + 1)) }
-      if ($pos.node(i).type.spec.isolating) { break }
-    } }
-    return null
-  }
-
-  // :: (EditorState, ?(tr: Transaction), ?EditorView) → bool
-  // If the selection is empty and the cursor is at the end of a
-  // textblock, try to reduce or remove the boundary between that block
-  // and the one after it, either by joining them or by moving the other
-  // block closer to this one in the tree structure. Will use the view
-  // for accurate start-of-textblock detection if given.
-  function joinForward(state, dispatch, view) {
-    var ref = state.selection;
-    var $cursor = ref.$cursor;
-    if (!$cursor || (view ? !view.endOfTextblock("forward", state)
-                          : $cursor.parentOffset < $cursor.parent.content.size))
-      { return false }
-
-    var $cut = findCutAfter($cursor);
-
-    // If there is no node after this, there's nothing to do
-    if (!$cut) { return false }
-
-    var after = $cut.nodeAfter;
-    // Try the joining algorithm
-    if (deleteBarrier(state, $cut, dispatch)) { return true }
-
-    // If the node above has no content and the node below is
-    // selectable, delete the node above and select the one below.
-    if ($cursor.parent.content.size == 0 &&
-        (textblockAt(after, "start") || NodeSelection.isSelectable(after))) {
-      if (dispatch) {
-        var tr = state.tr.deleteRange($cursor.before(), $cursor.after());
-        tr.setSelection(textblockAt(after, "start") ? Selection.findFrom(tr.doc.resolve(tr.mapping.map($cut.pos)), 1)
-                        : NodeSelection.create(tr.doc, tr.mapping.map($cut.pos)));
-        dispatch(tr.scrollIntoView());
-      }
-      return true
-    }
-
-    // If the next node is an atom, delete it
-    if (after.isAtom && $cut.depth == $cursor.depth - 1) {
-      if (dispatch) { dispatch(state.tr.delete($cut.pos, $cut.pos + after.nodeSize).scrollIntoView()); }
-      return true
-    }
-
-    return false
-  }
-
-  // :: (EditorState, ?(tr: Transaction), ?EditorView) → bool
-  // When the selection is empty and at the end of a textblock, select
-  // the node coming after that textblock, if possible. This is intended
-  // to be bound to keys like delete, after
-  // [`joinForward`](#commands.joinForward) and similar deleting
-  // commands, to provide a fall-back behavior when the schema doesn't
-  // allow deletion at the selected point.
-  function selectNodeForward(state, dispatch, view) {
-    var ref = state.selection;
-    var $head = ref.$head;
-    var empty = ref.empty;
-    var $cut = $head;
-    if (!empty) { return false }
-    if ($head.parent.isTextblock) {
-      if (view ? !view.endOfTextblock("forward", state) : $head.parentOffset < $head.parent.content.size)
-        { return false }
-      $cut = findCutAfter($head);
-    }
-    var node = $cut && $cut.nodeAfter;
-    if (!node || !NodeSelection.isSelectable(node)) { return false }
-    if (dispatch)
-      { dispatch(state.tr.setSelection(NodeSelection.create(state.doc, $cut.pos)).scrollIntoView()); }
-    return true
-  }
-
-  function findCutAfter($pos) {
-    if (!$pos.parent.type.spec.isolating) { for (var i = $pos.depth - 1; i >= 0; i--) {
-      var parent = $pos.node(i);
-      if ($pos.index(i) + 1 < parent.childCount) { return $pos.doc.resolve($pos.after(i + 1)) }
-      if (parent.type.spec.isolating) { break }
-    } }
-    return null
-  }
-
-  // :: (EditorState, ?(tr: Transaction)) → bool
-  // If the selection is in a node whose type has a truthy
-  // [`code`](#model.NodeSpec.code) property in its spec, replace the
-  // selection with a newline character.
-  function newlineInCode(state, dispatch) {
-    var ref = state.selection;
-    var $head = ref.$head;
-    var $anchor = ref.$anchor;
-    if (!$head.parent.type.spec.code || !$head.sameParent($anchor)) { return false }
-    if (dispatch) { dispatch(state.tr.insertText("\n").scrollIntoView()); }
-    return true
-  }
-
-  function defaultBlockAt(match) {
-    for (var i = 0; i < match.edgeCount; i++) {
-      var ref = match.edge(i);
-      var type = ref.type;
-      if (type.isTextblock && !type.hasRequiredAttrs()) { return type }
-    }
-    return null
-  }
-
-  // :: (EditorState, ?(tr: Transaction)) → bool
-  // When the selection is in a node with a truthy
-  // [`code`](#model.NodeSpec.code) property in its spec, create a
-  // default block after the code block, and move the cursor there.
-  function exitCode(state, dispatch) {
-    var ref = state.selection;
-    var $head = ref.$head;
-    var $anchor = ref.$anchor;
-    if (!$head.parent.type.spec.code || !$head.sameParent($anchor)) { return false }
-    var above = $head.node(-1), after = $head.indexAfter(-1), type = defaultBlockAt(above.contentMatchAt(after));
-    if (!above.canReplaceWith(after, after, type)) { return false }
-    if (dispatch) {
-      var pos = $head.after(), tr = state.tr.replaceWith(pos, pos, type.createAndFill());
-      tr.setSelection(Selection.near(tr.doc.resolve(pos), 1));
-      dispatch(tr.scrollIntoView());
-    }
-    return true
-  }
-
-  // :: (EditorState, ?(tr: Transaction)) → bool
-  // If a block node is selected, create an empty paragraph before (if
-  // it is its parent's first child) or after it.
-  function createParagraphNear(state, dispatch) {
-    var sel = state.selection;
-    var $from = sel.$from;
-    var $to = sel.$to;
-    if (sel instanceof AllSelection || $from.parent.inlineContent || $to.parent.inlineContent) { return false }
-    var type = defaultBlockAt($to.parent.contentMatchAt($to.indexAfter()));
-    if (!type || !type.isTextblock) { return false }
-    if (dispatch) {
-      var side = (!$from.parentOffset && $to.index() < $to.parent.childCount ? $from : $to).pos;
-      var tr = state.tr.insert(side, type.createAndFill());
-      tr.setSelection(TextSelection.create(tr.doc, side + 1));
-      dispatch(tr.scrollIntoView());
-    }
-    return true
-  }
-
-  // :: (EditorState, ?(tr: Transaction)) → bool
-  // If the cursor is in an empty textblock that can be lifted, lift the
-  // block.
-  function liftEmptyBlock(state, dispatch) {
-    var ref = state.selection;
-    var $cursor = ref.$cursor;
-    if (!$cursor || $cursor.parent.content.size) { return false }
-    if ($cursor.depth > 1 && $cursor.after() != $cursor.end(-1)) {
-      var before = $cursor.before();
-      if (canSplit(state.doc, before)) {
-        if (dispatch) { dispatch(state.tr.split(before).scrollIntoView()); }
-        return true
-      }
-    }
-    var range = $cursor.blockRange(), target = range && liftTarget(range);
-    if (target == null) { return false }
-    if (dispatch) { dispatch(state.tr.lift(range, target).scrollIntoView()); }
-    return true
-  }
-
-  // :: (EditorState, ?(tr: Transaction)) → bool
-  // Split the parent block of the selection. If the selection is a text
-  // selection, also delete its content.
-  function splitBlock(state, dispatch) {
-    var ref = state.selection;
-    var $from = ref.$from;
-    var $to = ref.$to;
-    if (state.selection instanceof NodeSelection && state.selection.node.isBlock) {
-      if (!$from.parentOffset || !canSplit(state.doc, $from.pos)) { return false }
-      if (dispatch) { dispatch(state.tr.split($from.pos).scrollIntoView()); }
-      return true
-    }
-
-    if (!$from.parent.isBlock) { return false }
-
-    if (dispatch) {
-      var atEnd = $to.parentOffset == $to.parent.content.size;
-      var tr = state.tr;
-      if (state.selection instanceof TextSelection || state.selection instanceof AllSelection) { tr.deleteSelection(); }
-      var deflt = $from.depth == 0 ? null : defaultBlockAt($from.node(-1).contentMatchAt($from.indexAfter(-1)));
-      var types = atEnd && deflt ? [{type: deflt}] : null;
-      var can = canSplit(tr.doc, tr.mapping.map($from.pos), 1, types);
-      if (!types && !can && canSplit(tr.doc, tr.mapping.map($from.pos), 1, deflt && [{type: deflt}])) {
-        types = [{type: deflt}];
-        can = true;
-      }
-      if (can) {
-        tr.split(tr.mapping.map($from.pos), 1, types);
-        if (!atEnd && !$from.parentOffset && $from.parent.type != deflt &&
-            $from.node(-1).canReplace($from.index(-1), $from.indexAfter(-1), Fragment.from([deflt.create(), $from.parent])))
-          { tr.setNodeMarkup(tr.mapping.map($from.before()), deflt); }
-      }
-      dispatch(tr.scrollIntoView());
-    }
-    return true
-  }
-
-  // :: (EditorState, ?(tr: Transaction)) → bool
-  // Select the whole document.
-  function selectAll(state, dispatch) {
-    if (dispatch) { dispatch(state.tr.setSelection(new AllSelection(state.doc))); }
-    return true
-  }
-
-  function joinMaybeClear(state, $pos, dispatch) {
-    var before = $pos.nodeBefore, after = $pos.nodeAfter, index = $pos.index();
-    if (!before || !after || !before.type.compatibleContent(after.type)) { return false }
-    if (!before.content.size && $pos.parent.canReplace(index - 1, index)) {
-      if (dispatch) { dispatch(state.tr.delete($pos.pos - before.nodeSize, $pos.pos).scrollIntoView()); }
-      return true
-    }
-    if (!$pos.parent.canReplace(index, index + 1) || !(after.isTextblock || canJoin(state.doc, $pos.pos)))
-      { return false }
-    if (dispatch)
-      { dispatch(state.tr
-               .clearIncompatible($pos.pos, before.type, before.contentMatchAt(before.childCount))
-               .join($pos.pos)
-               .scrollIntoView()); }
-    return true
-  }
-
-  function deleteBarrier(state, $cut, dispatch) {
-    var before = $cut.nodeBefore, after = $cut.nodeAfter, conn, match;
-    if (before.type.spec.isolating || after.type.spec.isolating) { return false }
-    if (joinMaybeClear(state, $cut, dispatch)) { return true }
-
-    var canDelAfter = $cut.parent.canReplace($cut.index(), $cut.index() + 1);
-    if (canDelAfter &&
-        (conn = (match = before.contentMatchAt(before.childCount)).findWrapping(after.type)) &&
-        match.matchType(conn[0] || after.type).validEnd) {
-      if (dispatch) {
-        var end = $cut.pos + after.nodeSize, wrap = Fragment.empty;
-        for (var i = conn.length - 1; i >= 0; i--)
-          { wrap = Fragment.from(conn[i].create(null, wrap)); }
-        wrap = Fragment.from(before.copy(wrap));
-        var tr = state.tr.step(new ReplaceAroundStep($cut.pos - 1, end, $cut.pos, end, new Slice(wrap, 1, 0), conn.length, true));
-        var joinAt = end + 2 * conn.length;
-        if (canJoin(tr.doc, joinAt)) { tr.join(joinAt); }
-        dispatch(tr.scrollIntoView());
-      }
-      return true
-    }
-
-    var selAfter = Selection.findFrom($cut, 1);
-    var range = selAfter && selAfter.$from.blockRange(selAfter.$to), target = range && liftTarget(range);
-    if (target != null && target >= $cut.depth) {
-      if (dispatch) { dispatch(state.tr.lift(range, target).scrollIntoView()); }
-      return true
-    }
-
-    if (canDelAfter && after.isTextblock && textblockAt(before, "end")) {
-      var at = before, wrap$1 = [];
-      for (;;) {
-        wrap$1.push(at);
-        if (at.isTextblock) { break }
-        at = at.lastChild;
-      }
-      if (at.canReplace(at.childCount, at.childCount, after.content)) {
-        if (dispatch) {
-          var end$1 = Fragment.empty;
-          for (var i$1 = wrap$1.length - 1; i$1 >= 0; i$1--) { end$1 = Fragment.from(wrap$1[i$1].copy(end$1)); }
-          var tr$1 = state.tr.step(new ReplaceAroundStep($cut.pos - wrap$1.length, $cut.pos + after.nodeSize,
-                                                       $cut.pos + 1, $cut.pos + after.nodeSize - 1,
-                                                       new Slice(end$1, wrap$1.length, 0), 0, true));
-          dispatch(tr$1.scrollIntoView());
-        }
-        return true
-      }
-    }
-
-    return false
-  }
-
-  // :: (...[(EditorState, ?(tr: Transaction), ?EditorView) → bool]) → (EditorState, ?(tr: Transaction), ?EditorView) → bool
-  // Combine a number of command functions into a single function (which
-  // calls them one by one until one returns true).
-  function chainCommands() {
-    var commands = [], len = arguments.length;
-    while ( len-- ) commands[ len ] = arguments[ len ];
-
-    return function(state, dispatch, view) {
-      for (var i = 0; i < commands.length; i++)
-        { if (commands[i](state, dispatch, view)) { return true } }
-      return false
-    }
-  }
-
-  var backspace = chainCommands(deleteSelection, joinBackward, selectNodeBackward);
-  var del = chainCommands(deleteSelection, joinForward, selectNodeForward);
-
-  // :: Object
-  // A basic keymap containing bindings not specific to any schema.
-  // Binds the following keys (when multiple commands are listed, they
-  // are chained with [`chainCommands`](#commands.chainCommands)):
-  //
-  // * **Enter** to `newlineInCode`, `createParagraphNear`, `liftEmptyBlock`, `splitBlock`
-  // * **Mod-Enter** to `exitCode`
-  // * **Backspace** and **Mod-Backspace** to `deleteSelection`, `joinBackward`, `selectNodeBackward`
-  // * **Delete** and **Mod-Delete** to `deleteSelection`, `joinForward`, `selectNodeForward`
-  // * **Mod-Delete** to `deleteSelection`, `joinForward`, `selectNodeForward`
-  // * **Mod-a** to `selectAll`
-  ({
-    "Enter": chainCommands(newlineInCode, createParagraphNear, liftEmptyBlock, splitBlock),
-    "Mod-Enter": exitCode,
-    "Backspace": backspace,
-    "Mod-Backspace": backspace,
-    "Delete": del,
-    "Mod-Delete": del,
-    "Mod-a": selectAll
-  });
-
-  // declare global: os, navigator
-  typeof navigator != "undefined" ? /Mac/.test(navigator.platform)
-            : typeof os != "undefined" ? os.platform() == "darwin" : false;
-
-  function pasteRule (regexp, type, getAttrs) {
-    const handler = fragment => {
-      const nodes = [];
-      fragment.forEach(child => {
-        if (child.isText) {
-          const {
-            text
-          } = child;
-          let pos = 0;
-          let match;
-
-          do {
-            match = regexp.exec(text);
-
-            if (match) {
-              const start = match.index;
-              const end = start + match[0].length;
-              const attrs = getAttrs instanceof Function ? getAttrs(match[0]) : getAttrs;
-
-              if (start > 0) {
-                nodes.push(child.cut(pos, start));
-              }
-
-              nodes.push(child.cut(start, end).mark(type.create(attrs).addToSet(child.marks)));
-              pos = end;
-            }
-          } while (match);
-
-          if (pos < text.length) {
-            nodes.push(child.cut(pos));
-          }
-        } else {
-          nodes.push(child.copy(handler(child.content)));
-        }
-      });
-      return Fragment.fromArray(nodes);
-    };
-
-    return new Plugin({
-      props: {
-        transformPasted: slice => new Slice(handler(slice.content), slice.openStart, slice.openEnd)
-      }
-    });
-  }
-
-  function removeMark (type) {
-    return (state, dispatch) => {
-      const {
-        tr,
-        selection
-      } = state;
-      let {
-        from,
-        to
-      } = selection;
-      const {
-        $from,
-        empty
-      } = selection;
-
-      if (empty) {
-        const range = getMarkRange($from, type);
-        from = range.from;
-        to = range.to;
-      }
-
-      tr.removeMark(from, to, type);
-      return dispatch(tr);
-    };
-  }
-
-  function updateMark (type, attrs) {
-    return (state, dispatch) => {
-      const {
-        tr,
-        selection,
-        doc
-      } = state;
-      const {
-        ranges,
-        empty
-      } = selection;
-
-      if (empty) {
-        const {
-          from,
-          to
-        } = getMarkRange(selection.$from, type);
-
-        if (doc.rangeHasMark(from, to, type)) {
-          tr.removeMark(from, to, type);
-        }
-
-        tr.addMark(from, to, type.create(attrs));
-      } else {
-        ranges.forEach(ref$1 => {
-          const {
-            $to,
-            $from
-          } = ref$1;
-
-          if (doc.rangeHasMark($from.pos, $to.pos, type)) {
-            tr.removeMark($from.pos, $to.pos, type);
-          }
-
-          tr.addMark($from.pos, $to.pos, type.create(attrs));
-        });
-      }
-
-      return dispatch(tr);
-    };
-  }
-
-  class Link extends tiptap.Mark {
-    get name() {
-      return 'link';
-    }
-
-    get defaultOptions() {
-      return {
-        openOnClick: true,
-        target: null
-      };
-    }
-
-    get schema() {
-      return {
-        attrs: {
-          href: {
-            default: null
-          },
-          target: {
-            default: null
-          }
-        },
-        inclusive: false,
-        parseDOM: [{
-          tag: 'a[href]',
-          getAttrs: dom => ({
-            href: dom.getAttribute('href'),
-            target: dom.getAttribute('target')
-          })
-        }],
-        toDOM: node => ['a', { ...node.attrs,
-          rel: 'noopener noreferrer nofollow',
-          target: node.attrs.target || this.options.target
-        }, 0]
-      };
-    }
-
-    commands({
-      type
-    }) {
-      return attrs => {
-        if (attrs.href) {
-          return updateMark(type, attrs);
-        }
-
-        return removeMark(type);
-      };
-    }
-
-    pasteRules({
-      type
-    }) {
-      return [pasteRule(/https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z]{2,}\b([-a-zA-Z0-9@:%_+.~#?&//=,()!]*)/gi, type, url => ({
-        href: url
-      }))];
-    }
-
-    get plugins() {
-      if (!this.options.openOnClick) {
-        return [];
-      }
-    }
-
-  }
-
-  const Alignment = {
-    left: 'left',
-    center: 'center',
-    right: 'right',
-    justify: 'justify'
-  };
-  const ALIGN_PATTERN = new RegExp(`(${Alignment.left}|${Alignment.center}|${Alignment.right}|${Alignment.justify})`);
-  class TextAlign extends tiptap.Extension {
-    get name() {
-      return 'textAlign';
-    }
-
-    get defaultOptions() {
-      return {
-        alignments: [Alignment.left, Alignment.center, Alignment.right, Alignment.justify]
-      };
-    }
-
-    commands() {
-      return this.options.alignments.reduce((commands, alignment) => {
-        if (!ALIGN_PATTERN.test(alignment)) return commands;
-        return { ...commands,
-          [`align_${alignment}`]: () => (state, dispatch) => {
-            const {
-              selection
-            } = state;
-            const tr = setTextAlign(state.tr.setSelection(selection), alignment === 'left' ? null : alignment);
-
-            if (tr.docChanged) {
-              dispatch && dispatch(tr);
-              return true;
-            } else {
-              return false;
-            }
-          }
-        };
-      }, {});
-    }
-
-  }
-  function isTextAlignActive(state, alignment) {
-    const {
-      selection,
-      doc
-    } = state;
-    const {
-      from,
-      to
-    } = selection;
-    let keepLooking = true;
-    let active = false;
-    doc.nodesBetween(from, to, node => {
-      if (keepLooking && node.attrs.textAlign === alignment) {
-        keepLooking = false;
-        active = true;
-      }
-
-      return keepLooking;
-    });
-    return active;
-  }
-  const ALLOWED_NODE_TYPES = ['paragraph', 'heading', 'list_item', 'todo_item', 'title'];
-  function setTextAlign(tr, alignment) {
-    const {
-      selection,
-      doc
-    } = tr;
-
-    if (!selection || !doc) {
-      return tr;
-    }
-
-    const {
-      from,
-      to
-    } = selection;
-    const tasks = [];
-    alignment = alignment || null;
-    doc.nodesBetween(from, to, (node, pos) => {
-      const nodeType = node.type;
-
-      if (ALLOWED_NODE_TYPES.includes(nodeType.name)) {
-        const align = node.attrs.textAlign || null;
-
-        if (align !== alignment) {
-          tasks.push({
-            node,
-            pos,
-            nodeType
-          });
-          return nodeType.name !== 'list_item' && nodeType.name !== 'todo_item';
-        }
-      }
-
-      return true;
-    });
-    if (!tasks.length) return tr;
-    tasks.forEach(job => {
-      const {
-        node,
-        pos,
-        nodeType
-      } = job;
-      let {
-        attrs
-      } = node;
-      attrs = { ...attrs,
-        textAlign: alignment
-      };
-      tr = tr.setNodeMarkup(pos, nodeType, attrs, node.marks);
-    });
-    return tr;
-  }
-
-  // https://github.com/regexhq/hex-color-regex/blob/master/index.js
-  function hexColorRegex() {
-    return /#([a-f0-9]{3}|[a-f0-9]{4}(?:[a-f0-9]{2}){0,2})\b/gi;
-  }
-
-  function isHexColor(color) {
-    return hexColorRegex().test(color);
-  }
-
-  class TextColor extends tiptap.Mark {
-    get name() {
-      return 'textColor';
-    }
-
-    get schema() {
-      return {
-        attrs: {
-          color: ''
-        },
-        inline: true,
-        group: 'inline',
-        parseDOM: [{
-          style: 'color',
-          getAttrs: color => {
-            return {
-              color
-            };
-          }
-        }],
-
-        toDOM(node) {
-          const {
-            color
-          } = node.attrs;
-          let style = '';
-
-          if (color) {
-            style += `color: ${color};`;
-          }
-
-          return ['span', {
-            style
-          }, 0];
-        }
-
-      };
-    }
-
-    commands() {
-      return color => (state, dispatch) => {
-        if (color !== undefined) {
-          const {
-            schema
-          } = state;
-          let {
-            tr
-          } = state;
-          const markType = schema.marks.textColor;
-          const attrs = color && isHexColor(color) ? {
-            color
-          } : null;
-          tr = applyMark(state.tr.setSelection(state.selection), markType, attrs);
-
-          if (tr.docChanged || tr.storedMarksSet) {
-            dispatch && dispatch(tr);
-            return true;
-          }
-        }
-
-        return false;
-      };
-    }
-
-  }
-
-  class TextHighlight extends tiptap.Mark {
-    get name() {
-      return 'textHighlight';
-    }
-
-    get schema() {
-      return {
-        attrs: {
-          highlightColor: ''
-        },
-        inline: true,
-        group: 'inline',
-        parseDOM: [{
-          tag: 'span[style*=background-color]',
-          getAttrs: dom => {
-            const {
-              backgroundColor
-            } = dom.style;
-            return {
-              highlightColor: backgroundColor
-            };
-          }
-        }],
-
-        toDOM(node) {
-          const {
-            highlightColor
-          } = node.attrs;
-          let style = '';
-
-          if (highlightColor) {
-            style += `background-color: ${highlightColor};`;
-          }
-
-          return ['span', {
-            style
-          }, 0];
-        }
-
-      };
-    }
-
-    commands() {
-      return color => (state, dispatch) => {
-        if (color !== undefined) {
-          const {
-            schema
-          } = state;
-          let {
-            tr
-          } = state;
-          const markType = schema.marks.textHighlight;
-          const attrs = color && isHexColor(color) ? {
-            highlightColor: color
-          } : null;
-          tr = applyMark(state.tr.setSelection(state.selection), markType, attrs);
-
-          if (tr.docChanged || tr.storedMarksSet) {
-            dispatch && dispatch(tr);
-            return true;
-          }
-        }
-
-        return false;
-      };
-    }
-
-  }
-
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  var script$h = {
-    name: 'tce-tiptap-menu-button',
-    props: {
-      command: {
-        type: Function,
-        default: () => {}
-      },
-      isActive: {
-        type: Boolean,
-        default: false
-      },
-      icon: {
-        type: String,
-        required: true
-      }
-    }
-  };
-
-  /* script */
-  const __vue_script__$h = script$h;
-  /* template */
-
-  var __vue_render__$h = function () {
-    var _vm = this;
-
-    var _h = _vm.$createElement;
-
-    var _c = _vm._self._c || _h;
-
-    return _c('v-btn', _vm._g(_vm._b({
-      staticClass: "menu-button mx-1",
-      class: {
-        'active': _vm.isActive
-      },
-      attrs: {
-        "icon": ""
-      },
-      on: {
-        "click": _vm.command
-      }
-    }, 'v-btn', _vm.$attrs, false), _vm.$listeners), [_c('v-icon', [_vm._v(_vm._s("mdi-" + _vm.icon))])], 1);
-  };
-
-  var __vue_staticRenderFns__$h = [];
-  /* style */
-
-  const __vue_inject_styles__$h = undefined;
-  /* scoped */
-
-  const __vue_scope_id__$h = "data-v-0c09c69c";
-  /* module identifier */
-
-  const __vue_module_identifier__$h = undefined;
-  /* functional template */
-
-  const __vue_is_functional_template__$h = false;
-  /* style inject */
-
-  /* style inject SSR */
-
-  /* style inject shadow dom */
-
-  const __vue_component__$h = /*#__PURE__*/normalizeComponent({
-    render: __vue_render__$h,
-    staticRenderFns: __vue_staticRenderFns__$h
-  }, __vue_inject_styles__$h, __vue_script__$h, __vue_scope_id__$h, __vue_is_functional_template__$h, __vue_module_identifier__$h, false, undefined, undefined, undefined);
-
-  //
-  var script$g = {
-    name: 'tce-tiptap-image-display',
-    props: {
-      node: {
-        type: Object,
-        required: true
-      },
-      editorContext: {
-        type: Object,
-        required: true
-      }
-    },
-    data: () => ({
-      display: ''
-    }),
-    computed: {
-      editor: ({
-        editorContext: {
-          editor
-        }
-      }) => editor,
-      alignments: () => Object.values(ImageDisplay)
-    },
-    methods: {
-      updateAligment(display) {
-        updateAttrs({
-          display
-        }, this.editor, this.node);
-      }
-
-    },
-    watch: {
-      display: 'updateAligment'
-    },
-    components: {
-      MenuButton: __vue_component__$h
-    }
-  };
-
-  /* script */
-  const __vue_script__$g = script$g;
-  /* template */
-
-  var __vue_render__$g = function () {
-    var _vm = this;
-
-    var _h = _vm.$createElement;
-
-    var _c = _vm._self._c || _h;
-
-    return _c('v-menu', {
-      attrs: {
-        "transition": "slide-y-transition",
-        "bottom": ""
-      },
-      scopedSlots: _vm._u([{
-        key: "activator",
-        fn: function (ref) {
-          var on = ref.on;
-          var attrs = ref.attrs;
-          return [_c('menu-button', _vm._g(_vm._b({
-            attrs: {
-              "icon": "image-text"
-            }
-          }, 'menu-button', attrs, false), on))];
-        }
-      }])
-    }, [_vm._v(" "), _c('v-list', {
-      staticClass: "font-sizes",
-      attrs: {
-        "dense": ""
-      }
-    }, [_c('v-list-item-group', {
-      model: {
-        value: _vm.display,
-        callback: function ($$v) {
-          _vm.display = $$v;
-        },
-        expression: "display"
-      }
-    }, _vm._l(_vm.alignments, function (alignment) {
-      return _c('v-list-item', {
-        key: alignment,
-        attrs: {
-          "value": alignment
-        }
-      }, [_c('v-list-item-title', [_vm._v("\n          " + _vm._s(alignment) + "\n        ")])], 1);
-    }), 1)], 1)], 1);
-  };
-
-  var __vue_staticRenderFns__$g = [];
-  /* style */
-
-  const __vue_inject_styles__$g = undefined;
-  /* scoped */
-
-  const __vue_scope_id__$g = undefined;
-  /* module identifier */
-
-  const __vue_module_identifier__$g = undefined;
-  /* functional template */
-
-  const __vue_is_functional_template__$g = false;
-  /* style inject */
-
-  /* style inject SSR */
-
-  /* style inject shadow dom */
-
-  const __vue_component__$g = /*#__PURE__*/normalizeComponent({
-    render: __vue_render__$g,
-    staticRenderFns: __vue_staticRenderFns__$g
-  }, __vue_inject_styles__$g, __vue_script__$g, __vue_scope_id__$g, __vue_is_functional_template__$g, __vue_module_identifier__$g, false, undefined, undefined, undefined);
-
-  //
-  var script$f = {
-    name: 'tce-tiptap-image-edit',
-    props: {
-      node: {
-        type: Object,
-        required: true
-      },
-      editorContext: {
-        type: Object,
-        required: true
-      }
-    },
-    data: () => ({
-      imageAttrs: {},
-      menu: false
-    }),
-    computed: {
-      editor: ({
-        editorContext: {
-          editor
-        }
-      }) => editor
-    },
-    methods: {
-      save() {
-        updateAttrs(this.imageAttrs, this.editor, this.node);
-      },
-
-      close() {
-        this.imageAttrs = {};
-        this.menu = false;
-      }
-
-    },
-
-    async created() {
-      this.imageAttrs = { ...this.node.attrs
-      };
-    },
-
-    components: {
-      MenuButton: __vue_component__$h
-    }
-  };
-
-  /* script */
-  const __vue_script__$f = script$f;
-  /* template */
-
-  var __vue_render__$f = function () {
-    var _vm = this;
-
-    var _h = _vm.$createElement;
-
-    var _c = _vm._self._c || _h;
-
-    return _c('v-menu', {
-      attrs: {
-        "transition": "slide-y-transition",
-        "close-on-content-click": false,
-        "bottom": ""
-      },
-      scopedSlots: _vm._u([{
-        key: "activator",
-        fn: function (ref) {
-          var on = ref.on;
-          var attrs = ref.attrs;
-          return [_c('menu-button', _vm._g(_vm._b({
-            attrs: {
-              "icon": "image-edit"
-            }
-          }, 'menu-button', attrs, false), on))];
-        }
-      }]),
-      model: {
-        value: _vm.menu,
-        callback: function ($$v) {
-          _vm.menu = $$v;
-        },
-        expression: "menu"
-      }
-    }, [_vm._v(" "), _c('v-card', {
-      attrs: {
-        "min-width": "300"
-      }
-    }, [_c('v-card-text', {
-      staticClass: "pb-0"
-    }, [_c('v-text-field', {
-      attrs: {
-        "disabled": "",
-        "label": "Image url",
-        "placeholder": "https://example.com",
-        "type": "url"
-      },
-      model: {
-        value: _vm.imageAttrs.src,
-        callback: function ($$v) {
-          _vm.$set(_vm.imageAttrs, "src", $$v);
-        },
-        expression: "imageAttrs.src"
-      }
-    }), _vm._v(" "), _c('v-text-field', {
-      attrs: {
-        "label": "Alt text",
-        "type": "text"
-      },
-      model: {
-        value: _vm.imageAttrs.alt,
-        callback: function ($$v) {
-          _vm.$set(_vm.imageAttrs, "alt", $$v);
-        },
-        expression: "imageAttrs.alt"
-      }
-    }), _vm._v(" "), _c('v-text-field', {
-      attrs: {
-        "label": "Width",
-        "placeholder": "https://example.com",
-        "type": "number"
-      },
-      model: {
-        value: _vm.imageAttrs.width,
-        callback: function ($$v) {
-          _vm.$set(_vm.imageAttrs, "width", $$v);
-        },
-        expression: "imageAttrs.width"
-      }
-    }), _vm._v(" "), _c('v-text-field', {
-      attrs: {
-        "label": "Height",
-        "placeholder": "https://example.com",
-        "type": "number"
-      },
-      model: {
-        value: _vm.imageAttrs.height,
-        callback: function ($$v) {
-          _vm.$set(_vm.imageAttrs, "height", $$v);
-        },
-        expression: "imageAttrs.height"
-      }
-    })], 1), _vm._v(" "), _c('v-card-actions', {
-      staticClass: "pt-0"
-    }, [_c('v-spacer'), _vm._v(" "), _c('v-btn', {
-      attrs: {
-        "text": ""
-      },
-      on: {
-        "click": _vm.save
-      }
-    }, [_vm._v("\n        Save\n      ")]), _vm._v(" "), _c('v-btn', {
-      attrs: {
-        "text": ""
-      },
-      on: {
-        "click": _vm.close
-      }
-    }, [_vm._v("\n        Cancel\n      ")])], 1)], 1)], 1);
-  };
-
-  var __vue_staticRenderFns__$f = [];
-  /* style */
-
-  const __vue_inject_styles__$f = undefined;
-  /* scoped */
-
-  const __vue_scope_id__$f = undefined;
-  /* module identifier */
-
-  const __vue_module_identifier__$f = undefined;
-  /* functional template */
-
-  const __vue_is_functional_template__$f = false;
-  /* style inject */
-
-  /* style inject SSR */
-
-  /* style inject shadow dom */
-
-  const __vue_component__$f = /*#__PURE__*/normalizeComponent({
-    render: __vue_render__$f,
-    staticRenderFns: __vue_staticRenderFns__$f
-  }, __vue_inject_styles__$f, __vue_script__$f, __vue_scope_id__$f, __vue_is_functional_template__$f, __vue_module_identifier__$f, false, undefined, undefined, undefined);
-
-  //
-  var script$e = {
-    name: 'tce-tiptap-remove-image',
-    props: {
-      node: {
-        type: Object,
-        required: true
-      },
-      editorContext: {
-        type: Object,
-        required: true
-      }
-    },
-    computed: {
-      editor: ({
-        editorContext: {
-          editor
-        }
-      }) => editor
-    },
-    methods: {
-      removeImage() {
-        const {
-          state,
-          dispatch
-        } = this.editor.view;
-        deleteSelection(state, dispatch);
-      }
-
-    },
-    components: {
-      MenuButton: __vue_component__$h
-    }
-  };
-
-  /* script */
-  const __vue_script__$e = script$e;
-  /* template */
-
-  var __vue_render__$e = function () {
-    var _vm = this;
-
-    var _h = _vm.$createElement;
-
-    var _c = _vm._self._c || _h;
-
-    return _c('div', [_c('menu-button', {
-      attrs: {
-        "command": function () {
-          return _vm.removeImage();
-        },
-        "icon": "delete"
-      }
-    })], 1);
-  };
-
-  var __vue_staticRenderFns__$e = [];
-  /* style */
-
-  const __vue_inject_styles__$e = undefined;
-  /* scoped */
-
-  const __vue_scope_id__$e = undefined;
-  /* module identifier */
-
-  const __vue_module_identifier__$e = undefined;
-  /* functional template */
-
-  const __vue_is_functional_template__$e = false;
-  /* style inject */
-
-  /* style inject SSR */
-
-  /* style inject shadow dom */
-
-  const __vue_component__$e = /*#__PURE__*/normalizeComponent({
-    render: __vue_render__$e,
-    staticRenderFns: __vue_staticRenderFns__$e
-  }, __vue_inject_styles__$e, __vue_script__$e, __vue_scope_id__$e, __vue_is_functional_template__$e, __vue_module_identifier__$e, false, undefined, undefined, undefined);
-
-  //
-  var script$d = {
-    name: 'tce-tiptap-image-menu',
-    props: {
-      node: {
-        type: Object,
-        required: true
-      },
-      editorContext: {
-        type: Object,
-        required: true
-      }
-    },
-    components: {
-      ImageDisplay: __vue_component__$g,
-      ImageEdit: __vue_component__$f,
-      ImageRemove: __vue_component__$e
-    }
-  };
-
-  /* script */
-  const __vue_script__$d = script$d;
-  /* template */
-
-  var __vue_render__$d = function () {
-    var _vm = this;
-
-    var _h = _vm.$createElement;
-
-    var _c = _vm._self._c || _h;
-
-    return _c('div', {
-      staticClass: "d-flex"
-    }, [_c('image-display', {
-      attrs: {
-        "node": _vm.node,
-        "editor-context": _vm.editorContext
-      }
-    }), _vm._v(" "), _c('image-edit', {
-      attrs: {
-        "node": _vm.node,
-        "editor-context": _vm.editorContext
-      }
-    }), _vm._v(" "), _c('image-remove', {
-      attrs: {
-        "node": _vm.node,
-        "editor-context": _vm.editorContext
-      }
-    })], 1);
-  };
-
-  var __vue_staticRenderFns__$d = [];
-  /* style */
-
-  const __vue_inject_styles__$d = undefined;
-  /* scoped */
-
-  const __vue_scope_id__$d = undefined;
-  /* module identifier */
-
-  const __vue_module_identifier__$d = undefined;
-  /* functional template */
-
-  const __vue_is_functional_template__$d = false;
-  /* style inject */
-
-  /* style inject SSR */
-
-  /* style inject shadow dom */
-
-  const __vue_component__$d = /*#__PURE__*/normalizeComponent({
-    render: __vue_render__$d,
-    staticRenderFns: __vue_staticRenderFns__$d
-  }, __vue_inject_styles__$d, __vue_script__$d, __vue_scope_id__$d, __vue_is_functional_template__$d, __vue_module_identifier__$d, false, undefined, undefined, undefined);
-
-  //
-  var script$c = {
-    name: 'tce-tiptap-link-button',
-    props: {
-      command: {
-        type: Function,
-        required: true
-      },
-      isActive: {
-        type: Boolean,
-        default: false
-      },
-      linkAttributes: {
-        type: Object,
-        required: true
-      },
-      icon: {
-        type: String,
-        required: true
-      }
-    },
-    data: () => ({
-      url: null,
-      newTab: true,
-      menu: false
-    }),
-    methods: {
-      openMenu({
-        href,
-        target
-      }) {
-        this.url = href;
-        this.newTab = target === '_blank';
-        this.isMenuOpen = true;
-        this.$nextTick(() => {
-          this.$refs.url.focus();
-        });
-      },
-
-      close() {
-        this.url = null;
-        this.menu = false;
-      },
-
-      save() {
-        this.command({
-          href: this.url,
-          target: this.newTab ? '_blank' : '_self'
-        });
-        this.close();
-      },
-
-      remove() {
-        this.command({
-          href: null,
-          target: null
-        });
-        this.close();
-      }
-
-    },
-    watch: {
-      menu() {
-        this.url = this.linkAttributes.href;
-        this.newTab = this.linkAttributes.target === '_blank';
-        this.$nextTick(() => {
-          this.$refs.url.focus();
-        });
-      }
-
-    },
-    components: {
-      MenuButton: __vue_component__$h
-    }
-  };
-
-  /* script */
-  const __vue_script__$c = script$c;
-  /* template */
-
-  var __vue_render__$c = function () {
-    var _vm = this;
-
-    var _h = _vm.$createElement;
-
-    var _c = _vm._self._c || _h;
-
-    return _c('v-menu', {
-      attrs: {
-        "transition": "slide-y-transition",
-        "close-on-content-click": false,
-        "bottom": ""
-      },
-      scopedSlots: _vm._u([{
-        key: "activator",
-        fn: function (ref) {
-          var on = ref.on;
-          var attrs = ref.attrs;
-          return [_c('menu-button', _vm._g(_vm._b({
-            attrs: {
-              "is-active": _vm.isActive,
-              "icon": _vm.icon
-            }
-          }, 'menu-button', attrs, false), on))];
-        }
-      }]),
-      model: {
-        value: _vm.menu,
-        callback: function ($$v) {
-          _vm.menu = $$v;
-        },
-        expression: "menu"
-      }
-    }, [_vm._v(" "), _c('v-card', {
-      attrs: {
-        "min-width": "300"
-      }
-    }, [_c('v-card-text', {
-      staticClass: "pb-0"
-    }, [_c('v-text-field', {
-      ref: "url",
-      attrs: {
-        "label": "Url",
-        "placeholder": "https://example.com",
-        "type": "url"
-      },
-      model: {
-        value: _vm.url,
-        callback: function ($$v) {
-          _vm.url = $$v;
-        },
-        expression: "url"
-      }
-    }), _vm._v(" "), _c('v-checkbox', {
-      attrs: {
-        "label": "Open in new tab",
-        "type": "checkbox"
-      },
-      model: {
-        value: _vm.newTab,
-        callback: function ($$v) {
-          _vm.newTab = $$v;
-        },
-        expression: "newTab"
-      }
-    })], 1), _vm._v(" "), _c('v-card-actions', {
-      staticClass: "pt-0"
-    }, [_c('v-spacer'), _vm._v(" "), _c('v-btn', {
-      attrs: {
-        "text": ""
-      },
-      on: {
-        "click": function ($event) {
-          return _vm.save(_vm.command);
-        }
-      }
-    }, [_vm._v("Save")]), _vm._v(" "), _vm.linkAttributes.href ? _c('v-btn', {
-      attrs: {
-        "text": ""
-      },
-      on: {
-        "click": _vm.remove
-      }
-    }, [_vm._v("\n        Remove\n      ")]) : _vm._e(), _vm._v(" "), _c('v-btn', {
-      attrs: {
-        "text": ""
-      },
-      on: {
-        "click": function ($event) {
-          return _vm.close();
-        }
-      }
-    }, [_vm._v("Cancel")])], 1)], 1)], 1);
-  };
-
-  var __vue_staticRenderFns__$c = [];
-  /* style */
-
-  const __vue_inject_styles__$c = undefined;
-  /* scoped */
-
-  const __vue_scope_id__$c = "data-v-ab843b2a";
-  /* module identifier */
-
-  const __vue_module_identifier__$c = undefined;
-  /* functional template */
-
-  const __vue_is_functional_template__$c = false;
-  /* style inject */
-
-  /* style inject SSR */
-
-  /* style inject shadow dom */
-
-  const __vue_component__$c = /*#__PURE__*/normalizeComponent({
-    render: __vue_render__$c,
-    staticRenderFns: __vue_staticRenderFns__$c
-  }, __vue_inject_styles__$c, __vue_script__$c, __vue_scope_id__$c, __vue_is_functional_template__$c, __vue_module_identifier__$c, false, undefined, undefined, undefined);
-
-  //
-  var script$b = {
-    name: 'tce-tiptap-link-menu',
-    props: {
-      editorContext: {
-        type: Object,
-        required: true
-      },
-      isLinkSelection: {
-        type: Boolean,
-        required: true
-      }
-    },
-    computed: {
-      linkAttributes() {
-        return this.editorContext.getMarkAttrs('link');
-      }
-
-    },
-    methods: {
-      openLink() {
-        window.open(this.linkAttributes.href, '_blank');
-      },
-
-      removeLink() {
-        this.editorContext.commands.link({
-          href: null,
-          target: null
-        });
-      }
-
-    },
-    components: {
-      LinkButton: __vue_component__$c,
-      MenuButton: __vue_component__$h
-    }
-  };
-
-  /* script */
-  const __vue_script__$b = script$b;
-  /* template */
-
-  var __vue_render__$b = function () {
-    var _vm = this;
-
-    var _h = _vm.$createElement;
-
-    var _c = _vm._self._c || _h;
-
-    return _c('div', {
-      staticClass: "d-flex"
-    }, [_c('link-button', {
-      attrs: {
-        "command": _vm.editorContext.commands.link,
-        "is-active": _vm.editorContext.isActive.link(),
-        "link-attributes": _vm.linkAttributes,
-        "icon": _vm.isLinkSelection ? 'pencil' : 'link'
-      }
-    }), _vm._v(" "), _vm.isLinkSelection ? [_c('menu-button', {
-      staticClass: "menu-button",
-      attrs: {
-        "command": _vm.openLink,
-        "icon": "eye"
-      }
-    }), _vm._v(" "), _c('menu-button', {
-      staticClass: "menu-button",
-      attrs: {
-        "command": _vm.removeLink,
-        "icon": "link-off"
-      }
-    }), _vm._v(" "), _c('v-divider', {
-      staticClass: "mx-1",
-      attrs: {
-        "vertical": ""
-      }
-    })] : _vm._e()], 2);
-  };
-
-  var __vue_staticRenderFns__$b = [];
-  /* style */
-
-  const __vue_inject_styles__$b = undefined;
-  /* scoped */
-
-  const __vue_scope_id__$b = undefined;
-  /* module identifier */
-
-  const __vue_module_identifier__$b = undefined;
-  /* functional template */
-
-  const __vue_is_functional_template__$b = false;
-  /* style inject */
-
-  /* style inject SSR */
-
-  /* style inject shadow dom */
-
-  const __vue_component__$b = /*#__PURE__*/normalizeComponent({
-    render: __vue_render__$b,
-    staticRenderFns: __vue_staticRenderFns__$b
-  }, __vue_inject_styles__$b, __vue_script__$b, __vue_scope_id__$b, __vue_is_functional_template__$b, __vue_module_identifier__$b, false, undefined, undefined, undefined);
-
-  //
-  var script$a = {
-    name: 'tce-tiptap-bubble-menu',
-    props: {
-      editor: {
-        type: Object,
-        default: null
-      }
-    },
-    data: () => ({
-      isLink: false,
-      isImage: false,
-      isText: false,
-      imageNode: null,
-      opened: true,
-      left: null
-    }),
-    methods: {
-      isLinkSelection(selection) {
-        const {
-          schema
-        } = this.editor;
-        const linkType = schema.marks.link;
-
-        if (!linkType || !selection) {
-          this.isLink = false;
-          return;
-        }
-
-        const {
-          $from,
-          $to
-        } = selection;
-        const range = getMarkRange($from, linkType);
-
-        if (!range) {
-          this.isLink = false;
-          return;
-        }
-
-        this.isLink = range.to === $to.pos;
-        this.left = null;
-      },
-
-      isImageSelection(selection) {
-        if (!selection.node) {
-          this.isImage = false;
-          return;
-        }
-
-        this.isImage = selection.node.type.name === 'image';
-        this.isText = false;
-        this.imageNode = selection.node;
-        const {
-          from,
-          to
-        } = selection;
-        const imageWidth = selection.node.attrs.width;
-        const start = this.editor.view.coordsAtPos(from);
-        const end = this.editor.view.coordsAtPos(to);
-        const box = this.editor.view.dom.getBoundingClientRect();
-        const left = Math.max((start.left + end.left) / 2, start.left + 3);
-        this.left = left - box.left + imageWidth / 2;
-      },
-
-      isTextSelection(selection) {
-        this.isText = selection instanceof TextSelection;
-        this.left = null;
-      },
-
-      getSelectionType(selection) {
-        this.isTextSelection(selection);
-        this.isLinkSelection(selection);
-        this.isImageSelection(selection);
-      }
-
-    },
-    watch: {
-      'editor.state.selection': 'getSelectionType'
-    },
-    components: {
-      EditorMenuBubble: tiptap.EditorMenuBubble,
-      ImageMenu: __vue_component__$d,
-      LinkMenu: __vue_component__$b,
-      MenuButton: __vue_component__$h
-    }
-  };
-
-  /* script */
-  const __vue_script__$a = script$a;
-  /* template */
-
-  var __vue_render__$a = function () {
-    var _vm = this;
-
-    var _h = _vm.$createElement;
-
-    var _c = _vm._self._c || _h;
-
-    return _vm.editor ? _c('editor-menu-bubble', {
-      staticClass: "editor-bubble-menu",
-      attrs: {
-        "editor": _vm.editor
-      },
-      scopedSlots: _vm._u([{
-        key: "default",
-        fn: function (ref) {
-          var commands = ref.commands;
-          var isActive = ref.isActive;
-          var getMarkAttrs = ref.getMarkAttrs;
-          var menu = ref.menu;
-          return [_c('v-card', {
-            staticClass: "bubble-menu",
-            class: {
-              'is-active': menu.isActive
-            },
-            style: "left: " + (_vm.left || menu.left) + "px; bottom: " + menu.bottom + "px;"
-          }, [_c('v-card-text', {
-            staticClass: "d-flex pa-1"
-          }, [_vm.isImage ? [_c('image-menu', {
-            attrs: {
-              "node": _vm.imageNode,
-              "editor-context": {
-                commands: commands,
-                isActive: isActive,
-                editor: _vm.editor
-              }
-            }
-          })] : _vm._e(), _vm._v(" "), _vm.isText ? [_c('link-menu', {
-            attrs: {
-              "is-link-selection": _vm.isLink,
-              "editor-context": {
-                commands: commands,
-                isActive: isActive,
-                getMarkAttrs: getMarkAttrs
-              }
-            }
-          }), _vm._v(" "), _c('menu-button', {
-            attrs: {
-              "command": commands.bold,
-              "is-active": isActive.bold(),
-              "icon": "format-bold"
-            }
-          }), _vm._v(" "), _c('menu-button', {
-            attrs: {
-              "command": commands.italic,
-              "is-active": isActive.italic(),
-              "icon": "format-italic"
-            }
-          }), _vm._v(" "), _c('menu-button', {
-            attrs: {
-              "command": commands.underline,
-              "is-active": isActive.underline(),
-              "icon": "format-underline"
-            }
-          })] : _vm._e()], 2)], 1)];
-        }
-      }], null, false, 1584768679)
-    }) : _vm._e();
-  };
-
-  var __vue_staticRenderFns__$a = [];
-  /* style */
-
-  const __vue_inject_styles__$a = undefined;
-  /* scoped */
-
-  const __vue_scope_id__$a = "data-v-b2491d14";
-  /* module identifier */
-
-  const __vue_module_identifier__$a = undefined;
-  /* functional template */
-
-  const __vue_is_functional_template__$a = false;
-  /* style inject */
-
-  /* style inject SSR */
-
-  /* style inject shadow dom */
-
-  const __vue_component__$a = /*#__PURE__*/normalizeComponent({
-    render: __vue_render__$a,
-    staticRenderFns: __vue_staticRenderFns__$a
-  }, __vue_inject_styles__$a, __vue_script__$a, __vue_scope_id__$a, __vue_is_functional_template__$a, __vue_module_identifier__$a, false, undefined, undefined, undefined);
-
-  /**
-   * Checks if `value` is the
-   * [language type](http://www.ecma-international.org/ecma-262/7.0/#sec-ecmascript-language-types)
-   * of `Object`. (e.g. arrays, functions, objects, regexes, `new Number(0)`, and `new String('')`)
-   *
-   * @static
-   * @memberOf _
-   * @since 0.1.0
-   * @category Lang
-   * @param {*} value The value to check.
-   * @returns {boolean} Returns `true` if `value` is an object, else `false`.
-   * @example
-   *
-   * _.isObject({});
-   * // => true
-   *
-   * _.isObject([1, 2, 3]);
-   * // => true
-   *
-   * _.isObject(_.noop);
-   * // => true
-   *
-   * _.isObject(null);
-   * // => false
-   */
-  function isObject(value) {
-    var type = typeof value;
-    return value != null && (type == 'object' || type == 'function');
-  }
-
-  var isObject_1 = isObject;
-
-  var commonjsGlobal = typeof globalThis !== 'undefined' ? globalThis : typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : typeof self !== 'undefined' ? self : {};
-
-  /** Detect free variable `global` from Node.js. */
-  var freeGlobal = typeof commonjsGlobal == 'object' && commonjsGlobal && commonjsGlobal.Object === Object && commonjsGlobal;
-
-  var _freeGlobal = freeGlobal;
-
-  /** Detect free variable `self`. */
-  var freeSelf = typeof self == 'object' && self && self.Object === Object && self;
-
-  /** Used as a reference to the global object. */
-  var root = _freeGlobal || freeSelf || Function('return this')();
-
-  var _root = root;
-
-  /**
-   * Gets the timestamp of the number of milliseconds that have elapsed since
-   * the Unix epoch (1 January 1970 00:00:00 UTC).
-   *
-   * @static
-   * @memberOf _
-   * @since 2.4.0
-   * @category Date
-   * @returns {number} Returns the timestamp.
-   * @example
-   *
-   * _.defer(function(stamp) {
-   *   console.log(_.now() - stamp);
-   * }, _.now());
-   * // => Logs the number of milliseconds it took for the deferred invocation.
-   */
-  var now = function() {
-    return _root.Date.now();
-  };
-
-  var now_1 = now;
-
-  /** Used to match a single whitespace character. */
-  var reWhitespace = /\s/;
-
-  /**
-   * Used by `_.trim` and `_.trimEnd` to get the index of the last non-whitespace
-   * character of `string`.
-   *
-   * @private
-   * @param {string} string The string to inspect.
-   * @returns {number} Returns the index of the last non-whitespace character.
-   */
-  function trimmedEndIndex(string) {
-    var index = string.length;
-
-    while (index-- && reWhitespace.test(string.charAt(index))) {}
-    return index;
-  }
-
-  var _trimmedEndIndex = trimmedEndIndex;
-
-  /** Used to match leading whitespace. */
-  var reTrimStart = /^\s+/;
-
-  /**
-   * The base implementation of `_.trim`.
-   *
-   * @private
-   * @param {string} string The string to trim.
-   * @returns {string} Returns the trimmed string.
-   */
-  function baseTrim(string) {
-    return string
-      ? string.slice(0, _trimmedEndIndex(string) + 1).replace(reTrimStart, '')
-      : string;
-  }
-
-  var _baseTrim = baseTrim;
-
-  /** Built-in value references. */
-  var Symbol$1 = _root.Symbol;
-
-  var _Symbol = Symbol$1;
-
-  /** Used for built-in method references. */
-  var objectProto$1 = Object.prototype;
-
-  /** Used to check objects for own properties. */
-  var hasOwnProperty = objectProto$1.hasOwnProperty;
-
-  /**
-   * Used to resolve the
-   * [`toStringTag`](http://ecma-international.org/ecma-262/7.0/#sec-object.prototype.tostring)
-   * of values.
-   */
-  var nativeObjectToString$1 = objectProto$1.toString;
-
-  /** Built-in value references. */
-  var symToStringTag$1 = _Symbol ? _Symbol.toStringTag : undefined;
-
-  /**
-   * A specialized version of `baseGetTag` which ignores `Symbol.toStringTag` values.
-   *
-   * @private
-   * @param {*} value The value to query.
-   * @returns {string} Returns the raw `toStringTag`.
-   */
-  function getRawTag(value) {
-    var isOwn = hasOwnProperty.call(value, symToStringTag$1),
-        tag = value[symToStringTag$1];
-
-    try {
-      value[symToStringTag$1] = undefined;
-      var unmasked = true;
-    } catch (e) {}
-
-    var result = nativeObjectToString$1.call(value);
-    if (unmasked) {
-      if (isOwn) {
-        value[symToStringTag$1] = tag;
-      } else {
-        delete value[symToStringTag$1];
-      }
-    }
-    return result;
-  }
-
-  var _getRawTag = getRawTag;
-
-  /** Used for built-in method references. */
-  var objectProto = Object.prototype;
-
-  /**
-   * Used to resolve the
-   * [`toStringTag`](http://ecma-international.org/ecma-262/7.0/#sec-object.prototype.tostring)
-   * of values.
-   */
-  var nativeObjectToString = objectProto.toString;
-
-  /**
-   * Converts `value` to a string using `Object.prototype.toString`.
-   *
-   * @private
-   * @param {*} value The value to convert.
-   * @returns {string} Returns the converted string.
-   */
-  function objectToString(value) {
-    return nativeObjectToString.call(value);
-  }
-
-  var _objectToString = objectToString;
-
-  /** `Object#toString` result references. */
-  var nullTag = '[object Null]',
-      undefinedTag = '[object Undefined]';
-
-  /** Built-in value references. */
-  var symToStringTag = _Symbol ? _Symbol.toStringTag : undefined;
-
-  /**
-   * The base implementation of `getTag` without fallbacks for buggy environments.
-   *
-   * @private
-   * @param {*} value The value to query.
-   * @returns {string} Returns the `toStringTag`.
-   */
-  function baseGetTag(value) {
-    if (value == null) {
-      return value === undefined ? undefinedTag : nullTag;
-    }
-    return (symToStringTag && symToStringTag in Object(value))
-      ? _getRawTag(value)
-      : _objectToString(value);
-  }
-
-  var _baseGetTag = baseGetTag;
-
-  /**
-   * Checks if `value` is object-like. A value is object-like if it's not `null`
-   * and has a `typeof` result of "object".
-   *
-   * @static
-   * @memberOf _
-   * @since 4.0.0
-   * @category Lang
-   * @param {*} value The value to check.
-   * @returns {boolean} Returns `true` if `value` is object-like, else `false`.
-   * @example
-   *
-   * _.isObjectLike({});
-   * // => true
-   *
-   * _.isObjectLike([1, 2, 3]);
-   * // => true
-   *
-   * _.isObjectLike(_.noop);
-   * // => false
-   *
-   * _.isObjectLike(null);
-   * // => false
-   */
-  function isObjectLike(value) {
-    return value != null && typeof value == 'object';
-  }
-
-  var isObjectLike_1 = isObjectLike;
-
-  /** `Object#toString` result references. */
-  var symbolTag = '[object Symbol]';
-
-  /**
-   * Checks if `value` is classified as a `Symbol` primitive or object.
-   *
-   * @static
-   * @memberOf _
-   * @since 4.0.0
-   * @category Lang
-   * @param {*} value The value to check.
-   * @returns {boolean} Returns `true` if `value` is a symbol, else `false`.
-   * @example
-   *
-   * _.isSymbol(Symbol.iterator);
-   * // => true
-   *
-   * _.isSymbol('abc');
-   * // => false
-   */
-  function isSymbol(value) {
-    return typeof value == 'symbol' ||
-      (isObjectLike_1(value) && _baseGetTag(value) == symbolTag);
-  }
-
-  var isSymbol_1 = isSymbol;
-
-  /** Used as references for various `Number` constants. */
-  var NAN = 0 / 0;
-
-  /** Used to detect bad signed hexadecimal string values. */
-  var reIsBadHex = /^[-+]0x[0-9a-f]+$/i;
-
-  /** Used to detect binary string values. */
-  var reIsBinary = /^0b[01]+$/i;
-
-  /** Used to detect octal string values. */
-  var reIsOctal = /^0o[0-7]+$/i;
-
-  /** Built-in method references without a dependency on `root`. */
-  var freeParseInt = parseInt;
-
-  /**
-   * Converts `value` to a number.
-   *
-   * @static
-   * @memberOf _
-   * @since 4.0.0
-   * @category Lang
-   * @param {*} value The value to process.
-   * @returns {number} Returns the number.
-   * @example
-   *
-   * _.toNumber(3.2);
-   * // => 3.2
-   *
-   * _.toNumber(Number.MIN_VALUE);
-   * // => 5e-324
-   *
-   * _.toNumber(Infinity);
-   * // => Infinity
-   *
-   * _.toNumber('3.2');
-   * // => 3.2
-   */
-  function toNumber(value) {
-    if (typeof value == 'number') {
-      return value;
-    }
-    if (isSymbol_1(value)) {
-      return NAN;
-    }
-    if (isObject_1(value)) {
-      var other = typeof value.valueOf == 'function' ? value.valueOf() : value;
-      value = isObject_1(other) ? (other + '') : other;
-    }
-    if (typeof value != 'string') {
-      return value === 0 ? value : +value;
-    }
-    value = _baseTrim(value);
-    var isBinary = reIsBinary.test(value);
-    return (isBinary || reIsOctal.test(value))
-      ? freeParseInt(value.slice(2), isBinary ? 2 : 8)
-      : (reIsBadHex.test(value) ? NAN : +value);
-  }
-
-  var toNumber_1 = toNumber;
-
-  /** Error message constants. */
-  var FUNC_ERROR_TEXT = 'Expected a function';
-
-  /* Built-in method references for those with the same name as other `lodash` methods. */
-  var nativeMax = Math.max,
-      nativeMin = Math.min;
-
-  /**
-   * Creates a debounced function that delays invoking `func` until after `wait`
-   * milliseconds have elapsed since the last time the debounced function was
-   * invoked. The debounced function comes with a `cancel` method to cancel
-   * delayed `func` invocations and a `flush` method to immediately invoke them.
-   * Provide `options` to indicate whether `func` should be invoked on the
-   * leading and/or trailing edge of the `wait` timeout. The `func` is invoked
-   * with the last arguments provided to the debounced function. Subsequent
-   * calls to the debounced function return the result of the last `func`
-   * invocation.
-   *
-   * **Note:** If `leading` and `trailing` options are `true`, `func` is
-   * invoked on the trailing edge of the timeout only if the debounced function
-   * is invoked more than once during the `wait` timeout.
-   *
-   * If `wait` is `0` and `leading` is `false`, `func` invocation is deferred
-   * until to the next tick, similar to `setTimeout` with a timeout of `0`.
-   *
-   * See [David Corbacho's article](https://css-tricks.com/debouncing-throttling-explained-examples/)
-   * for details over the differences between `_.debounce` and `_.throttle`.
-   *
-   * @static
-   * @memberOf _
-   * @since 0.1.0
-   * @category Function
-   * @param {Function} func The function to debounce.
-   * @param {number} [wait=0] The number of milliseconds to delay.
-   * @param {Object} [options={}] The options object.
-   * @param {boolean} [options.leading=false]
-   *  Specify invoking on the leading edge of the timeout.
-   * @param {number} [options.maxWait]
-   *  The maximum time `func` is allowed to be delayed before it's invoked.
-   * @param {boolean} [options.trailing=true]
-   *  Specify invoking on the trailing edge of the timeout.
-   * @returns {Function} Returns the new debounced function.
-   * @example
-   *
-   * // Avoid costly calculations while the window size is in flux.
-   * jQuery(window).on('resize', _.debounce(calculateLayout, 150));
-   *
-   * // Invoke `sendMail` when clicked, debouncing subsequent calls.
-   * jQuery(element).on('click', _.debounce(sendMail, 300, {
-   *   'leading': true,
-   *   'trailing': false
-   * }));
-   *
-   * // Ensure `batchLog` is invoked once after 1 second of debounced calls.
-   * var debounced = _.debounce(batchLog, 250, { 'maxWait': 1000 });
-   * var source = new EventSource('/stream');
-   * jQuery(source).on('message', debounced);
-   *
-   * // Cancel the trailing debounced invocation.
-   * jQuery(window).on('popstate', debounced.cancel);
-   */
-  function debounce(func, wait, options) {
-    var lastArgs,
-        lastThis,
-        maxWait,
-        result,
-        timerId,
-        lastCallTime,
-        lastInvokeTime = 0,
-        leading = false,
-        maxing = false,
-        trailing = true;
-
-    if (typeof func != 'function') {
-      throw new TypeError(FUNC_ERROR_TEXT);
-    }
-    wait = toNumber_1(wait) || 0;
-    if (isObject_1(options)) {
-      leading = !!options.leading;
-      maxing = 'maxWait' in options;
-      maxWait = maxing ? nativeMax(toNumber_1(options.maxWait) || 0, wait) : maxWait;
-      trailing = 'trailing' in options ? !!options.trailing : trailing;
-    }
-
-    function invokeFunc(time) {
-      var args = lastArgs,
-          thisArg = lastThis;
-
-      lastArgs = lastThis = undefined;
-      lastInvokeTime = time;
-      result = func.apply(thisArg, args);
-      return result;
-    }
-
-    function leadingEdge(time) {
-      // Reset any `maxWait` timer.
-      lastInvokeTime = time;
-      // Start the timer for the trailing edge.
-      timerId = setTimeout(timerExpired, wait);
-      // Invoke the leading edge.
-      return leading ? invokeFunc(time) : result;
-    }
-
-    function remainingWait(time) {
-      var timeSinceLastCall = time - lastCallTime,
-          timeSinceLastInvoke = time - lastInvokeTime,
-          timeWaiting = wait - timeSinceLastCall;
-
-      return maxing
-        ? nativeMin(timeWaiting, maxWait - timeSinceLastInvoke)
-        : timeWaiting;
-    }
-
-    function shouldInvoke(time) {
-      var timeSinceLastCall = time - lastCallTime,
-          timeSinceLastInvoke = time - lastInvokeTime;
-
-      // Either this is the first call, activity has stopped and we're at the
-      // trailing edge, the system time has gone backwards and we're treating
-      // it as the trailing edge, or we've hit the `maxWait` limit.
-      return (lastCallTime === undefined || (timeSinceLastCall >= wait) ||
-        (timeSinceLastCall < 0) || (maxing && timeSinceLastInvoke >= maxWait));
-    }
-
-    function timerExpired() {
-      var time = now_1();
-      if (shouldInvoke(time)) {
-        return trailingEdge(time);
-      }
-      // Restart the timer.
-      timerId = setTimeout(timerExpired, remainingWait(time));
-    }
-
-    function trailingEdge(time) {
-      timerId = undefined;
-
-      // Only invoke if we have `lastArgs` which means `func` has been
-      // debounced at least once.
-      if (trailing && lastArgs) {
-        return invokeFunc(time);
-      }
-      lastArgs = lastThis = undefined;
-      return result;
-    }
-
-    function cancel() {
-      if (timerId !== undefined) {
-        clearTimeout(timerId);
-      }
-      lastInvokeTime = 0;
-      lastArgs = lastCallTime = lastThis = timerId = undefined;
-    }
-
-    function flush() {
-      return timerId === undefined ? result : trailingEdge(now_1());
-    }
-
-    function debounced() {
-      var time = now_1(),
-          isInvoking = shouldInvoke(time);
-
-      lastArgs = arguments;
-      lastThis = this;
-      lastCallTime = time;
-
-      if (isInvoking) {
-        if (timerId === undefined) {
-          return leadingEdge(lastCallTime);
-        }
-        if (maxing) {
-          // Handle invocations in a tight loop.
-          clearTimeout(timerId);
-          timerId = setTimeout(timerExpired, wait);
-          return invokeFunc(lastCallTime);
-        }
-      }
-      if (timerId === undefined) {
-        timerId = setTimeout(timerExpired, wait);
-      }
-      return result;
-    }
-    debounced.cancel = cancel;
-    debounced.flush = flush;
-    return debounced;
-  }
-
-  var debounce_1 = debounce;
-
-  //
-  var script$9 = {
-    name: 'tce-tiptap-html',
-    inject: ['$elementBus'],
-    props: {
-      element: {
-        type: Object,
-        required: true
-      },
-      isFocused: {
-        type: Boolean,
-        default: false
-      },
-      isDragged: {
-        type: Boolean,
-        default: false
-      },
-      isDisabled: {
-        type: Boolean,
-        default: false
-      },
-      dense: {
-        type: Boolean,
-        default: false
-      },
-      showPlaceholder: {
-        type: Boolean,
-        default: true
-      }
-    },
-    data: vm => {
-      var _vm$element$data$cont, _vm$element, _vm$element$data;
-
-      return {
-        content: (_vm$element$data$cont = (_vm$element = vm.element) === null || _vm$element === void 0 ? void 0 : (_vm$element$data = _vm$element.data) === null || _vm$element$data === void 0 ? void 0 : _vm$element$data.content) !== null && _vm$element$data$cont !== void 0 ? _vm$element$data$cont : '',
-        editor: null
-      };
-    },
-    computed: {
-      hasChanges() {
-        var _this$element$data$co, _this$element, _this$element$data;
-
-        const previousValue = (_this$element$data$co = (_this$element = this.element) === null || _this$element === void 0 ? void 0 : (_this$element$data = _this$element.data) === null || _this$element$data === void 0 ? void 0 : _this$element$data.content) !== null && _this$element$data$co !== void 0 ? _this$element$data$co : '';
-        return previousValue !== this.content;
-      }
-
-    },
-    methods: {
-      save() {
-        if (!this.hasChanges) return;
-        this.$emit('save', {
-          content: this.content
-        });
-      }
-
-    },
-    watch: {
-      element(val) {
-        // Make sure that component state is kept
-        // until events (i.e. focusout => save) are triggered
-        setTimeout(() => {
-          var _val$data$content, _val$data;
-
-          if (this.isFocused) return;
-          this.content = (_val$data$content = val === null || val === void 0 ? void 0 : (_val$data = val.data) === null || _val$data === void 0 ? void 0 : _val$data.content) !== null && _val$data$content !== void 0 ? _val$data$content : '';
-        }, 0);
-      },
-
-      isFocused(val, oldVal) {
-        if (oldVal && !val) this.save();
-        this.$elementBus.emit('tiptap-editor', this.editor);
-      },
-
-      isDragged(state, oldState) {
-        if (state) {
-          this.readonly = true;
-        } else if (!state && oldState) {
-          this.readonly = false;
-        }
-      },
-
-      content: debounce_1(function () {
-        this.save();
-      }, 4000)
-    },
-
-    mounted() {
-      this.editor = new tiptap.Editor({
-        content: this.content,
-        extensions: [new tiptapExtensions.Blockquote(), new tiptapExtensions.Bold(), new tiptapExtensions.Code(), new FormatClear(), new tiptapExtensions.Italic(), new tiptapExtensions.HardBreak(), new Indent(), new Heading({
-          levels: [1, 2, 3, 4, 5]
-        }), new tiptapExtensions.HorizontalRule(), new tiptapExtensions.History(), new tiptapExtensions.ListItem(), new tiptapExtensions.OrderedList(), new tiptapExtensions.BulletList(), new tiptapExtensions.Strike(), new tiptapExtensions.Underline(), new tiptapExtensions.Table(), new tiptapExtensions.TableCell(), new tiptapExtensions.TableHeader(), new tiptapExtensions.TableRow(), new Paragraph(), new Image(), new Link(), new FontSize(), new FontType(), new TextColor(), new TextHighlight(), new TextAlign()],
-        onUpdate: ({
-          getHTML
-        }) => {
-          this.content = getHTML();
-        }
-      });
-    },
-
-    beforeDestroy() {
-      this.editor.destroy();
-    },
-
-    components: {
-      EditorContent: tiptap.EditorContent,
-      BubbleMenu: __vue_component__$a
-    }
-  };
-
-  /* script */
-  const __vue_script__$9 = script$9;
-  /* template */
-
-  var __vue_render__$9 = function () {
-    var _vm = this;
-
-    var _h = _vm.$createElement;
-
-    var _c = _vm._self._c || _h;
-
-    return _c('div', {
-      staticClass: "tce-tiptap-html",
-      class: {
-        sm: _vm.dense,
-        disabled: _vm.isDisabled
-      }
-    }, [!_vm.isFocused && !_vm.content && _vm.showPlaceholder ? _c('div', {
-      staticClass: "tiptap-html-placeholder"
-    }, [_vm._m(0), _vm._v(" "), _c('div', {
-      staticClass: "message"
-    }, [_c('span', {
-      staticClass: "heading"
-    }, [_vm._v("HTML component")]), _vm._v(" "), !_vm.dense ? _c('span', [_vm._v("Select to edit")]) : _vm._e()])]) : [_c('editor-content', {
-      staticClass: "editor",
-      attrs: {
-        "editor": _vm.editor
-      }
-    }), _vm._v(" "), _c('bubble-menu', {
-      attrs: {
-        "editor": _vm.editor
-      }
-    })]], 2);
-  };
-
-  var __vue_staticRenderFns__$9 = [function () {
-    var _vm = this;
-
-    var _h = _vm.$createElement;
-
-    var _c = _vm._self._c || _h;
-
-    return _c('div', {
-      staticClass: "placeholder-avatar"
-    }, [_c('span', [_vm._v("<")]), _vm._v(" "), _c('span', {
-      staticClass: "divider"
-    }, [_vm._v("/")]), _vm._v(" "), _c('span', [_vm._v(">")])]);
-  }];
-  /* style */
-
-  const __vue_inject_styles__$9 = undefined;
-  /* scoped */
-
-  const __vue_scope_id__$9 = "data-v-8df55fbe";
-  /* module identifier */
-
-  const __vue_module_identifier__$9 = undefined;
-  /* functional template */
-
-  const __vue_is_functional_template__$9 = false;
-  /* style inject */
-
-  /* style inject SSR */
-
-  /* style inject shadow dom */
-
-  const __vue_component__$9 = /*#__PURE__*/normalizeComponent({
-    render: __vue_render__$9,
-    staticRenderFns: __vue_staticRenderFns__$9
-  }, __vue_inject_styles__$9, __vue_script__$9, __vue_scope_id__$9, __vue_is_functional_template__$9, __vue_module_identifier__$9, false, undefined, undefined, undefined);
-
-  //
-  var script$8 = {
-    name: 'tce-tiptap-color-picker',
-    props: {
-      command: {
-        type: Function,
-        default: () => {}
-      },
-      isActive: {
-        type: Boolean,
-        default: false
-      },
-      icon: {
-        type: String,
-        default: 'palette'
-      }
-    },
-    methods: {
-      onColorChange(color) {
-        this.command(color.hex);
-      }
-
-    },
-    components: {
-      MenuButton: __vue_component__$h
-    }
-  };
-
-  /* script */
-  const __vue_script__$8 = script$8;
-  /* template */
-
-  var __vue_render__$8 = function () {
-    var _vm = this;
-
-    var _h = _vm.$createElement;
-
-    var _c = _vm._self._c || _h;
-
-    return _c('v-menu', {
-      attrs: {
-        "transition": "slide-y-transition",
-        "bottom": ""
-      },
-      scopedSlots: _vm._u([{
-        key: "activator",
-        fn: function (ref) {
-          var on = ref.on;
-          var attrs = ref.attrs;
-          return [_c('menu-button', _vm._g(_vm._b({
-            attrs: {
-              "is-active": _vm.isActive,
-              "icon": _vm.icon
-            }
-          }, 'menu-button', attrs, false), on))];
-        }
-      }])
-    }, [_vm._v(" "), _c('v-color-picker', {
-      attrs: {
-        "dot-size": "25",
-        "mode": "hexa",
-        "show-swatches": "",
-        "swatches-max-height": "200"
-      },
-      on: {
-        "input": _vm.onColorChange
-      }
-    })], 1);
-  };
-
-  var __vue_staticRenderFns__$8 = [];
-  /* style */
-
-  const __vue_inject_styles__$8 = undefined;
-  /* scoped */
-
-  const __vue_scope_id__$8 = "data-v-0f4002f4";
-  /* module identifier */
-
-  const __vue_module_identifier__$8 = undefined;
-  /* functional template */
-
-  const __vue_is_functional_template__$8 = false;
-  /* style inject */
-
-  /* style inject SSR */
-
-  /* style inject shadow dom */
-
-  const __vue_component__$8 = /*#__PURE__*/normalizeComponent({
-    render: __vue_render__$8,
-    staticRenderFns: __vue_staticRenderFns__$8
-  }, __vue_inject_styles__$8, __vue_script__$8, __vue_scope_id__$8, __vue_is_functional_template__$8, __vue_module_identifier__$8, false, undefined, undefined, undefined);
-
-  //
-  var script$7 = {
-    name: 'tce-tiptap-font-size',
-    props: {
-      editorContext: {
-        type: Object,
-        required: true
-      }
-    },
-    data: () => ({
-      size: 14
-    }),
-    computed: {
-      fontSizes: () => FONT_SIZES,
-      editor: ({
-        editorContext: {
-          editor
-        }
-      }) => editor,
-      activeFontSize: ({
-        editor
-      }) => findActiveFontSize(editor.state),
-      isActive: ({
-        editorContext: {
-          isActive
-        }
-      }) => isActive.fontSize()
-    },
-    methods: {
-      toggleFontSize(size) {
-        const {
-          activeFontSize,
-          editorContext: {
-            commands
-          }
-        } = this;
-        if (size === activeFontSize) return commands.fontSize(DEFAULT_FONT_SIZE);
-        commands.fontSize(size);
-      }
-
-    },
-    watch: {
-      size: 'toggleFontSize'
-    },
-    components: {
-      MenuButton: __vue_component__$h
-    }
-  };
-
-  /* script */
-  const __vue_script__$7 = script$7;
-  /* template */
-
-  var __vue_render__$7 = function () {
-    var _vm = this;
-
-    var _h = _vm.$createElement;
-
-    var _c = _vm._self._c || _h;
-
-    return _c('v-menu', {
-      attrs: {
-        "transition": "slide-y-transition",
-        "bottom": ""
-      },
-      scopedSlots: _vm._u([{
-        key: "activator",
-        fn: function (ref) {
-          var on = ref.on;
-          var attrs = ref.attrs;
-          return [_c('menu-button', _vm._g(_vm._b({
-            attrs: {
-              "is-active": _vm.isActive,
-              "icon": "format-size"
-            }
-          }, 'menu-button', attrs, false), on))];
-        }
-      }])
-    }, [_vm._v(" "), _c('v-list', {
-      staticClass: "font-sizes",
-      attrs: {
-        "dense": ""
-      }
-    }, [_c('v-list-item-group', {
-      model: {
-        value: _vm.size,
-        callback: function ($$v) {
-          _vm.size = $$v;
-        },
-        expression: "size"
-      }
-    }, _vm._l(_vm.fontSizes, function (fontSize) {
-      return _c('v-list-item', {
-        key: fontSize,
-        class: {
-          'active': fontSize === _vm.activeFontSize
-        },
-        attrs: {
-          "value": fontSize
-        }
-      }, [_c('v-list-item-title', [_vm._v(_vm._s(fontSize))])], 1);
-    }), 1)], 1)], 1);
-  };
-
-  var __vue_staticRenderFns__$7 = [];
-  /* style */
-
-  const __vue_inject_styles__$7 = undefined;
-  /* scoped */
-
-  const __vue_scope_id__$7 = "data-v-66459d8d";
-  /* module identifier */
-
-  const __vue_module_identifier__$7 = undefined;
-  /* functional template */
-
-  const __vue_is_functional_template__$7 = false;
-  /* style inject */
-
-  /* style inject SSR */
-
-  /* style inject shadow dom */
-
-  const __vue_component__$7 = /*#__PURE__*/normalizeComponent({
-    render: __vue_render__$7,
-    staticRenderFns: __vue_staticRenderFns__$7
-  }, __vue_inject_styles__$7, __vue_script__$7, __vue_scope_id__$7, __vue_is_functional_template__$7, __vue_module_identifier__$7, false, undefined, undefined, undefined);
-
-  //
-  var script$6 = {
-    name: 'tce-tiptap-font-type',
-    props: {
-      editorContext: {
-        type: Object,
-        required: true
-      }
-    },
-    data: () => ({
-      type: ''
-    }),
-    computed: {
-      fontTypes: () => FONT_TYPES,
-      editor: ({
-        editorContext: {
-          editor
-        }
-      }) => editor,
-      activeFontType: ({
-        editor
-      }) => findActiveFontType(editor.state),
-      isActive: ({
-        editorContext: {
-          isActive
-        }
-      }) => isActive.fontType()
-    },
-    methods: {
-      toggleFontType(type) {
-        const {
-          activeFontType,
-          editorContext: {
-            commands
-          }
-        } = this;
-        if (type === activeFontType) return commands.fontType('');
-        commands.fontType(type);
-      }
-
-    },
-    watch: {
-      type: 'toggleFontType'
-    },
-    components: {
-      MenuButton: __vue_component__$h
-    }
-  };
-
-  /* script */
-  const __vue_script__$6 = script$6;
-  /* template */
-
-  var __vue_render__$6 = function () {
-    var _vm = this;
-
-    var _h = _vm.$createElement;
-
-    var _c = _vm._self._c || _h;
-
-    return _c('v-menu', {
-      attrs: {
-        "transition": "slide-y-transition",
-        "bottom": ""
-      },
-      scopedSlots: _vm._u([{
-        key: "activator",
-        fn: function (ref) {
-          var on = ref.on;
-          var attrs = ref.attrs;
-          return [_c('menu-button', _vm._g(_vm._b({
-            attrs: {
-              "is-active": _vm.isActive,
-              "icon": "format-font"
-            }
-          }, 'menu-button', attrs, false), on))];
-        }
-      }])
-    }, [_vm._v(" "), _c('v-list', {
-      staticClass: "font-types",
-      attrs: {
-        "dense": ""
-      }
-    }, [_c('v-list-item-group', {
-      model: {
-        value: _vm.type,
-        callback: function ($$v) {
-          _vm.type = $$v;
-        },
-        expression: "type"
-      }
-    }, _vm._l(_vm.fontTypes, function (fontType) {
-      return _c('v-list-item', {
-        key: fontType,
-        class: {
-          'active': fontType === _vm.activeFontType
-        },
-        attrs: {
-          "value": fontType
-        }
-      }, [_c('v-list-item-title', [_c('span', {
-        style: "font-family: " + fontType
-      }, [_vm._v(_vm._s(fontType))])])], 1);
-    }), 1)], 1)], 1);
-  };
-
-  var __vue_staticRenderFns__$6 = [];
-  /* style */
-
-  const __vue_inject_styles__$6 = undefined;
-  /* scoped */
-
-  const __vue_scope_id__$6 = "data-v-4fa03809";
-  /* module identifier */
-
-  const __vue_module_identifier__$6 = undefined;
-  /* functional template */
-
-  const __vue_is_functional_template__$6 = false;
-  /* style inject */
-
-  /* style inject SSR */
-
-  /* style inject shadow dom */
-
-  const __vue_component__$6 = /*#__PURE__*/normalizeComponent({
-    render: __vue_render__$6,
-    staticRenderFns: __vue_staticRenderFns__$6
-  }, __vue_inject_styles__$6, __vue_script__$6, __vue_scope_id__$6, __vue_is_functional_template__$6, __vue_module_identifier__$6, false, undefined, undefined, undefined);
-
-  //
-  var script$5 = {
-    name: 'tce-tiptap-heading',
-    props: {
-      editorContext: {
-        type: Object,
-        required: true
-      }
-    },
-    data: () => ({
-      level: 0
-    }),
-    computed: {
-      editor: ({
-        editorContext: {
-          editor
-        }
-      }) => editor,
-      levels: ({
-        editor
-      }) => editor.extensions.options.heading.levels
-    },
-    methods: {
-      isHeadingActive(level) {
-        return isHeadingActive(this.editor.state, level);
-      },
-
-      toggleHeading(level) {
-        level > 0 ? this.editorContext.commands.heading({
-          level
-        }) : this.editorContext.commands.paragraph();
-      }
-
-    },
-    watch: {
-      level: 'toggleHeading'
-    },
-    components: {
-      MenuButton: __vue_component__$h
-    }
-  };
-
-  /* script */
-  const __vue_script__$5 = script$5;
-  /* template */
-
-  var __vue_render__$5 = function () {
-    var _vm = this;
-
-    var _h = _vm.$createElement;
-
-    var _c = _vm._self._c || _h;
-
-    return _c('v-menu', {
-      attrs: {
-        "transition": "slide-y-transition",
-        "bottom": ""
-      },
-      scopedSlots: _vm._u([{
-        key: "activator",
-        fn: function (ref) {
-          var on = ref.on;
-          var attrs = ref.attrs;
-          return [_c('menu-button', _vm._g(_vm._b({
-            attrs: {
-              "is-active": _vm.isHeadingActive(),
-              "icon": "format-pilcrow"
-            }
-          }, 'menu-button', attrs, false), on))];
-        }
-      }])
-    }, [_vm._v(" "), _c('v-list', {
-      staticClass: "font-sizes",
-      attrs: {
-        "dense": ""
-      }
-    }, [_c('v-list-item-group', {
-      model: {
-        value: _vm.level,
-        callback: function ($$v) {
-          _vm.level = $$v;
-        },
-        expression: "level"
-      }
-    }, [_c('v-list-item', {
-      class: {
-        'active': _vm.isHeadingActive(0)
-      },
-      attrs: {
-        "value": 0
-      }
-    }, [_vm._v("\n        Normal\n      ")]), _vm._v(" "), _vm._l(_vm.levels, function (l) {
-      return _c('v-list-item', {
-        key: l,
-        class: {
-          'active': _vm.isHeadingActive(l)
-        },
-        attrs: {
-          "value": l
-        }
-      }, [_c('v-list-item-title', [_c("h" + l, {
-        tag: "component"
-      }, [_vm._v("Heading " + _vm._s(l))])], 1)], 1);
-    })], 2)], 1)], 1);
-  };
-
-  var __vue_staticRenderFns__$5 = [];
-  /* style */
-
-  const __vue_inject_styles__$5 = undefined;
-  /* scoped */
-
-  const __vue_scope_id__$5 = undefined;
-  /* module identifier */
-
-  const __vue_module_identifier__$5 = undefined;
-  /* functional template */
-
-  const __vue_is_functional_template__$5 = false;
-  /* style inject */
-
-  /* style inject SSR */
-
-  /* style inject shadow dom */
-
-  const __vue_component__$5 = /*#__PURE__*/normalizeComponent({
-    render: __vue_render__$5,
-    staticRenderFns: __vue_staticRenderFns__$5
-  }, __vue_inject_styles__$5, __vue_script__$5, __vue_scope_id__$5, __vue_is_functional_template__$5, __vue_module_identifier__$5, false, undefined, undefined, undefined);
-
-  //
-  var script$4 = {
-    name: 'tce-tiptap-image',
-    props: {
-      editorContext: {
-        type: Object,
-        required: true
-      }
-    },
-    data: () => ({
-      menu: false,
-      imageUrl: '',
-      alt: ''
-    }),
-    computed: {
-      editor: ({
-        editorContext: {
-          editor
-        }
-      }) => editor
-    },
-    methods: {
-      save() {
-        const {
-          imageUrl: src,
-          alt
-        } = this;
-        this.menu = false;
-        this.editorContext.commands.image({
-          src,
-          alt
-        });
-      }
-
-    },
-    components: {
-      MenuButton: __vue_component__$h
-    }
-  };
-
-  /* script */
-  const __vue_script__$4 = script$4;
-  /* template */
-
-  var __vue_render__$4 = function () {
-    var _vm = this;
-
-    var _h = _vm.$createElement;
-
-    var _c = _vm._self._c || _h;
-
-    return _c('v-menu', {
-      attrs: {
-        "transition": "slide-y-transition",
-        "close-on-content-click": false,
-        "bottom": ""
-      },
-      scopedSlots: _vm._u([{
-        key: "activator",
-        fn: function (ref) {
-          var on = ref.on;
-          var attrs = ref.attrs;
-          return [_c('menu-button', _vm._g(_vm._b({
-            attrs: {
-              "icon": "image-plus"
-            }
-          }, 'menu-button', attrs, false), on))];
-        }
-      }]),
-      model: {
-        value: _vm.menu,
-        callback: function ($$v) {
-          _vm.menu = $$v;
-        },
-        expression: "menu"
-      }
-    }, [_vm._v(" "), _c('v-card', {
-      attrs: {
-        "min-width": "300"
-      }
-    }, [_c('v-card-text', {
-      staticClass: "pb-0"
-    }, [_c('v-text-field', {
-      ref: "imageUrl",
-      attrs: {
-        "label": "Url",
-        "placeholder": "https://example.com",
-        "type": "url"
-      },
-      model: {
-        value: _vm.imageUrl,
-        callback: function ($$v) {
-          _vm.imageUrl = $$v;
-        },
-        expression: "imageUrl"
-      }
-    }), _vm._v(" "), _c('v-text-field', {
-      attrs: {
-        "label": "Alt text"
-      },
-      model: {
-        value: _vm.alt,
-        callback: function ($$v) {
-          _vm.alt = $$v;
-        },
-        expression: "alt"
-      }
-    })], 1), _vm._v(" "), _c('v-card-actions', {
-      staticClass: "pt-0"
-    }, [_c('v-spacer'), _vm._v(" "), _c('v-btn', {
-      attrs: {
-        "disabled": !_vm.imageUrl,
-        "text": ""
-      },
-      on: {
-        "click": _vm.save
-      }
-    }, [_vm._v("\n        Save\n      ")])], 1)], 1)], 1);
-  };
-
-  var __vue_staticRenderFns__$4 = [];
-  /* style */
-
-  const __vue_inject_styles__$4 = undefined;
-  /* scoped */
-
-  const __vue_scope_id__$4 = undefined;
-  /* module identifier */
-
-  const __vue_module_identifier__$4 = undefined;
-  /* functional template */
-
-  const __vue_is_functional_template__$4 = false;
-  /* style inject */
-
-  /* style inject SSR */
-
-  /* style inject shadow dom */
-
-  const __vue_component__$4 = /*#__PURE__*/normalizeComponent({
-    render: __vue_render__$4,
-    staticRenderFns: __vue_staticRenderFns__$4
-  }, __vue_inject_styles__$4, __vue_script__$4, __vue_scope_id__$4, __vue_is_functional_template__$4, __vue_module_identifier__$4, false, undefined, undefined, undefined);
-
-  //
-  var script$3 = {
-    name: 'tce-tiptap-heading',
-    props: {
-      editorContext: {
-        type: Object,
-        required: true
-      }
-    },
-    data: () => ({
-      alignment: 'left'
-    }),
-    computed: {
-      editor: ({
-        editorContext: {
-          editor
-        }
-      }) => editor,
-      alignments: ({
-        editor
-      }) => editor.extensions.options.textAlign.alignments
-    },
-    methods: {
-      isTextAlignActive
-    },
-    components: {
-      MenuButton: __vue_component__$h
-    }
-  };
-
-  /* script */
-  const __vue_script__$3 = script$3;
-  /* template */
-
-  var __vue_render__$3 = function () {
-    var _vm = this;
-
-    var _h = _vm.$createElement;
-
-    var _c = _vm._self._c || _h;
-
-    return _c('v-menu', {
-      attrs: {
-        "transition": "slide-y-transition",
-        "bottom": ""
-      },
-      scopedSlots: _vm._u([{
-        key: "activator",
-        fn: function (ref) {
-          var on = ref.on;
-          var attrs = ref.attrs;
-          return [_c('menu-button', _vm._g(_vm._b({
-            attrs: {
-              "icon": "format-align-left"
-            }
-          }, 'menu-button', attrs, false), on))];
-        }
-      }])
-    }, [_vm._v(" "), _c('v-list', {
-      staticClass: "text-alignment",
-      attrs: {
-        "dense": ""
-      }
-    }, [_c('v-list-item-group', {
-      model: {
-        value: _vm.alignment,
-        callback: function ($$v) {
-          _vm.alignment = $$v;
-        },
-        expression: "alignment"
-      }
-    }, _vm._l(_vm.alignments, function (it) {
-      return _c('v-list-item', {
-        key: it,
-        class: {
-          'active': _vm.isTextAlignActive(_vm.editor.state, it)
-        },
-        attrs: {
-          "value": it
-        }
-      }, [_c('v-list-item-title', [_c('menu-button', {
-        attrs: {
-          "command": _vm.editorContext.commands["align_" + it],
-          "is-active": _vm.isTextAlignActive(_vm.editor.state, it),
-          "icon": "format-align-" + it
-        }
-      })], 1)], 1);
-    }), 1)], 1)], 1);
-  };
-
-  var __vue_staticRenderFns__$3 = [];
-  /* style */
-
-  const __vue_inject_styles__$3 = undefined;
-  /* scoped */
-
-  const __vue_scope_id__$3 = "data-v-4c1156cc";
-  /* module identifier */
-
-  const __vue_module_identifier__$3 = undefined;
-  /* functional template */
-
-  const __vue_is_functional_template__$3 = false;
-  /* style inject */
-
-  /* style inject SSR */
-
-  /* style inject shadow dom */
-
-  const __vue_component__$3 = /*#__PURE__*/normalizeComponent({
-    render: __vue_render__$3,
-    staticRenderFns: __vue_staticRenderFns__$3
-  }, __vue_inject_styles__$3, __vue_script__$3, __vue_scope_id__$3, __vue_is_functional_template__$3, __vue_module_identifier__$3, false, undefined, undefined, undefined);
-
-  var base = {
-    8: "Backspace",
-    9: "Tab",
-    10: "Enter",
-    12: "NumLock",
-    13: "Enter",
-    16: "Shift",
-    17: "Control",
-    18: "Alt",
-    20: "CapsLock",
-    27: "Escape",
-    32: " ",
-    33: "PageUp",
-    34: "PageDown",
-    35: "End",
-    36: "Home",
-    37: "ArrowLeft",
-    38: "ArrowUp",
-    39: "ArrowRight",
-    40: "ArrowDown",
-    44: "PrintScreen",
-    45: "Insert",
-    46: "Delete",
-    59: ";",
-    61: "=",
-    91: "Meta",
-    92: "Meta",
-    106: "*",
-    107: "+",
-    108: ",",
-    109: "-",
-    110: ".",
-    111: "/",
-    144: "NumLock",
-    145: "ScrollLock",
-    160: "Shift",
-    161: "Shift",
-    162: "Control",
-    163: "Control",
-    164: "Alt",
-    165: "Alt",
-    173: "-",
-    186: ";",
-    187: "=",
-    188: ",",
-    189: "-",
-    190: ".",
-    191: "/",
-    192: "`",
-    219: "[",
-    220: "\\",
-    221: "]",
-    222: "'",
-    229: "q"
-  };
-
-  var shift = {
-    48: ")",
-    49: "!",
-    50: "@",
-    51: "#",
-    52: "$",
-    53: "%",
-    54: "^",
-    55: "&",
-    56: "*",
-    57: "(",
-    59: ":",
-    61: "+",
-    173: "_",
-    186: ":",
-    187: "+",
-    188: "<",
-    189: "_",
-    190: ">",
-    191: "?",
-    192: "~",
-    219: "{",
-    220: "|",
-    221: "}",
-    222: "\"",
-    229: "Q"
-  };
-
-  var chrome$1 = typeof navigator != "undefined" && /Chrome\/(\d+)/.exec(navigator.userAgent);
-  var safari = typeof navigator != "undefined" && /Apple Computer/.test(navigator.vendor);
-  var gecko = typeof navigator != "undefined" && /Gecko\/\d+/.test(navigator.userAgent);
-  var mac$1 = typeof navigator != "undefined" && /Mac/.test(navigator.platform);
-  var ie$1 = typeof navigator != "undefined" && /MSIE \d|Trident\/(?:[7-9]|\d{2,})\..*rv:(\d+)/.exec(navigator.userAgent);
-  var brokenModifierNames = chrome$1 && (mac$1 || +chrome$1[1] < 57) || gecko && mac$1;
-
-  // Fill in the digit keys
-  for (var i = 0; i < 10; i++) base[48 + i] = base[96 + i] = String(i);
-
-  // The function keys
-  for (var i = 1; i <= 24; i++) base[i + 111] = "F" + i;
-
-  // And the alphabetic keys
-  for (var i = 65; i <= 90; i++) {
-    base[i] = String.fromCharCode(i + 32);
-    shift[i] = String.fromCharCode(i);
-  }
-
-  // For each code that doesn't have a shift-equivalent, copy the base name
-  for (var code in base) if (!shift.hasOwnProperty(code)) shift[code] = base[code];
-
-  function keyName(event) {
-    // Don't trust event.key in Chrome when there are modifiers until
-    // they fix https://bugs.chromium.org/p/chromium/issues/detail?id=633838
-    var ignoreKey = brokenModifierNames && (event.ctrlKey || event.altKey || event.metaKey) ||
-      (safari || ie$1) && event.shiftKey && event.key && event.key.length == 1;
-    var name = (!ignoreKey && event.key) ||
-      (event.shiftKey ? shift : base)[event.keyCode] ||
-      event.key || "Unidentified";
-    // Edge sometimes produces wrong names (Issue #3)
-    if (name == "Esc") name = "Escape";
-    if (name == "Del") name = "Delete";
-    // https://developer.microsoft.com/en-us/microsoft-edge/platform/issues/8860571/
-    if (name == "Left") name = "ArrowLeft";
-    if (name == "Up") name = "ArrowUp";
-    if (name == "Right") name = "ArrowRight";
-    if (name == "Down") name = "ArrowDown";
-    return name
-  }
-
-  // declare global: navigator
-
-  var mac = typeof navigator != "undefined" ? /Mac/.test(navigator.platform) : false;
-
-  function normalizeKeyName(name) {
-    var parts = name.split(/-(?!$)/), result = parts[parts.length - 1];
-    if (result == "Space") { result = " "; }
-    var alt, ctrl, shift, meta;
-    for (var i = 0; i < parts.length - 1; i++) {
-      var mod = parts[i];
-      if (/^(cmd|meta|m)$/i.test(mod)) { meta = true; }
-      else if (/^a(lt)?$/i.test(mod)) { alt = true; }
-      else if (/^(c|ctrl|control)$/i.test(mod)) { ctrl = true; }
-      else if (/^s(hift)?$/i.test(mod)) { shift = true; }
-      else if (/^mod$/i.test(mod)) { if (mac) { meta = true; } else { ctrl = true; } }
-      else { throw new Error("Unrecognized modifier name: " + mod) }
-    }
-    if (alt) { result = "Alt-" + result; }
-    if (ctrl) { result = "Ctrl-" + result; }
-    if (meta) { result = "Meta-" + result; }
-    if (shift) { result = "Shift-" + result; }
-    return result
-  }
-
-  function normalize(map) {
-    var copy = Object.create(null);
-    for (var prop in map) { copy[normalizeKeyName(prop)] = map[prop]; }
-    return copy
-  }
-
-  function modifiers(name, event, shift) {
-    if (event.altKey) { name = "Alt-" + name; }
-    if (event.ctrlKey) { name = "Ctrl-" + name; }
-    if (event.metaKey) { name = "Meta-" + name; }
-    if (shift !== false && event.shiftKey) { name = "Shift-" + name; }
-    return name
-  }
-
-  // :: (Object) → (view: EditorView, event: dom.Event) → bool
-  // Given a set of bindings (using the same format as
-  // [`keymap`](#keymap.keymap), return a [keydown
-  // handler](#view.EditorProps.handleKeyDown) that handles them.
-  function keydownHandler(bindings) {
-    var map = normalize(bindings);
-    return function(view, event) {
-      var name = keyName(event), isChar = name.length == 1 && name != " ", baseName;
-      var direct = map[modifiers(name, event, !isChar)];
-      if (direct && direct(view.state, view.dispatch, view)) { return true }
-      if (isChar && (event.shiftKey || event.altKey || event.metaKey || name.charCodeAt(0) > 127) &&
-          (baseName = base[event.keyCode]) && baseName != name) {
-        // Try falling back to the keyCode when there's a modifier
-        // active or the character produced isn't ASCII, and our table
-        // produces a different name from the the keyCode. See #668,
-        // #1060
-        var fromCode = map[modifiers(baseName, event, true)];
-        if (fromCode && fromCode(view.state, view.dispatch, view)) { return true }
-      } else if (isChar && event.shiftKey) {
-        // Otherwise, if shift is active, also try the binding with the
-        // Shift- prefix enabled. See #997
-        var withShift = map[modifiers(name, event, true)];
-        if (withShift && withShift(view.state, view.dispatch, view)) { return true }
-      }
-      return false
-    }
-  }
-
   var result = {};
 
   if (typeof navigator != "undefined" && typeof document != "undefined") {
@@ -10636,15 +5926,15 @@
     var ie_11up = /Trident\/(?:[7-9]|\d{2,})\..*rv:(\d+)/.exec(navigator.userAgent);
 
     result.mac = /Mac/.test(navigator.platform);
-    var ie = result.ie = !!(ie_upto10 || ie_11up || ie_edge);
+    var ie$1 = result.ie = !!(ie_upto10 || ie_11up || ie_edge);
     result.ie_version = ie_upto10 ? document.documentMode || 6 : ie_11up ? +ie_11up[1] : ie_edge ? +ie_edge[1] : null;
-    result.gecko = !ie && /gecko\/(\d+)/i.test(navigator.userAgent);
+    result.gecko = !ie$1 && /gecko\/(\d+)/i.test(navigator.userAgent);
     result.gecko_version = result.gecko && +(/Firefox\/(\d+)/.exec(navigator.userAgent) || [0, 0])[1];
-    var chrome = !ie && /Chrome\/(\d+)/.exec(navigator.userAgent);
-    result.chrome = !!chrome;
-    result.chrome_version = chrome && +chrome[1];
+    var chrome$1 = !ie$1 && /Chrome\/(\d+)/.exec(navigator.userAgent);
+    result.chrome = !!chrome$1;
+    result.chrome_version = chrome$1 && +chrome$1[1];
     // Is true for both iOS and iPadOS for convenience
-    result.safari = !ie && /Apple Computer/.test(navigator.vendor);
+    result.safari = !ie$1 && /Apple Computer/.test(navigator.vendor);
     result.ios = result.safari && (/Mobile\/\w+/.test(navigator.userAgent) || navigator.maxTouchPoints > 2);
     result.android = /Android \d/.test(navigator.userAgent);
     result.webkit = "webkitFontSmoothing" in document.documentElement.style;
@@ -10659,7 +5949,7 @@
   };
 
   var parentNode = function(node) {
-    var parent = node.parentNode;
+    var parent = node.assignedSlot || node.parentNode;
     return parent && parent.nodeType == 11 ? parent.host : parent
   };
 
@@ -10668,7 +5958,7 @@
   // Note that this will always return the same range, because DOM range
   // objects are every expensive, and keep slowing down subsequent DOM
   // updates, for some reason.
-  var textRange = function(node, from, to) {
+  var textRange$1 = function(node, from, to) {
     var range = reusedRange || (reusedRange = document.createRange());
     range.setEnd(node, to == null ? node.nodeValue.length : to);
     range.setStart(node, from || 0);
@@ -10871,7 +6161,7 @@
     for (var child = node.firstChild, childIndex = 0; child; child = child.nextSibling, childIndex++) {
       var rects = (void 0);
       if (child.nodeType == 1) { rects = child.getClientRects(); }
-      else if (child.nodeType == 3) { rects = textRange(child).getClientRects(); }
+      else if (child.nodeType == 3) { rects = textRange$1(child).getClientRects(); }
       else { continue }
 
       for (var i = 0; i < rects.length; i++) {
@@ -10906,7 +6196,7 @@
     for (var i = 0; i < len; i++) {
       range.setEnd(node, i + 1);
       range.setStart(node, i);
-      var rect = singleRect(range, 1);
+      var rect = singleRect$1(range, 1);
       if (rect.top == rect.bottom) { continue }
       if (inRect(coords, rect))
         { return {node: node, offset: i + (coords.left >= (rect.left + rect.right) / 2 ? 1 : 0)} }
@@ -11036,7 +6326,7 @@
     return {pos: pos, inside: desc ? desc.posAtStart - desc.border : -1}
   }
 
-  function singleRect(object, bias) {
+  function singleRect$1(object, bias) {
     var rects = object.getClientRects();
     return !rects.length ? object.getBoundingClientRect() : rects[bias < 0 ? 0 : rects.length - 1]
   }
@@ -11046,7 +6336,7 @@
   // : (EditorView, number, number) → {left: number, top: number, right: number, bottom: number}
   // Given a position in the document model, get a bounding box of the
   // character at that position, relative to the window.
-  function coordsAtPos(view, pos, side) {
+  function coordsAtPos$1(view, pos, side) {
     var ref = view.docView.domFromPos(pos, side < 0 ? -1 : 1);
     var node = ref.node;
     var offset = ref.offset;
@@ -11056,14 +6346,14 @@
       // These browsers support querying empty text ranges. Prefer that in
       // bidi context or when at the end of a node.
       if (supportEmptyRange && (BIDI.test(node.nodeValue) || (side < 0 ? !offset : offset == node.nodeValue.length))) {
-        var rect = singleRect(textRange(node, offset, offset), side);
+        var rect = singleRect$1(textRange$1(node, offset, offset), side);
         // Firefox returns bad results (the position before the space)
         // when querying a position directly after line-broken
         // whitespace. Detect this situation and and kludge around it
         if (result.gecko && offset && /\s/.test(node.nodeValue[offset - 1]) && offset < node.nodeValue.length) {
-          var rectBefore = singleRect(textRange(node, offset - 1, offset - 1), -1);
+          var rectBefore = singleRect$1(textRange$1(node, offset - 1, offset - 1), -1);
           if (rectBefore.top == rect.top) {
-            var rectAfter = singleRect(textRange(node, offset, offset + 1), -1);
+            var rectAfter = singleRect$1(textRange$1(node, offset, offset + 1), -1);
             if (rectAfter.top != rect.top)
               { return flattenV(rectAfter, rectAfter.left < rectBefore.left) }
           }
@@ -11075,7 +6365,7 @@
         else if (side >= 0 && offset == node.nodeValue.length) { from--; takeSide = 1; }
         else if (side < 0) { from--; }
         else { to ++; }
-        return flattenV(singleRect(textRange(node, from, to), takeSide), takeSide < 0)
+        return flattenV(singleRect$1(textRange$1(node, from, to), takeSide), takeSide < 0)
       }
     }
 
@@ -11095,20 +6385,20 @@
     // Inline, not in text node (this is not Bidi-safe)
     if (offset && (side < 0 || offset == nodeSize(node))) {
       var before$1 = node.childNodes[offset - 1];
-      var target = before$1.nodeType == 3 ? textRange(before$1, nodeSize(before$1) - (supportEmptyRange ? 0 : 1))
+      var target = before$1.nodeType == 3 ? textRange$1(before$1, nodeSize(before$1) - (supportEmptyRange ? 0 : 1))
           // BR nodes tend to only return the rectangle before them.
           // Only use them if they are the last element in their parent
           : before$1.nodeType == 1 && (before$1.nodeName != "BR" || !before$1.nextSibling) ? before$1 : null;
-      if (target) { return flattenV(singleRect(target, 1), false) }
+      if (target) { return flattenV(singleRect$1(target, 1), false) }
     }
     if (offset < nodeSize(node)) {
       var after$1 = node.childNodes[offset];
-      var target$1 = after$1.nodeType == 3 ? textRange(after$1, 0, (supportEmptyRange ? 0 : 1))
+      var target$1 = after$1.nodeType == 3 ? textRange$1(after$1, 0, (supportEmptyRange ? 0 : 1))
           : after$1.nodeType == 1 ? after$1 : null;
-      if (target$1) { return flattenV(singleRect(target$1, -1), true) }
+      if (target$1) { return flattenV(singleRect$1(target$1, -1), true) }
     }
     // All else failed, just try to get a rectangle for the target node
-    return flattenV(singleRect(node.nodeType == 3 ? textRange(node) : node, -side), side >= 0)
+    return flattenV(singleRect$1(node.nodeType == 3 ? textRange$1(node) : node, -side), side >= 0)
   }
 
   function flattenV(rect, left) {
@@ -11150,11 +6440,11 @@
         if (nearest.node.isBlock) { dom = nearest.dom; break }
         dom = nearest.dom.parentNode;
       }
-      var coords = coordsAtPos(view, $pos.pos, 1);
+      var coords = coordsAtPos$1(view, $pos.pos, 1);
       for (var child = dom.firstChild; child; child = child.nextSibling) {
         var boxes = (void 0);
         if (child.nodeType == 1) { boxes = child.getClientRects(); }
-        else if (child.nodeType == 3) { boxes = textRange(child, 0, child.nodeValue.length).getClientRects(); }
+        else if (child.nodeType == 3) { boxes = textRange$1(child, 0, child.nodeValue.length).getClientRects(); }
         else { continue }
         for (var i = 0; i < boxes.length; i++) {
           var box = boxes[i];
@@ -11913,7 +7203,7 @@
         if (widget.spec.marks)
           { updater.syncToMarks(widget.spec.marks, inline, view); }
         else if (widget.type.side >= 0 && !insideNode)
-          { updater.syncToMarks(i == this$1.node.childCount ? Mark.none : this$1.node.child(i).marks, inline, view); }
+          { updater.syncToMarks(i == this$1.node.childCount ? Mark$1.none : this$1.node.child(i).marks, inline, view); }
         // If the next node is a desc matching this widget, reuse it,
         // otherwise insert the widget as a new view desc.
         updater.placeWidget(widget, view, off);
@@ -13122,7 +8412,7 @@
     if (result.chrome && view.lastKeyCode === 8) {
       for (var off = toOffset; off > fromOffset; off--) {
         var node = parent.childNodes[off - 1], desc = node.pmViewDesc;
-        if (node.nodeType == "BR" && !desc) { toOffset = off; break }
+        if (node.nodeName == "BR" && !desc) { toOffset = off; break }
         if (!desc || desc.size) { break }
       }
     }
@@ -13215,14 +8505,14 @@
       if (typeOver && sel instanceof TextSelection && !sel.empty && sel.$head.sameParent(sel.$anchor) &&
           !view.composing && !(parse.sel && parse.sel.anchor != parse.sel.head)) {
         change = {start: sel.from, endA: sel.to, endB: sel.to};
-      } else if (result.ios && view.lastIOSEnter > Date.now() - 225 &&
+      } else if ((result.ios && view.lastIOSEnter > Date.now() - 225 || result.android) &&
                  addedNodes.some(function (n) { return n.nodeName == "DIV" || n.nodeName == "P"; }) &&
                  view.someProp("handleKeyDown", function (f) { return f(view, keyEvent(13, "Enter")); })) {
         view.lastIOSEnter = 0;
         return
       } else {
         if (parse.sel) {
-          var sel$1 = resolveSelection(view, view.state.doc, parse.sel);
+          var sel$1 = resolveSelection$1(view, view.state.doc, parse.sel);
           if (sel$1 && !sel$1.eq(view.state.selection)) { view.dispatch(view.state.tr.setSelection(sel$1)); }
         }
         return
@@ -13277,6 +8567,12 @@
       return
     }
 
+    // Chrome Android will occasionally, during composition, delete the
+    // entire composition and then immediately insert it again. This is
+    // used to detect that situation.
+    if (result.chrome && result.android && change.toB == change.from)
+      { view.lastAndroidDelete = Date.now(); }
+
     // This tries to detect Android virtual keyboard
     // enter-and-pick-suggestion action. That sometimes (see issue
     // #1059) first fires a DOM mutation, before moving the selection to
@@ -13326,14 +8622,15 @@
     if (!tr)
       { tr = view.state.tr.replace(chFrom, chTo, parse.doc.slice(change.start - parse.from, change.endB - parse.from)); }
     if (parse.sel) {
-      var sel$2 = resolveSelection(view, tr.doc, parse.sel);
+      var sel$2 = resolveSelection$1(view, tr.doc, parse.sel);
       // Chrome Android will sometimes, during composition, report the
       // selection in the wrong place. If it looks like that is
       // happening, don't update the selection.
       // Edge just doesn't move the cursor forward when you start typing
       // in an empty block or between br nodes.
       if (sel$2 && !(result.chrome && result.android && view.composing && sel$2.empty &&
-                     (sel$2.head == chFrom || sel$2.head == tr.mapping.map(chTo) - 1) ||
+                   (change.from != change.toB || view.lastAndroidDelete < Date.now() - 100) &&
+                   (sel$2.head == chFrom || sel$2.head == tr.mapping.map(chTo) - 1) ||
                    result.ie && sel$2.empty && sel$2.head == chFrom))
         { tr.setSelection(sel$2); }
     }
@@ -13341,7 +8638,7 @@
     view.dispatch(tr.scrollIntoView());
   }
 
-  function resolveSelection(view, doc, parsedSel) {
+  function resolveSelection$1(view, doc, parsedSel) {
     if (Math.max(parsedSel.anchor, parsedSel.head) > doc.content.size) { return null }
     return selectionBetween(view, doc.resolve(parsedSel.anchor), doc.resolve(parsedSel.head))
   }
@@ -13612,16 +8909,14 @@
   }
 
   function readHTML(html) {
-    var metas = /(\s*<meta [^>]*>)*/.exec(html);
+    var metas = /^(\s*<meta [^>]*>)*/.exec(html);
     if (metas) { html = html.slice(metas[0].length); }
     var elt = detachedDoc().createElement("div");
-    var firstTag = /(?:<meta [^>]*>)*<([a-z][^>\s]+)/i.exec(html), wrap, depth = 0;
-    if (wrap = firstTag && wrapMap[firstTag[1].toLowerCase()]) {
-      html = wrap.map(function (n) { return "<" + n + ">"; }).join("") + html + wrap.map(function (n) { return "</" + n + ">"; }).reverse().join("");
-      depth = wrap.length;
-    }
+    var firstTag = /<([a-z][^>\s]+)/i.exec(html), wrap;
+    if (wrap = firstTag && wrapMap[firstTag[1].toLowerCase()])
+      { html = wrap.map(function (n) { return "<" + n + ">"; }).join("") + html + wrap.map(function (n) { return "</" + n + ">"; }).reverse().join(""); }
     elt.innerHTML = html;
-    for (var i = 0; i < depth; i++) { elt = elt.firstChild; }
+    if (wrap) { for (var i = 0; i < wrap.length; i++) { elt = elt.querySelector(wrap[i]) || elt; } }
     return elt
   }
 
@@ -13838,14 +9133,15 @@
     if (!desc || desc.ignoreMutation(mut)) { return null }
 
     if (mut.type == "childList") {
+      for (var i = 0; i < mut.addedNodes.length; i++) { added.push(mut.addedNodes[i]); }
       if (desc.contentDOM && desc.contentDOM != desc.dom && !desc.contentDOM.contains(mut.target))
         { return {from: desc.posBefore, to: desc.posAfter} }
       var prev = mut.previousSibling, next = mut.nextSibling;
       if (result.ie && result.ie_version <= 11 && mut.addedNodes.length) {
         // IE11 gives us incorrect next/prev siblings for some
         // insertions, so if there are added nodes, recompute those
-        for (var i = 0; i < mut.addedNodes.length; i++) {
-          var ref = mut.addedNodes[i];
+        for (var i$1 = 0; i$1 < mut.addedNodes.length; i$1++) {
+          var ref = mut.addedNodes[i$1];
             var previousSibling = ref.previousSibling;
             var nextSibling = ref.nextSibling;
           if (!previousSibling || Array.prototype.indexOf.call(mut.addedNodes, previousSibling) < 0) { prev = previousSibling; }
@@ -13857,7 +9153,6 @@
       var from = desc.localPosFromDOM(mut.target, fromOffset, -1);
       var toOffset = next && next.parentNode == mut.target
           ? domIndex(next) : mut.target.childNodes.length;
-      for (var i$1 = 0; i$1 < mut.addedNodes.length; i$1++) { added.push(mut.addedNodes[i$1]); }
       var to = desc.localPosFromDOM(mut.target, toOffset, 1);
       return {from: from, to: to}
     } else if (mut.type == "attributes") {
@@ -13899,6 +9194,7 @@
 
     view.lastIOSEnter = 0;
     view.lastIOSEnterFallbackTimeout = null;
+    view.lastAndroidDelete = 0;
 
     view.composing = false;
     view.composingTimeout = null;
@@ -14147,12 +9443,14 @@
     var pos = view.posAtCoords(eventCoords(event));
     if (!pos) { return }
 
-    if (type == "singleClick")
-      { view.mouseDown = new MouseDown(view, pos, event, flushed); }
-    else if ((type == "doubleClick" ? handleDoubleClick : handleTripleClick)(view, pos.pos, pos.inside, event))
-      { event.preventDefault(); }
-    else
-      { setSelectionOrigin(view, "pointer"); }
+    if (type == "singleClick") {
+      if (view.mouseDown) { view.mouseDown.done(); }
+      view.mouseDown = new MouseDown(view, pos, event, flushed);
+    } else if ((type == "doubleClick" ? handleDoubleClick : handleTripleClick)(view, pos.pos, pos.inside, event)) {
+      event.preventDefault();
+    } else {
+      setSelectionOrigin(view, "pointer");
+    }
   };
 
   var MouseDown = function MouseDown(view, pos, event, flushed) {
@@ -14193,7 +9491,9 @@
       this.view.domObserver.stop();
       if (this.mightDrag.addAttr) { this.target.draggable = true; }
       if (this.mightDrag.setUneditable)
-        { setTimeout(function () { return this$1.target.setAttribute("contentEditable", "false"); }, 20); }
+        { setTimeout(function () {
+          if (this$1.view.mouseDown == this$1) { this$1.target.setAttribute("contentEditable", "false"); }
+        }, 20); }
       this.view.domObserver.start();
     }
 
@@ -14251,6 +9551,7 @@
                                Math.abs(this.event.y - event.clientY) > 4))
       { this.allowDefault = true; }
     setSelectionOrigin(this.view, "pointer");
+    if (event.buttons == 0) { this.done(); }
   };
 
   handlers.touchdown = function (view) {
@@ -14460,6 +9761,8 @@
     var text = ref.text;
     e.dataTransfer.clearData();
     e.dataTransfer.setData(brokenClipboardAPI ? "Text" : "text/html", dom.innerHTML);
+    // See https://github.com/ProseMirror/prosemirror/issues/1156
+    e.dataTransfer.effectAllowed = "copyMove";
     if (!brokenClipboardAPI) { e.dataTransfer.setData("text/plain", text); }
     view.dragging = new Dragging(slice, !e[dragCopyModifier]);
   };
@@ -15522,10 +10825,10 @@
   // that aren't directly adjacent, `side` determines which element is
   // used. When < 0, the element before the position is used,
   // otherwise the element after.
-  EditorView.prototype.coordsAtPos = function coordsAtPos$1 (pos, side) {
+  EditorView.prototype.coordsAtPos = function coordsAtPos$1$1 (pos, side) {
       if ( side === void 0 ) side = 1;
 
-    return coordsAtPos(this, pos, side)
+    return coordsAtPos$1(this, pos, side)
   };
 
   // :: (number, number) → {node: dom.Node, offset: number}
@@ -15678,6 +10981,10877 @@
     for (var _ in b) { nB++; }
     return nA != nB
   }
+
+  var base = {
+    8: "Backspace",
+    9: "Tab",
+    10: "Enter",
+    12: "NumLock",
+    13: "Enter",
+    16: "Shift",
+    17: "Control",
+    18: "Alt",
+    20: "CapsLock",
+    27: "Escape",
+    32: " ",
+    33: "PageUp",
+    34: "PageDown",
+    35: "End",
+    36: "Home",
+    37: "ArrowLeft",
+    38: "ArrowUp",
+    39: "ArrowRight",
+    40: "ArrowDown",
+    44: "PrintScreen",
+    45: "Insert",
+    46: "Delete",
+    59: ";",
+    61: "=",
+    91: "Meta",
+    92: "Meta",
+    106: "*",
+    107: "+",
+    108: ",",
+    109: "-",
+    110: ".",
+    111: "/",
+    144: "NumLock",
+    145: "ScrollLock",
+    160: "Shift",
+    161: "Shift",
+    162: "Control",
+    163: "Control",
+    164: "Alt",
+    165: "Alt",
+    173: "-",
+    186: ";",
+    187: "=",
+    188: ",",
+    189: "-",
+    190: ".",
+    191: "/",
+    192: "`",
+    219: "[",
+    220: "\\",
+    221: "]",
+    222: "'",
+    229: "q"
+  };
+
+  var shift = {
+    48: ")",
+    49: "!",
+    50: "@",
+    51: "#",
+    52: "$",
+    53: "%",
+    54: "^",
+    55: "&",
+    56: "*",
+    57: "(",
+    59: ":",
+    61: "+",
+    173: "_",
+    186: ":",
+    187: "+",
+    188: "<",
+    189: "_",
+    190: ">",
+    191: "?",
+    192: "~",
+    219: "{",
+    220: "|",
+    221: "}",
+    222: "\"",
+    229: "Q"
+  };
+
+  var chrome = typeof navigator != "undefined" && /Chrome\/(\d+)/.exec(navigator.userAgent);
+  var safari = typeof navigator != "undefined" && /Apple Computer/.test(navigator.vendor);
+  var gecko = typeof navigator != "undefined" && /Gecko\/\d+/.test(navigator.userAgent);
+  var mac$2 = typeof navigator != "undefined" && /Mac/.test(navigator.platform);
+  var ie = typeof navigator != "undefined" && /MSIE \d|Trident\/(?:[7-9]|\d{2,})\..*rv:(\d+)/.exec(navigator.userAgent);
+  var brokenModifierNames = chrome && (mac$2 || +chrome[1] < 57) || gecko && mac$2;
+
+  // Fill in the digit keys
+  for (var i = 0; i < 10; i++) base[48 + i] = base[96 + i] = String(i);
+
+  // The function keys
+  for (var i = 1; i <= 24; i++) base[i + 111] = "F" + i;
+
+  // And the alphabetic keys
+  for (var i = 65; i <= 90; i++) {
+    base[i] = String.fromCharCode(i + 32);
+    shift[i] = String.fromCharCode(i);
+  }
+
+  // For each code that doesn't have a shift-equivalent, copy the base name
+  for (var code in base) if (!shift.hasOwnProperty(code)) shift[code] = base[code];
+
+  function keyName(event) {
+    // Don't trust event.key in Chrome when there are modifiers until
+    // they fix https://bugs.chromium.org/p/chromium/issues/detail?id=633838
+    var ignoreKey = brokenModifierNames && (event.ctrlKey || event.altKey || event.metaKey) ||
+      (safari || ie) && event.shiftKey && event.key && event.key.length == 1;
+    var name = (!ignoreKey && event.key) ||
+      (event.shiftKey ? shift : base)[event.keyCode] ||
+      event.key || "Unidentified";
+    // Edge sometimes produces wrong names (Issue #3)
+    if (name == "Esc") name = "Escape";
+    if (name == "Del") name = "Delete";
+    // https://developer.microsoft.com/en-us/microsoft-edge/platform/issues/8860571/
+    if (name == "Left") name = "ArrowLeft";
+    if (name == "Up") name = "ArrowUp";
+    if (name == "Right") name = "ArrowRight";
+    if (name == "Down") name = "ArrowDown";
+    return name
+  }
+
+  // declare global: navigator
+
+  var mac$1 = typeof navigator != "undefined" ? /Mac/.test(navigator.platform) : false;
+
+  function normalizeKeyName$1(name) {
+    var parts = name.split(/-(?!$)/), result = parts[parts.length - 1];
+    if (result == "Space") { result = " "; }
+    var alt, ctrl, shift, meta;
+    for (var i = 0; i < parts.length - 1; i++) {
+      var mod = parts[i];
+      if (/^(cmd|meta|m)$/i.test(mod)) { meta = true; }
+      else if (/^a(lt)?$/i.test(mod)) { alt = true; }
+      else if (/^(c|ctrl|control)$/i.test(mod)) { ctrl = true; }
+      else if (/^s(hift)?$/i.test(mod)) { shift = true; }
+      else if (/^mod$/i.test(mod)) { if (mac$1) { meta = true; } else { ctrl = true; } }
+      else { throw new Error("Unrecognized modifier name: " + mod) }
+    }
+    if (alt) { result = "Alt-" + result; }
+    if (ctrl) { result = "Ctrl-" + result; }
+    if (meta) { result = "Meta-" + result; }
+    if (shift) { result = "Shift-" + result; }
+    return result
+  }
+
+  function normalize(map) {
+    var copy = Object.create(null);
+    for (var prop in map) { copy[normalizeKeyName$1(prop)] = map[prop]; }
+    return copy
+  }
+
+  function modifiers(name, event, shift) {
+    if (event.altKey) { name = "Alt-" + name; }
+    if (event.ctrlKey) { name = "Ctrl-" + name; }
+    if (event.metaKey) { name = "Meta-" + name; }
+    if (shift !== false && event.shiftKey) { name = "Shift-" + name; }
+    return name
+  }
+
+  // :: (Object) → (view: EditorView, event: dom.Event) → bool
+  // Given a set of bindings (using the same format as
+  // [`keymap`](#keymap.keymap), return a [keydown
+  // handler](#view.EditorProps.handleKeyDown) that handles them.
+  function keydownHandler(bindings) {
+    var map = normalize(bindings);
+    return function(view, event) {
+      var name = keyName(event), isChar = name.length == 1 && name != " ", baseName;
+      var direct = map[modifiers(name, event, !isChar)];
+      if (direct && direct(view.state, view.dispatch, view)) { return true }
+      if (isChar && (event.shiftKey || event.altKey || event.metaKey || name.charCodeAt(0) > 127) &&
+          (baseName = base[event.keyCode]) && baseName != name) {
+        // Try falling back to the keyCode when there's a modifier
+        // active or the character produced isn't ASCII, and our table
+        // produces a different name from the the keyCode. See #668,
+        // #1060
+        var fromCode = map[modifiers(baseName, event, true)];
+        if (fromCode && fromCode(view.state, view.dispatch, view)) { return true }
+      } else if (isChar && event.shiftKey) {
+        // Otherwise, if shift is active, also try the binding with the
+        // Shift- prefix enabled. See #997
+        var withShift = map[modifiers(name, event, true)];
+        if (withShift && withShift(view.state, view.dispatch, view)) { return true }
+      }
+      return false
+    }
+  }
+
+  // ::- Input rules are regular expressions describing a piece of text
+  // that, when typed, causes something to happen. This might be
+  // changing two dashes into an emdash, wrapping a paragraph starting
+  // with `"> "` into a blockquote, or something entirely different.
+  var InputRule = function InputRule(match, handler) {
+    this.match = match;
+    this.handler = typeof handler == "string" ? stringHandler(handler) : handler;
+  };
+
+  function stringHandler(string) {
+    return function(state, match, start, end) {
+      var insert = string;
+      if (match[1]) {
+        var offset = match[0].lastIndexOf(match[1]);
+        insert += match[0].slice(offset + match[1].length);
+        start += offset;
+        var cutOff = start - end;
+        if (cutOff > 0) {
+          insert = match[0].slice(offset - cutOff, offset) + insert;
+          start = end;
+        }
+      }
+      return state.tr.insertText(insert, start, end)
+    }
+  }
+
+  // :: (EditorState, ?(Transaction)) → bool
+  // This is a command that will undo an input rule, if applying such a
+  // rule was the last thing that the user did.
+  function undoInputRule$2(state, dispatch) {
+    var plugins = state.plugins;
+    for (var i = 0; i < plugins.length; i++) {
+      var plugin = plugins[i], undoable = (void 0);
+      if (plugin.spec.isInputRules && (undoable = plugin.getState(state))) {
+        if (dispatch) {
+          var tr = state.tr, toUndo = undoable.transform;
+          for (var j = toUndo.steps.length - 1; j >= 0; j--)
+            { tr.step(toUndo.steps[j].invert(toUndo.docs[j])); }
+          if (undoable.text) {
+            var marks = tr.doc.resolve(undoable.from).marks();
+            tr.replaceWith(undoable.from, undoable.to, state.schema.text(undoable.text, marks));
+          } else {
+            tr.delete(undoable.from, undoable.to);
+          }
+          dispatch(tr);
+        }
+        return true
+      }
+    }
+    return false
+  }
+
+  // :: (RegExp, NodeType, ?union<Object, ([string]) → ?Object>, ?([string], Node) → bool) → InputRule
+  // Build an input rule for automatically wrapping a textblock when a
+  // given string is typed. The `regexp` argument is
+  // directly passed through to the `InputRule` constructor. You'll
+  // probably want the regexp to start with `^`, so that the pattern can
+  // only occur at the start of a textblock.
+  //
+  // `nodeType` is the type of node to wrap in. If it needs attributes,
+  // you can either pass them directly, or pass a function that will
+  // compute them from the regular expression match.
+  //
+  // By default, if there's a node with the same type above the newly
+  // wrapped node, the rule will try to [join](#transform.Transform.join) those
+  // two nodes. You can pass a join predicate, which takes a regular
+  // expression match and the node before the wrapped node, and can
+  // return a boolean to indicate whether a join should happen.
+  function wrappingInputRule(regexp, nodeType, getAttrs, joinPredicate) {
+    return new InputRule(regexp, function (state, match, start, end) {
+      var attrs = getAttrs instanceof Function ? getAttrs(match) : getAttrs;
+      var tr = state.tr.delete(start, end);
+      var $start = tr.doc.resolve(start), range = $start.blockRange(), wrapping = range && findWrapping(range, nodeType, attrs);
+      if (!wrapping) { return null }
+      tr.wrap(range, wrapping);
+      var before = tr.doc.resolve(start - 1).nodeBefore;
+      if (before && before.type == nodeType && canJoin(tr.doc, start - 1) &&
+          (!joinPredicate || joinPredicate(match, before)))
+        { tr.join(start - 1); }
+      return tr
+    })
+  }
+
+  // :: (RegExp, NodeType, ?union<Object, ([string]) → ?Object>) → InputRule
+  // Build an input rule that changes the type of a textblock when the
+  // matched text is typed into it. You'll usually want to start your
+  // regexp with `^` to that it is only matched at the start of a
+  // textblock. The optional `getAttrs` parameter can be used to compute
+  // the new node's attributes, and works the same as in the
+  // `wrappingInputRule` function.
+  function textblockTypeInputRule(regexp, nodeType, getAttrs) {
+    return new InputRule(regexp, function (state, match, start, end) {
+      var $start = state.doc.resolve(start);
+      var attrs = getAttrs instanceof Function ? getAttrs(match) : getAttrs;
+      if (!$start.node(-1).canReplaceWith($start.index(-1), $start.indexAfter(-1), nodeType)) { return null }
+      return state.tr
+        .delete(start, end)
+        .setBlockType(start, start, nodeType, attrs)
+    })
+  }
+
+  // :: (EditorState, ?(tr: Transaction)) → bool
+  // Delete the selection, if there is one.
+  function deleteSelection$2(state, dispatch) {
+    if (state.selection.empty) { return false }
+    if (dispatch) { dispatch(state.tr.deleteSelection().scrollIntoView()); }
+    return true
+  }
+
+  // :: (EditorState, ?(tr: Transaction), ?EditorView) → bool
+  // If the selection is empty and at the start of a textblock, try to
+  // reduce the distance between that block and the one before it—if
+  // there's a block directly before it that can be joined, join them.
+  // If not, try to move the selected block closer to the next one in
+  // the document structure by lifting it out of its parent or moving it
+  // into a parent of the previous block. Will use the view for accurate
+  // (bidi-aware) start-of-textblock detection if given.
+  function joinBackward$2(state, dispatch, view) {
+    var ref = state.selection;
+    var $cursor = ref.$cursor;
+    if (!$cursor || (view ? !view.endOfTextblock("backward", state)
+                          : $cursor.parentOffset > 0))
+      { return false }
+
+    var $cut = findCutBefore($cursor);
+
+    // If there is no node before this, try to lift
+    if (!$cut) {
+      var range = $cursor.blockRange(), target = range && liftTarget(range);
+      if (target == null) { return false }
+      if (dispatch) { dispatch(state.tr.lift(range, target).scrollIntoView()); }
+      return true
+    }
+
+    var before = $cut.nodeBefore;
+    // Apply the joining algorithm
+    if (!before.type.spec.isolating && deleteBarrier(state, $cut, dispatch))
+      { return true }
+
+    // If the node below has no content and the node above is
+    // selectable, delete the node below and select the one above.
+    if ($cursor.parent.content.size == 0 &&
+        (textblockAt(before, "end") || NodeSelection.isSelectable(before))) {
+      if (dispatch) {
+        var tr = state.tr.deleteRange($cursor.before(), $cursor.after());
+        tr.setSelection(textblockAt(before, "end") ? Selection.findFrom(tr.doc.resolve(tr.mapping.map($cut.pos, -1)), -1)
+                        : NodeSelection.create(tr.doc, $cut.pos - before.nodeSize));
+        dispatch(tr.scrollIntoView());
+      }
+      return true
+    }
+
+    // If the node before is an atom, delete it
+    if (before.isAtom && $cut.depth == $cursor.depth - 1) {
+      if (dispatch) { dispatch(state.tr.delete($cut.pos - before.nodeSize, $cut.pos).scrollIntoView()); }
+      return true
+    }
+
+    return false
+  }
+
+  function textblockAt(node, side) {
+    for (; node; node = (side == "start" ? node.firstChild : node.lastChild))
+      { if (node.isTextblock) { return true } }
+    return false
+  }
+
+  // :: (EditorState, ?(tr: Transaction), ?EditorView) → bool
+  // When the selection is empty and at the start of a textblock, select
+  // the node before that textblock, if possible. This is intended to be
+  // bound to keys like backspace, after
+  // [`joinBackward`](#commands.joinBackward) or other deleting
+  // commands, as a fall-back behavior when the schema doesn't allow
+  // deletion at the selected point.
+  function selectNodeBackward$2(state, dispatch, view) {
+    var ref = state.selection;
+    var $head = ref.$head;
+    var empty = ref.empty;
+    var $cut = $head;
+    if (!empty) { return false }
+
+    if ($head.parent.isTextblock) {
+      if (view ? !view.endOfTextblock("backward", state) : $head.parentOffset > 0) { return false }
+      $cut = findCutBefore($head);
+    }
+    var node = $cut && $cut.nodeBefore;
+    if (!node || !NodeSelection.isSelectable(node)) { return false }
+    if (dispatch)
+      { dispatch(state.tr.setSelection(NodeSelection.create(state.doc, $cut.pos - node.nodeSize)).scrollIntoView()); }
+    return true
+  }
+
+  function findCutBefore($pos) {
+    if (!$pos.parent.type.spec.isolating) { for (var i = $pos.depth - 1; i >= 0; i--) {
+      if ($pos.index(i) > 0) { return $pos.doc.resolve($pos.before(i + 1)) }
+      if ($pos.node(i).type.spec.isolating) { break }
+    } }
+    return null
+  }
+
+  // :: (EditorState, ?(tr: Transaction), ?EditorView) → bool
+  // If the selection is empty and the cursor is at the end of a
+  // textblock, try to reduce or remove the boundary between that block
+  // and the one after it, either by joining them or by moving the other
+  // block closer to this one in the tree structure. Will use the view
+  // for accurate start-of-textblock detection if given.
+  function joinForward$2(state, dispatch, view) {
+    var ref = state.selection;
+    var $cursor = ref.$cursor;
+    if (!$cursor || (view ? !view.endOfTextblock("forward", state)
+                          : $cursor.parentOffset < $cursor.parent.content.size))
+      { return false }
+
+    var $cut = findCutAfter($cursor);
+
+    // If there is no node after this, there's nothing to do
+    if (!$cut) { return false }
+
+    var after = $cut.nodeAfter;
+    // Try the joining algorithm
+    if (deleteBarrier(state, $cut, dispatch)) { return true }
+
+    // If the node above has no content and the node below is
+    // selectable, delete the node above and select the one below.
+    if ($cursor.parent.content.size == 0 &&
+        (textblockAt(after, "start") || NodeSelection.isSelectable(after))) {
+      if (dispatch) {
+        var tr = state.tr.deleteRange($cursor.before(), $cursor.after());
+        tr.setSelection(textblockAt(after, "start") ? Selection.findFrom(tr.doc.resolve(tr.mapping.map($cut.pos)), 1)
+                        : NodeSelection.create(tr.doc, tr.mapping.map($cut.pos)));
+        dispatch(tr.scrollIntoView());
+      }
+      return true
+    }
+
+    // If the next node is an atom, delete it
+    if (after.isAtom && $cut.depth == $cursor.depth - 1) {
+      if (dispatch) { dispatch(state.tr.delete($cut.pos, $cut.pos + after.nodeSize).scrollIntoView()); }
+      return true
+    }
+
+    return false
+  }
+
+  // :: (EditorState, ?(tr: Transaction), ?EditorView) → bool
+  // When the selection is empty and at the end of a textblock, select
+  // the node coming after that textblock, if possible. This is intended
+  // to be bound to keys like delete, after
+  // [`joinForward`](#commands.joinForward) and similar deleting
+  // commands, to provide a fall-back behavior when the schema doesn't
+  // allow deletion at the selected point.
+  function selectNodeForward$2(state, dispatch, view) {
+    var ref = state.selection;
+    var $head = ref.$head;
+    var empty = ref.empty;
+    var $cut = $head;
+    if (!empty) { return false }
+    if ($head.parent.isTextblock) {
+      if (view ? !view.endOfTextblock("forward", state) : $head.parentOffset < $head.parent.content.size)
+        { return false }
+      $cut = findCutAfter($head);
+    }
+    var node = $cut && $cut.nodeAfter;
+    if (!node || !NodeSelection.isSelectable(node)) { return false }
+    if (dispatch)
+      { dispatch(state.tr.setSelection(NodeSelection.create(state.doc, $cut.pos)).scrollIntoView()); }
+    return true
+  }
+
+  function findCutAfter($pos) {
+    if (!$pos.parent.type.spec.isolating) { for (var i = $pos.depth - 1; i >= 0; i--) {
+      var parent = $pos.node(i);
+      if ($pos.index(i) + 1 < parent.childCount) { return $pos.doc.resolve($pos.after(i + 1)) }
+      if (parent.type.spec.isolating) { break }
+    } }
+    return null
+  }
+
+  // :: (EditorState, ?(tr: Transaction)) → bool
+  // Lift the selected block, or the closest ancestor block of the
+  // selection that can be lifted, out of its parent node.
+  function lift$2(state, dispatch) {
+    var ref = state.selection;
+    var $from = ref.$from;
+    var $to = ref.$to;
+    var range = $from.blockRange($to), target = range && liftTarget(range);
+    if (target == null) { return false }
+    if (dispatch) { dispatch(state.tr.lift(range, target).scrollIntoView()); }
+    return true
+  }
+
+  // :: (EditorState, ?(tr: Transaction)) → bool
+  // If the selection is in a node whose type has a truthy
+  // [`code`](#model.NodeSpec.code) property in its spec, replace the
+  // selection with a newline character.
+  function newlineInCode$2(state, dispatch) {
+    var ref = state.selection;
+    var $head = ref.$head;
+    var $anchor = ref.$anchor;
+    if (!$head.parent.type.spec.code || !$head.sameParent($anchor)) { return false }
+    if (dispatch) { dispatch(state.tr.insertText("\n").scrollIntoView()); }
+    return true
+  }
+
+  function defaultBlockAt$1(match) {
+    for (var i = 0; i < match.edgeCount; i++) {
+      var ref = match.edge(i);
+      var type = ref.type;
+      if (type.isTextblock && !type.hasRequiredAttrs()) { return type }
+    }
+    return null
+  }
+
+  // :: (EditorState, ?(tr: Transaction)) → bool
+  // When the selection is in a node with a truthy
+  // [`code`](#model.NodeSpec.code) property in its spec, create a
+  // default block after the code block, and move the cursor there.
+  function exitCode$2(state, dispatch) {
+    var ref = state.selection;
+    var $head = ref.$head;
+    var $anchor = ref.$anchor;
+    if (!$head.parent.type.spec.code || !$head.sameParent($anchor)) { return false }
+    var above = $head.node(-1), after = $head.indexAfter(-1), type = defaultBlockAt$1(above.contentMatchAt(after));
+    if (!above.canReplaceWith(after, after, type)) { return false }
+    if (dispatch) {
+      var pos = $head.after(), tr = state.tr.replaceWith(pos, pos, type.createAndFill());
+      tr.setSelection(Selection.near(tr.doc.resolve(pos), 1));
+      dispatch(tr.scrollIntoView());
+    }
+    return true
+  }
+
+  // :: (EditorState, ?(tr: Transaction)) → bool
+  // If a block node is selected, create an empty paragraph before (if
+  // it is its parent's first child) or after it.
+  function createParagraphNear$2(state, dispatch) {
+    var sel = state.selection;
+    var $from = sel.$from;
+    var $to = sel.$to;
+    if (sel instanceof AllSelection || $from.parent.inlineContent || $to.parent.inlineContent) { return false }
+    var type = defaultBlockAt$1($to.parent.contentMatchAt($to.indexAfter()));
+    if (!type || !type.isTextblock) { return false }
+    if (dispatch) {
+      var side = (!$from.parentOffset && $to.index() < $to.parent.childCount ? $from : $to).pos;
+      var tr = state.tr.insert(side, type.createAndFill());
+      tr.setSelection(TextSelection.create(tr.doc, side + 1));
+      dispatch(tr.scrollIntoView());
+    }
+    return true
+  }
+
+  // :: (EditorState, ?(tr: Transaction)) → bool
+  // If the cursor is in an empty textblock that can be lifted, lift the
+  // block.
+  function liftEmptyBlock$2(state, dispatch) {
+    var ref = state.selection;
+    var $cursor = ref.$cursor;
+    if (!$cursor || $cursor.parent.content.size) { return false }
+    if ($cursor.depth > 1 && $cursor.after() != $cursor.end(-1)) {
+      var before = $cursor.before();
+      if (canSplit(state.doc, before)) {
+        if (dispatch) { dispatch(state.tr.split(before).scrollIntoView()); }
+        return true
+      }
+    }
+    var range = $cursor.blockRange(), target = range && liftTarget(range);
+    if (target == null) { return false }
+    if (dispatch) { dispatch(state.tr.lift(range, target).scrollIntoView()); }
+    return true
+  }
+
+  // :: (EditorState, ?(tr: Transaction)) → bool
+  // Split the parent block of the selection. If the selection is a text
+  // selection, also delete its content.
+  function splitBlock$2(state, dispatch) {
+    var ref = state.selection;
+    var $from = ref.$from;
+    var $to = ref.$to;
+    if (state.selection instanceof NodeSelection && state.selection.node.isBlock) {
+      if (!$from.parentOffset || !canSplit(state.doc, $from.pos)) { return false }
+      if (dispatch) { dispatch(state.tr.split($from.pos).scrollIntoView()); }
+      return true
+    }
+
+    if (!$from.parent.isBlock) { return false }
+
+    if (dispatch) {
+      var atEnd = $to.parentOffset == $to.parent.content.size;
+      var tr = state.tr;
+      if (state.selection instanceof TextSelection || state.selection instanceof AllSelection) { tr.deleteSelection(); }
+      var deflt = $from.depth == 0 ? null : defaultBlockAt$1($from.node(-1).contentMatchAt($from.indexAfter(-1)));
+      var types = atEnd && deflt ? [{type: deflt}] : null;
+      var can = canSplit(tr.doc, tr.mapping.map($from.pos), 1, types);
+      if (!types && !can && canSplit(tr.doc, tr.mapping.map($from.pos), 1, deflt && [{type: deflt}])) {
+        types = [{type: deflt}];
+        can = true;
+      }
+      if (can) {
+        tr.split(tr.mapping.map($from.pos), 1, types);
+        if (!atEnd && !$from.parentOffset && $from.parent.type != deflt &&
+            $from.node(-1).canReplace($from.index(-1), $from.indexAfter(-1), Fragment.from([deflt.create(), $from.parent])))
+          { tr.setNodeMarkup(tr.mapping.map($from.before()), deflt); }
+      }
+      dispatch(tr.scrollIntoView());
+    }
+    return true
+  }
+
+  // :: (EditorState, ?(tr: Transaction)) → bool
+  // Move the selection to the node wrapping the current selection, if
+  // any. (Will not select the document node.)
+  function selectParentNode$2(state, dispatch) {
+    var ref = state.selection;
+    var $from = ref.$from;
+    var to = ref.to;
+    var pos;
+    var same = $from.sharedDepth(to);
+    if (same == 0) { return false }
+    pos = $from.before(same);
+    if (dispatch) { dispatch(state.tr.setSelection(NodeSelection.create(state.doc, pos))); }
+    return true
+  }
+
+  // :: (EditorState, ?(tr: Transaction)) → bool
+  // Select the whole document.
+  function selectAll$2(state, dispatch) {
+    if (dispatch) { dispatch(state.tr.setSelection(new AllSelection(state.doc))); }
+    return true
+  }
+
+  function joinMaybeClear(state, $pos, dispatch) {
+    var before = $pos.nodeBefore, after = $pos.nodeAfter, index = $pos.index();
+    if (!before || !after || !before.type.compatibleContent(after.type)) { return false }
+    if (!before.content.size && $pos.parent.canReplace(index - 1, index)) {
+      if (dispatch) { dispatch(state.tr.delete($pos.pos - before.nodeSize, $pos.pos).scrollIntoView()); }
+      return true
+    }
+    if (!$pos.parent.canReplace(index, index + 1) || !(after.isTextblock || canJoin(state.doc, $pos.pos)))
+      { return false }
+    if (dispatch)
+      { dispatch(state.tr
+               .clearIncompatible($pos.pos, before.type, before.contentMatchAt(before.childCount))
+               .join($pos.pos)
+               .scrollIntoView()); }
+    return true
+  }
+
+  function deleteBarrier(state, $cut, dispatch) {
+    var before = $cut.nodeBefore, after = $cut.nodeAfter, conn, match;
+    if (before.type.spec.isolating || after.type.spec.isolating) { return false }
+    if (joinMaybeClear(state, $cut, dispatch)) { return true }
+
+    var canDelAfter = $cut.parent.canReplace($cut.index(), $cut.index() + 1);
+    if (canDelAfter &&
+        (conn = (match = before.contentMatchAt(before.childCount)).findWrapping(after.type)) &&
+        match.matchType(conn[0] || after.type).validEnd) {
+      if (dispatch) {
+        var end = $cut.pos + after.nodeSize, wrap = Fragment.empty;
+        for (var i = conn.length - 1; i >= 0; i--)
+          { wrap = Fragment.from(conn[i].create(null, wrap)); }
+        wrap = Fragment.from(before.copy(wrap));
+        var tr = state.tr.step(new ReplaceAroundStep($cut.pos - 1, end, $cut.pos, end, new Slice(wrap, 1, 0), conn.length, true));
+        var joinAt = end + 2 * conn.length;
+        if (canJoin(tr.doc, joinAt)) { tr.join(joinAt); }
+        dispatch(tr.scrollIntoView());
+      }
+      return true
+    }
+
+    var selAfter = Selection.findFrom($cut, 1);
+    var range = selAfter && selAfter.$from.blockRange(selAfter.$to), target = range && liftTarget(range);
+    if (target != null && target >= $cut.depth) {
+      if (dispatch) { dispatch(state.tr.lift(range, target).scrollIntoView()); }
+      return true
+    }
+
+    if (canDelAfter && after.isTextblock && textblockAt(before, "end")) {
+      var at = before, wrap$1 = [];
+      for (;;) {
+        wrap$1.push(at);
+        if (at.isTextblock) { break }
+        at = at.lastChild;
+      }
+      if (at.canReplace(at.childCount, at.childCount, after.content)) {
+        if (dispatch) {
+          var end$1 = Fragment.empty;
+          for (var i$1 = wrap$1.length - 1; i$1 >= 0; i$1--) { end$1 = Fragment.from(wrap$1[i$1].copy(end$1)); }
+          var tr$1 = state.tr.step(new ReplaceAroundStep($cut.pos - wrap$1.length, $cut.pos + after.nodeSize,
+                                                       $cut.pos + 1, $cut.pos + after.nodeSize - 1,
+                                                       new Slice(end$1, wrap$1.length, 0), 0, true));
+          dispatch(tr$1.scrollIntoView());
+        }
+        return true
+      }
+    }
+
+    return false
+  }
+
+  // Parameterized commands
+
+  // :: (NodeType, ?Object) → (state: EditorState, dispatch: ?(tr: Transaction)) → bool
+  // Wrap the selection in a node of the given type with the given
+  // attributes.
+  function wrapIn$2(nodeType, attrs) {
+    return function(state, dispatch) {
+      var ref = state.selection;
+      var $from = ref.$from;
+      var $to = ref.$to;
+      var range = $from.blockRange($to), wrapping = range && findWrapping(range, nodeType, attrs);
+      if (!wrapping) { return false }
+      if (dispatch) { dispatch(state.tr.wrap(range, wrapping).scrollIntoView()); }
+      return true
+    }
+  }
+
+  // :: (NodeType, ?Object) → (state: EditorState, dispatch: ?(tr: Transaction)) → bool
+  // Returns a command that tries to set the selected textblocks to the
+  // given node type with the given attributes.
+  function setBlockType(nodeType, attrs) {
+    return function(state, dispatch) {
+      var ref = state.selection;
+      var from = ref.from;
+      var to = ref.to;
+      var applicable = false;
+      state.doc.nodesBetween(from, to, function (node, pos) {
+        if (applicable) { return false }
+        if (!node.isTextblock || node.hasMarkup(nodeType, attrs)) { return }
+        if (node.type == nodeType) {
+          applicable = true;
+        } else {
+          var $pos = state.doc.resolve(pos), index = $pos.index();
+          applicable = $pos.parent.canReplaceWith(index, index + 1, nodeType);
+        }
+      });
+      if (!applicable) { return false }
+      if (dispatch) { dispatch(state.tr.setBlockType(from, to, nodeType, attrs).scrollIntoView()); }
+      return true
+    }
+  }
+
+  // :: (...[(EditorState, ?(tr: Transaction), ?EditorView) → bool]) → (EditorState, ?(tr: Transaction), ?EditorView) → bool
+  // Combine a number of command functions into a single function (which
+  // calls them one by one until one returns true).
+  function chainCommands() {
+    var commands = [], len = arguments.length;
+    while ( len-- ) commands[ len ] = arguments[ len ];
+
+    return function(state, dispatch, view) {
+      for (var i = 0; i < commands.length; i++)
+        { if (commands[i](state, dispatch, view)) { return true } }
+      return false
+    }
+  }
+
+  var backspace = chainCommands(deleteSelection$2, joinBackward$2, selectNodeBackward$2);
+  var del = chainCommands(deleteSelection$2, joinForward$2, selectNodeForward$2);
+
+  // :: Object
+  // A basic keymap containing bindings not specific to any schema.
+  // Binds the following keys (when multiple commands are listed, they
+  // are chained with [`chainCommands`](#commands.chainCommands)):
+  //
+  // * **Enter** to `newlineInCode`, `createParagraphNear`, `liftEmptyBlock`, `splitBlock`
+  // * **Mod-Enter** to `exitCode`
+  // * **Backspace** and **Mod-Backspace** to `deleteSelection`, `joinBackward`, `selectNodeBackward`
+  // * **Delete** and **Mod-Delete** to `deleteSelection`, `joinForward`, `selectNodeForward`
+  // * **Mod-Delete** to `deleteSelection`, `joinForward`, `selectNodeForward`
+  // * **Mod-a** to `selectAll`
+  ({
+    "Enter": chainCommands(newlineInCode$2, createParagraphNear$2, liftEmptyBlock$2, splitBlock$2),
+    "Mod-Enter": exitCode$2,
+    "Backspace": backspace,
+    "Mod-Backspace": backspace,
+    "Delete": del,
+    "Mod-Delete": del,
+    "Mod-a": selectAll$2
+  });
+
+  // declare global: os, navigator
+  typeof navigator != "undefined" ? /Mac/.test(navigator.platform)
+            : typeof os != "undefined" ? os.platform() == "darwin" : false;
+
+  // :: (NodeType, ?Object) → (state: EditorState, dispatch: ?(tr: Transaction)) → bool
+  // Returns a command function that wraps the selection in a list with
+  // the given type an attributes. If `dispatch` is null, only return a
+  // value to indicate whether this is possible, but don't actually
+  // perform the change.
+  function wrapInList$2(listType, attrs) {
+    return function(state, dispatch) {
+      var ref = state.selection;
+      var $from = ref.$from;
+      var $to = ref.$to;
+      var range = $from.blockRange($to), doJoin = false, outerRange = range;
+      if (!range) { return false }
+      // This is at the top of an existing list item
+      if (range.depth >= 2 && $from.node(range.depth - 1).type.compatibleContent(listType) && range.startIndex == 0) {
+        // Don't do anything if this is the top of the list
+        if ($from.index(range.depth - 1) == 0) { return false }
+        var $insert = state.doc.resolve(range.start - 2);
+        outerRange = new NodeRange($insert, $insert, range.depth);
+        if (range.endIndex < range.parent.childCount)
+          { range = new NodeRange($from, state.doc.resolve($to.end(range.depth)), range.depth); }
+        doJoin = true;
+      }
+      var wrap = findWrapping(outerRange, listType, attrs, range);
+      if (!wrap) { return false }
+      if (dispatch) { dispatch(doWrapInList(state.tr, range, wrap, doJoin, listType).scrollIntoView()); }
+      return true
+    }
+  }
+
+  function doWrapInList(tr, range, wrappers, joinBefore, listType) {
+    var content = Fragment.empty;
+    for (var i = wrappers.length - 1; i >= 0; i--)
+      { content = Fragment.from(wrappers[i].type.create(wrappers[i].attrs, content)); }
+
+    tr.step(new ReplaceAroundStep(range.start - (joinBefore ? 2 : 0), range.end, range.start, range.end,
+                                  new Slice(content, 0, 0), wrappers.length, true));
+
+    var found = 0;
+    for (var i$1 = 0; i$1 < wrappers.length; i$1++) { if (wrappers[i$1].type == listType) { found = i$1 + 1; } }
+    var splitDepth = wrappers.length - found;
+
+    var splitPos = range.start + wrappers.length - (joinBefore ? 2 : 0), parent = range.parent;
+    for (var i$2 = range.startIndex, e = range.endIndex, first = true; i$2 < e; i$2++, first = false) {
+      if (!first && canSplit(tr.doc, splitPos, splitDepth)) {
+        tr.split(splitPos, splitDepth);
+        splitPos += 2 * splitDepth;
+      }
+      splitPos += parent.child(i$2).nodeSize;
+    }
+    return tr
+  }
+
+  // :: (NodeType) → (state: EditorState, dispatch: ?(tr: Transaction)) → bool
+  // Create a command to lift the list item around the selection up into
+  // a wrapping list.
+  function liftListItem$2(itemType) {
+    return function(state, dispatch) {
+      var ref = state.selection;
+      var $from = ref.$from;
+      var $to = ref.$to;
+      var range = $from.blockRange($to, function (node) { return node.childCount && node.firstChild.type == itemType; });
+      if (!range) { return false }
+      if (!dispatch) { return true }
+      if ($from.node(range.depth - 1).type == itemType) // Inside a parent list
+        { return liftToOuterList(state, dispatch, itemType, range) }
+      else // Outer list node
+        { return liftOutOfList(state, dispatch, range) }
+    }
+  }
+
+  function liftToOuterList(state, dispatch, itemType, range) {
+    var tr = state.tr, end = range.end, endOfList = range.$to.end(range.depth);
+    if (end < endOfList) {
+      // There are siblings after the lifted items, which must become
+      // children of the last item
+      tr.step(new ReplaceAroundStep(end - 1, endOfList, end, endOfList,
+                                    new Slice(Fragment.from(itemType.create(null, range.parent.copy())), 1, 0), 1, true));
+      range = new NodeRange(tr.doc.resolve(range.$from.pos), tr.doc.resolve(endOfList), range.depth);
+    }
+    dispatch(tr.lift(range, liftTarget(range)).scrollIntoView());
+    return true
+  }
+
+  function liftOutOfList(state, dispatch, range) {
+    var tr = state.tr, list = range.parent;
+    // Merge the list items into a single big item
+    for (var pos = range.end, i = range.endIndex - 1, e = range.startIndex; i > e; i--) {
+      pos -= list.child(i).nodeSize;
+      tr.delete(pos - 1, pos + 1);
+    }
+    var $start = tr.doc.resolve(range.start), item = $start.nodeAfter;
+    var atStart = range.startIndex == 0, atEnd = range.endIndex == list.childCount;
+    var parent = $start.node(-1), indexBefore = $start.index(-1);
+    if (!parent.canReplace(indexBefore + (atStart ? 0 : 1), indexBefore + 1,
+                           item.content.append(atEnd ? Fragment.empty : Fragment.from(list))))
+      { return false }
+    var start = $start.pos, end = start + item.nodeSize;
+    // Strip off the surrounding list. At the sides where we're not at
+    // the end of the list, the existing list is closed. At sides where
+    // this is the end, it is overwritten to its end.
+    tr.step(new ReplaceAroundStep(start - (atStart ? 1 : 0), end + (atEnd ? 1 : 0), start + 1, end - 1,
+                                  new Slice((atStart ? Fragment.empty : Fragment.from(list.copy(Fragment.empty)))
+                                            .append(atEnd ? Fragment.empty : Fragment.from(list.copy(Fragment.empty))),
+                                            atStart ? 0 : 1, atEnd ? 0 : 1), atStart ? 0 : 1));
+    dispatch(tr.scrollIntoView());
+    return true
+  }
+
+  // :: (NodeType) → (state: EditorState, dispatch: ?(tr: Transaction)) → bool
+  // Create a command to sink the list item around the selection down
+  // into an inner list.
+  function sinkListItem$2(itemType) {
+    return function(state, dispatch) {
+      var ref = state.selection;
+      var $from = ref.$from;
+      var $to = ref.$to;
+      var range = $from.blockRange($to, function (node) { return node.childCount && node.firstChild.type == itemType; });
+      if (!range) { return false }
+      var startIndex = range.startIndex;
+      if (startIndex == 0) { return false }
+      var parent = range.parent, nodeBefore = parent.child(startIndex - 1);
+      if (nodeBefore.type != itemType) { return false }
+
+      if (dispatch) {
+        var nestedBefore = nodeBefore.lastChild && nodeBefore.lastChild.type == parent.type;
+        var inner = Fragment.from(nestedBefore ? itemType.create() : null);
+        var slice = new Slice(Fragment.from(itemType.create(null, Fragment.from(parent.type.create(null, inner)))),
+                              nestedBefore ? 3 : 1, 0);
+        var before = range.start, after = range.end;
+        dispatch(state.tr.step(new ReplaceAroundStep(before - (nestedBefore ? 3 : 1), after,
+                                                     before, after, slice, 1, true))
+                 .scrollIntoView());
+      }
+      return true
+    }
+  }
+
+  function getSchemaTypeNameByName(name, schema) {
+    if (schema.nodes[name]) {
+      return 'node';
+    }
+    if (schema.marks[name]) {
+      return 'mark';
+    }
+    return null;
+  }
+
+  function getNodeType(nameOrType, schema) {
+    if (typeof nameOrType === 'string') {
+      if (!schema.nodes[nameOrType]) {
+        throw Error(`There is no node type named '${nameOrType}'. Maybe you forgot to add the extension?`);
+      }
+      return schema.nodes[nameOrType];
+    }
+    return nameOrType;
+  }
+
+  function getNodeAttributes(state, typeOrName) {
+    const type = getNodeType(typeOrName, state.schema);
+    const { from, to } = state.selection;
+    let nodes = [];
+    state.doc.nodesBetween(from, to, node => {
+      nodes = [...nodes, node];
+    });
+    const node = nodes
+      .reverse()
+      .find(nodeItem => nodeItem.type.name === type.name);
+    if (node) {
+      return { ...node.attrs };
+    }
+    return {};
+  }
+
+  function getMarkType(nameOrType, schema) {
+    if (typeof nameOrType === 'string') {
+      if (!schema.marks[nameOrType]) {
+        throw Error(`There is no mark type named '${nameOrType}'. Maybe you forgot to add the extension?`);
+      }
+      return schema.marks[nameOrType];
+    }
+    return nameOrType;
+  }
+
+  function getMarkAttributes(state, typeOrName) {
+    const type = getMarkType(typeOrName, state.schema);
+    const { from, to, empty } = state.selection;
+    let marks = [];
+    if (empty) {
+      marks = state.selection.$head.marks();
+    }
+    else {
+      state.doc.nodesBetween(from, to, node => {
+        marks = [...marks, ...node.marks];
+      });
+    }
+    const mark = marks.find(markItem => markItem.type.name === type.name);
+    if (mark) {
+      return { ...mark.attrs };
+    }
+    return {};
+  }
+
+  /**
+   * Check if object1 includes object2
+   * @param object1 Object
+   * @param object2 Object
+   */
+  function objectIncludes(object1, object2) {
+    const keys = Object.keys(object2);
+    if (!keys.length) {
+      return true;
+    }
+    return !!keys
+      .filter(key => object2[key] === object1[key])
+      .length;
+  }
+
+  function isNodeActive(state, typeOrName, attributes = {}) {
+    const { from, to, empty } = state.selection;
+    const type = typeOrName
+      ? getNodeType(typeOrName, state.schema)
+      : null;
+    let nodeRanges = [];
+    state.doc.nodesBetween(from, to, (node, pos) => {
+      if (!node.isText) {
+        const relativeFrom = Math.max(from, pos);
+        const relativeTo = Math.min(to, pos + node.nodeSize);
+        nodeRanges = [...nodeRanges, {
+          node,
+          from: relativeFrom,
+          to: relativeTo,
+        }];
+      }
+    });
+    if (empty) {
+      return !!nodeRanges
+        .filter(nodeRange => {
+          if (!type) {
+            return true;
+          }
+          return type.name === nodeRange.node.type.name;
+        })
+        .find(nodeRange => objectIncludes(nodeRange.node.attrs, attributes));
+    }
+    const selectionRange = to - from;
+    const range = nodeRanges
+      .filter(nodeRange => {
+        if (!type) {
+          return true;
+        }
+        return type.name === nodeRange.node.type.name;
+      })
+      .filter(nodeRange => objectIncludes(nodeRange.node.attrs, attributes))
+      .reduce((sum, nodeRange) => {
+        const size = nodeRange.to - nodeRange.from;
+        return sum + size;
+      }, 0);
+    return range >= selectionRange;
+  }
+
+  function isMarkActive(state, typeOrName, attributes = {}) {
+    const { from, to, empty } = state.selection;
+    const type = typeOrName
+      ? getMarkType(typeOrName, state.schema)
+      : null;
+    if (empty) {
+      return !!(state.storedMarks || state.selection.$from.marks())
+        .filter(mark => {
+          if (!type) {
+            return true;
+          }
+          return type.name === mark.type.name;
+        })
+        .find(mark => objectIncludes(mark.attrs, attributes));
+    }
+    let selectionRange = 0;
+    let markRanges = [];
+    state.doc.nodesBetween(from, to, (node, pos) => {
+      if (node.isText) {
+        const relativeFrom = Math.max(from, pos);
+        const relativeTo = Math.min(to, pos + node.nodeSize);
+        const range = relativeTo - relativeFrom;
+        selectionRange += range;
+        markRanges = [...markRanges, ...node.marks.map(mark => ({
+          mark,
+          from: relativeFrom,
+          to: relativeTo,
+        }))];
+      }
+    });
+    if (selectionRange === 0) {
+      return false;
+    }
+    const range = markRanges
+      .filter(markRange => {
+        if (!type) {
+          return true;
+        }
+        return type.name === markRange.mark.type.name;
+      })
+      .filter(markRange => objectIncludes(markRange.mark.attrs, attributes))
+      .reduce((sum, markRange) => {
+        const size = markRange.to - markRange.from;
+        return sum + size;
+      }, 0);
+    return range >= selectionRange;
+  }
+
+  function elementFromString(value) {
+    return new window.DOMParser().parseFromString(value, 'text/html').body;
+  }
+
+  function createNodeFromContent(content, schema, options) {
+    options = {
+      slice: true,
+      parseOptions: {},
+      ...options,
+    };
+    if (typeof content === 'object' && content !== null) {
+      try {
+        if (Array.isArray(content)) {
+          return Fragment.fromArray(content.map(item => schema.nodeFromJSON(item)));
+        }
+        return schema.nodeFromJSON(content);
+      }
+      catch (error) {
+        console.warn('[tiptap warn]: Invalid content.', 'Passed value:', content, 'Error:', error);
+        return createNodeFromContent('', schema, options);
+      }
+    }
+    if (typeof content === 'string') {
+      const parser = DOMParser.fromSchema(schema);
+      return options.slice
+        ? parser.parseSlice(elementFromString(content), options.parseOptions).content
+        : parser.parse(elementFromString(content), options.parseOptions);
+    }
+    return createNodeFromContent('', schema, options);
+  }
+
+  function createDocument(content, schema, parseOptions = {}) {
+    return createNodeFromContent(content, schema, { slice: false, parseOptions });
+  }
+
+  function getExtensionField(extension, field, context = {}) {
+    if (extension.config[field] === undefined && extension.parent) {
+      return getExtensionField(extension.parent, field, context);
+    }
+    if (typeof extension.config[field] === 'function') {
+      const value = extension.config[field].bind({
+        ...context,
+        parent: extension.parent
+          ? getExtensionField(extension.parent, field, context)
+          : null,
+      });
+      return value;
+    }
+    return extension.config[field];
+  }
+
+  function splitExtensions(extensions) {
+    const baseExtensions = extensions.filter(extension => extension.type === 'extension');
+    const nodeExtensions = extensions.filter(extension => extension.type === 'node');
+    const markExtensions = extensions.filter(extension => extension.type === 'mark');
+    return {
+      baseExtensions,
+      nodeExtensions,
+      markExtensions,
+    };
+  }
+
+  function mergeAttributes(...objects) {
+    return objects
+      .filter(item => !!item)
+      .reduce((items, item) => {
+        const mergedAttributes = { ...items };
+        Object.entries(item).forEach(([key, value]) => {
+          const exists = mergedAttributes[key];
+          if (!exists) {
+            mergedAttributes[key] = value;
+            return;
+          }
+          if (key === 'class') {
+            mergedAttributes[key] = [mergedAttributes[key], value].join(' ');
+          }
+          else if (key === 'style') {
+            mergedAttributes[key] = [mergedAttributes[key], value].join('; ');
+          }
+          else {
+            mergedAttributes[key] = value;
+          }
+        });
+        return mergedAttributes;
+      }, {});
+  }
+
+  /**
+   * Optionally calls `value` as a function.
+   * Otherwise it is returned directly.
+   * @param value Function or any value.
+   * @param context Optional context to bind to function.
+   * @param props Optional props to pass to function.
+   */
+  function callOrReturn(value, context = undefined, ...props) {
+    if (typeof value === 'function') {
+      if (context) {
+        return value.bind(context)(...props);
+      }
+      return value(...props);
+    }
+    return value;
+  }
+
+  // see: https://github.com/mesqueeb/is-what/blob/88d6e4ca92fb2baab6003c54e02eedf4e729e5ab/src/index.ts
+  function getType(payload) {
+    return Object.prototype.toString.call(payload).slice(8, -1);
+  }
+  function isPlainObject(payload) {
+    if (getType(payload) !== 'Object')
+      return false;
+    return payload.constructor === Object && Object.getPrototypeOf(payload) === Object.prototype;
+  }
+
+  function mergeDeep(target, source) {
+    const output = { ...target };
+    if (isPlainObject(target) && isPlainObject(source)) {
+      Object.keys(source).forEach(key => {
+        if (isPlainObject(source[key])) {
+          if (!(key in target)) {
+            Object.assign(output, { [key]: source[key] });
+          }
+          else {
+            output[key] = mergeDeep(target[key], source[key]);
+          }
+        }
+        else {
+          Object.assign(output, { [key]: source[key] });
+        }
+      });
+    }
+    return output;
+  }
+
+  class Extension {
+    constructor(config = {}) {
+      this.type = 'extension';
+      this.name = 'extension';
+      this.parent = null;
+      this.child = null;
+      this.config = {
+        name: this.name,
+        defaultOptions: {},
+      };
+      this.config = {
+        ...this.config,
+        ...config,
+      };
+      this.name = this.config.name;
+      this.options = this.config.defaultOptions;
+    }
+    static create(config = {}) {
+      return new Extension(config);
+    }
+    configure(options = {}) {
+      this.options = mergeDeep(this.options, options);
+      return this;
+    }
+    extend(extendedConfig = {}) {
+      const extension = new Extension(extendedConfig);
+      extension.parent = this;
+      this.child = extension;
+      extension.name = extendedConfig.name
+        ? extendedConfig.name
+        : extension.parent.name;
+      extension.options = extendedConfig.defaultOptions
+        ? extendedConfig.defaultOptions
+        : extension.parent.options;
+      return extension;
+    }
+  }
+
+  const textBetween = (editor, from, to, blockSeparator, leafText) => {
+    let text = '';
+    let separated = true;
+    editor.state.doc.nodesBetween(from, to, (node, pos) => {
+      var _a;
+      const textSerializer = editor.extensionManager.textSerializers[node.type.name];
+      if (textSerializer) {
+        text += textSerializer({ node });
+        separated = !blockSeparator;
+      }
+      else if (node.isText) {
+        text += (_a = node === null || node === void 0 ? void 0 : node.text) === null || _a === void 0 ? void 0 : _a.slice(Math.max(from, pos) - pos, to - pos);
+        separated = !blockSeparator;
+      }
+      else if (node.isLeaf && leafText) {
+        text += leafText;
+        separated = !blockSeparator;
+      }
+      else if (!separated && node.isBlock) {
+        text += blockSeparator;
+        separated = true;
+      }
+    }, 0);
+    return text;
+  };
+  Extension.create({
+    name: 'editable',
+    addProseMirrorPlugins() {
+      return [
+        new Plugin({
+          key: new PluginKey('clipboardTextSerializer'),
+          props: {
+            clipboardTextSerializer: () => {
+              const { editor } = this;
+              const { from, to } = editor.state.selection;
+              return textBetween(editor, from, to, '\n');
+            },
+          },
+        }),
+      ];
+    },
+  });
+
+  const blur = () => ({ view }) => {
+    const element = view.dom;
+    element.blur();
+    return true;
+  };
+
+  var blur$1 = /*#__PURE__*/Object.freeze({
+    __proto__: null,
+    blur: blur
+  });
+
+  const clearContent = (emitUpdate = false) => ({ commands }) => {
+    return commands.setContent('', emitUpdate);
+  };
+
+  var clearContent$1 = /*#__PURE__*/Object.freeze({
+    __proto__: null,
+    clearContent: clearContent
+  });
+
+  const clearNodes = () => ({ state, tr, dispatch }) => {
+    const { selection } = tr;
+    const { ranges } = selection;
+    ranges.forEach(range => {
+      state.doc.nodesBetween(range.$from.pos, range.$to.pos, (node, pos) => {
+        if (!node.type.isText) {
+          const fromPos = tr.doc.resolve(tr.mapping.map(pos + 1));
+          const toPos = tr.doc.resolve(tr.mapping.map(pos + node.nodeSize - 1));
+          const nodeRange = fromPos.blockRange(toPos);
+          if (nodeRange) {
+            const targetLiftDepth = liftTarget(nodeRange);
+            if (node.type.isTextblock && dispatch) {
+              tr.setNodeMarkup(nodeRange.start, state.doc.type.contentMatch.defaultType);
+            }
+            if ((targetLiftDepth || targetLiftDepth === 0) && dispatch) {
+              tr.lift(nodeRange, targetLiftDepth);
+            }
+          }
+        }
+      });
+    });
+    return true;
+  };
+
+  var clearNodes$1 = /*#__PURE__*/Object.freeze({
+    __proto__: null,
+    clearNodes: clearNodes
+  });
+
+  const command = fn => props => {
+    return fn(props);
+  };
+
+  var command$1 = /*#__PURE__*/Object.freeze({
+    __proto__: null,
+    command: command
+  });
+
+  const createParagraphNear = () => ({ state, dispatch }) => {
+    return createParagraphNear$2(state, dispatch);
+  };
+
+  var createParagraphNear$1 = /*#__PURE__*/Object.freeze({
+    __proto__: null,
+    createParagraphNear: createParagraphNear
+  });
+
+  const deleteRange = range => ({ tr, dispatch }) => {
+    const { from, to } = range;
+    if (dispatch) {
+      tr.delete(from, to);
+    }
+    return true;
+  };
+
+  var deleteRange$1 = /*#__PURE__*/Object.freeze({
+    __proto__: null,
+    deleteRange: deleteRange
+  });
+
+  const deleteSelection = () => ({ state, dispatch }) => {
+    return deleteSelection$2(state, dispatch);
+  };
+
+  var deleteSelection$1 = /*#__PURE__*/Object.freeze({
+    __proto__: null,
+    deleteSelection: deleteSelection
+  });
+
+  const enter = () => ({ commands }) => {
+    return commands.keyboardShortcut('Enter');
+  };
+
+  var enter$1 = /*#__PURE__*/Object.freeze({
+    __proto__: null,
+    enter: enter
+  });
+
+  const exitCode = () => ({ state, dispatch }) => {
+    return exitCode$2(state, dispatch);
+  };
+
+  var exitCode$1 = /*#__PURE__*/Object.freeze({
+    __proto__: null,
+    exitCode: exitCode
+  });
+
+  function getMarkRange($pos, type) {
+    if (!$pos || !type) {
+      return;
+    }
+    const start = $pos.parent.childAfter($pos.parentOffset);
+    if (!start.node) {
+      return;
+    }
+    const link = start.node.marks.find(mark => mark.type === type);
+    if (!link) {
+      return;
+    }
+    let startIndex = $pos.index();
+    let startPos = $pos.start() + start.offset;
+    let endIndex = startIndex + 1;
+    let endPos = startPos + start.node.nodeSize;
+    while (startIndex > 0 && link.isInSet($pos.parent.child(startIndex - 1).marks)) {
+      startIndex -= 1;
+      startPos -= $pos.parent.child(startIndex).nodeSize;
+    }
+    while (endIndex < $pos.parent.childCount && link.isInSet($pos.parent.child(endIndex).marks)) {
+      endPos += $pos.parent.child(endIndex).nodeSize;
+      endIndex += 1;
+    }
+    return {
+      from: startPos,
+      to: endPos,
+    };
+  }
+
+  const extendMarkRange = typeOrName => ({ tr, state, dispatch }) => {
+    const type = getMarkType(typeOrName, state.schema);
+    const { doc, selection } = tr;
+    const { $from, empty } = selection;
+    if (empty && dispatch) {
+      const range = getMarkRange($from, type);
+      if (range) {
+        const newSelection = TextSelection.create(doc, range.from, range.to);
+        tr.setSelection(newSelection);
+      }
+    }
+    return true;
+  };
+
+  var extendMarkRange$1 = /*#__PURE__*/Object.freeze({
+    __proto__: null,
+    extendMarkRange: extendMarkRange
+  });
+
+  const first = commands => props => {
+    const items = typeof commands === 'function'
+      ? commands(props)
+      : commands;
+    for (let i = 0; i < items.length; i += 1) {
+      if (items[i](props)) {
+        return true;
+      }
+    }
+    return false;
+  };
+
+  var first$1 = /*#__PURE__*/Object.freeze({
+    __proto__: null,
+    first: first
+  });
+
+  function minMax(value = 0, min = 0, max = 0) {
+    return Math.min(Math.max(value, min), max);
+  }
+
+  function isClass(item) {
+    var _a;
+    if (((_a = item.constructor) === null || _a === void 0 ? void 0 : _a.toString().substring(0, 5)) !== 'class') {
+      return false;
+    }
+    return true;
+  }
+
+  function isObject$1(item) {
+    return (item
+      && typeof item === 'object'
+      && !Array.isArray(item)
+      && !isClass(item));
+  }
+
+  function isTextSelection(value) {
+    return isObject$1(value) && value instanceof TextSelection;
+  }
+
+  function resolveSelection(state, position = null) {
+    if (!position) {
+      return null;
+    }
+    if (position === 'start' || position === true) {
+      return {
+        from: 0,
+        to: 0,
+      };
+    }
+    if (position === 'end') {
+      const { size } = state.doc.content;
+      return {
+        from: size,
+        to: size,
+      };
+    }
+    return {
+      from: position,
+      to: position,
+    };
+  }
+  const focus = (position = null) => ({ editor, view, tr, dispatch, }) => {
+    if ((view.hasFocus() && position === null) || position === false) {
+      return true;
+    }
+    // we don’t try to resolve a NodeSelection or CellSelection
+    if (dispatch && position === null && !isTextSelection(editor.state.selection)) {
+      view.focus();
+      return true;
+    }
+    const { from, to } = resolveSelection(editor.state, position) || editor.state.selection;
+    const { doc, storedMarks } = tr;
+    const resolvedFrom = minMax(from, 0, doc.content.size);
+    const resolvedEnd = minMax(to, 0, doc.content.size);
+    const selection = TextSelection.create(doc, resolvedFrom, resolvedEnd);
+    const isSameSelection = editor.state.selection.eq(selection);
+    if (dispatch) {
+      tr.setSelection(selection);
+      // `tr.setSelection` resets the stored marks
+      // so we’ll restore them if the selection is the same as before
+      if (isSameSelection && storedMarks) {
+        tr.setStoredMarks(storedMarks);
+      }
+      view.focus();
+    }
+    return true;
+  };
+
+  var focus$1 = /*#__PURE__*/Object.freeze({
+    __proto__: null,
+    focus: focus
+  });
+
+  const insertContent = value => ({ tr, commands }) => {
+    return commands.insertContentAt({ from: tr.selection.from, to: tr.selection.to }, value);
+  };
+
+  var insertContent$1 = /*#__PURE__*/Object.freeze({
+    __proto__: null,
+    insertContent: insertContent
+  });
+
+  // source: https://github.com/ProseMirror/prosemirror-state/blob/master/src/selection.js#L466
+  function selectionToInsertionEnd(tr, startLen, bias) {
+    const last = tr.steps.length - 1;
+    if (last < startLen) {
+      return;
+    }
+    const step = tr.steps[last];
+    if (!(step instanceof ReplaceStep || step instanceof ReplaceAroundStep)) {
+      return;
+    }
+    const map = tr.mapping.maps[last];
+    let end = 0;
+    map.forEach((_from, _to, _newFrom, newTo) => {
+      if (end === 0) {
+        end = newTo;
+      }
+    });
+    tr.setSelection(Selection.near(tr.doc.resolve(end), bias));
+  }
+
+  const insertContentAt = (range, value) => ({ tr, dispatch, editor }) => {
+    if (dispatch) {
+      const content = createNodeFromContent(value, editor.schema);
+      tr.replaceWith(range.from, range.to, content);
+      // set cursor at end of inserted content
+      selectionToInsertionEnd(tr, tr.steps.length - 1, 1);
+    }
+    return true;
+  };
+
+  var insertContentAt$1 = /*#__PURE__*/Object.freeze({
+    __proto__: null,
+    insertContentAt: insertContentAt
+  });
+
+  const joinBackward = () => ({ state, dispatch }) => {
+    return joinBackward$2(state, dispatch);
+  };
+
+  var joinBackward$1 = /*#__PURE__*/Object.freeze({
+    __proto__: null,
+    joinBackward: joinBackward
+  });
+
+  const joinForward = () => ({ state, dispatch }) => {
+    return joinForward$2(state, dispatch);
+  };
+
+  var joinForward$1 = /*#__PURE__*/Object.freeze({
+    __proto__: null,
+    joinForward: joinForward
+  });
+
+  const mac = typeof navigator !== 'undefined' ? /Mac/.test(navigator.platform) : false;
+  function normalizeKeyName(name) {
+    const parts = name.split(/-(?!$)/);
+    let result = parts[parts.length - 1];
+    if (result === 'Space') {
+      result = ' ';
+    }
+    let alt;
+    let ctrl;
+    let shift;
+    let meta;
+    for (let i = 0; i < parts.length - 1; i += 1) {
+      const mod = parts[i];
+      if (/^(cmd|meta|m)$/i.test(mod)) {
+        meta = true;
+      }
+      else if (/^a(lt)?$/i.test(mod)) {
+        alt = true;
+      }
+      else if (/^(c|ctrl|control)$/i.test(mod)) {
+        ctrl = true;
+      }
+      else if (/^s(hift)?$/i.test(mod)) {
+        shift = true;
+      }
+      else if (/^mod$/i.test(mod)) {
+        if (mac) {
+          meta = true;
+        }
+        else {
+          ctrl = true;
+        }
+      }
+      else {
+        throw new Error(`Unrecognized modifier name: ${mod}`);
+      }
+    }
+    if (alt) {
+      result = `Alt-${result}`;
+    }
+    if (ctrl) {
+      result = `Ctrl-${result}`;
+    }
+    if (meta) {
+      result = `Meta-${result}`;
+    }
+    if (shift) {
+      result = `Shift-${result}`;
+    }
+    return result;
+  }
+  const keyboardShortcut = name => ({ editor, view, tr, dispatch, }) => {
+    const keys = normalizeKeyName(name).split(/-(?!$)/);
+    const key = keys.find(item => !['Alt', 'Ctrl', 'Meta', 'Shift'].includes(item));
+    const event = new KeyboardEvent('keydown', {
+      key: key === 'Space'
+        ? ' '
+        : key,
+      altKey: keys.includes('Alt'),
+      ctrlKey: keys.includes('Ctrl'),
+      metaKey: keys.includes('Meta'),
+      shiftKey: keys.includes('Shift'),
+      bubbles: true,
+      cancelable: true,
+    });
+    const capturedTransaction = editor.captureTransaction(() => {
+      view.someProp('handleKeyDown', f => f(view, event));
+    });
+    capturedTransaction === null || capturedTransaction === void 0 ? void 0 : capturedTransaction.steps.forEach(step => {
+      const newStep = step.map(tr.mapping);
+      if (newStep && dispatch) {
+        tr.maybeStep(newStep);
+      }
+    });
+    return true;
+  };
+
+  var keyboardShortcut$1 = /*#__PURE__*/Object.freeze({
+    __proto__: null,
+    keyboardShortcut: keyboardShortcut
+  });
+
+  const lift = (typeOrName, attributes = {}) => ({ state, dispatch }) => {
+    const type = getNodeType(typeOrName, state.schema);
+    const isActive = isNodeActive(state, type, attributes);
+    if (!isActive) {
+      return false;
+    }
+    return lift$2(state, dispatch);
+  };
+
+  var lift$1 = /*#__PURE__*/Object.freeze({
+    __proto__: null,
+    lift: lift
+  });
+
+  const liftEmptyBlock = () => ({ state, dispatch }) => {
+    return liftEmptyBlock$2(state, dispatch);
+  };
+
+  var liftEmptyBlock$1 = /*#__PURE__*/Object.freeze({
+    __proto__: null,
+    liftEmptyBlock: liftEmptyBlock
+  });
+
+  const liftListItem = typeOrName => ({ state, dispatch }) => {
+    const type = getNodeType(typeOrName, state.schema);
+    return liftListItem$2(type)(state, dispatch);
+  };
+
+  var liftListItem$1 = /*#__PURE__*/Object.freeze({
+    __proto__: null,
+    liftListItem: liftListItem
+  });
+
+  const newlineInCode = () => ({ state, dispatch }) => {
+    return newlineInCode$2(state, dispatch);
+  };
+
+  var newlineInCode$1 = /*#__PURE__*/Object.freeze({
+    __proto__: null,
+    newlineInCode: newlineInCode
+  });
+
+  const replace = (typeOrName, attributes = {}) => ({ state, commands }) => {
+    console.warn('[tiptap warn]: replace() is deprecated. please use insertContent() instead.');
+    const { from, to } = state.selection;
+    const range = { from, to };
+    return commands.replaceRange(range, typeOrName, attributes);
+  };
+
+  var replace$1 = /*#__PURE__*/Object.freeze({
+    __proto__: null,
+    replace: replace
+  });
+
+  const replaceRange = (range, typeOrName, attributes = {}) => ({ tr, state, dispatch }) => {
+    console.warn('[tiptap warn]: replaceRange() is deprecated. please use insertContent() instead.');
+    const type = getNodeType(typeOrName, state.schema);
+    const { from, to } = range;
+    // const $from = tr.doc.resolve(from)
+    // const index = $from.index()
+    // if (!$from.parent.canReplaceWith(index, index, type)) {
+    //   return false
+    // }
+    if (dispatch) {
+      tr.replaceRangeWith(from, to, type.create(attributes));
+    }
+    return true;
+  };
+
+  var replaceRange$1 = /*#__PURE__*/Object.freeze({
+    __proto__: null,
+    replaceRange: replaceRange
+  });
+
+  /**
+   * Remove a property or an array of properties from an object
+   * @param obj Object
+   * @param key Key to remove
+   */
+  function deleteProps(obj, propOrProps) {
+    const props = typeof propOrProps === 'string'
+      ? [propOrProps]
+      : propOrProps;
+    return Object
+      .keys(obj)
+      .reduce((newObj, prop) => {
+        if (!props.includes(prop)) {
+          newObj[prop] = obj[prop];
+        }
+        return newObj;
+      }, {});
+  }
+
+  const resetAttributes = (typeOrName, attributes) => ({ tr, state, dispatch }) => {
+    let nodeType = null;
+    let markType = null;
+    const schemaType = getSchemaTypeNameByName(typeof typeOrName === 'string'
+      ? typeOrName
+      : typeOrName.name, state.schema);
+    if (!schemaType) {
+      return false;
+    }
+    if (schemaType === 'node') {
+      nodeType = getNodeType(typeOrName, state.schema);
+    }
+    if (schemaType === 'mark') {
+      markType = getMarkType(typeOrName, state.schema);
+    }
+    if (dispatch) {
+      tr.selection.ranges.forEach(range => {
+        state.doc.nodesBetween(range.$from.pos, range.$to.pos, (node, pos) => {
+          if (nodeType && nodeType === node.type) {
+            tr.setNodeMarkup(pos, undefined, deleteProps(node.attrs, attributes));
+          }
+          if (markType && node.marks.length) {
+            node.marks.forEach(mark => {
+              if (markType === mark.type) {
+                tr.addMark(pos, pos + node.nodeSize, markType.create(deleteProps(mark.attrs, attributes)));
+              }
+            });
+          }
+        });
+      });
+    }
+    return true;
+  };
+
+  var resetAttributes$1 = /*#__PURE__*/Object.freeze({
+    __proto__: null,
+    resetAttributes: resetAttributes
+  });
+
+  const scrollIntoView = () => ({ tr, dispatch }) => {
+    if (dispatch) {
+      tr.scrollIntoView();
+    }
+    return true;
+  };
+
+  var scrollIntoView$1 = /*#__PURE__*/Object.freeze({
+    __proto__: null,
+    scrollIntoView: scrollIntoView
+  });
+
+  const selectAll = () => ({ state, dispatch }) => {
+    return selectAll$2(state, dispatch);
+  };
+
+  var selectAll$1 = /*#__PURE__*/Object.freeze({
+    __proto__: null,
+    selectAll: selectAll
+  });
+
+  const selectNodeBackward = () => ({ state, dispatch }) => {
+    return selectNodeBackward$2(state, dispatch);
+  };
+
+  var selectNodeBackward$1 = /*#__PURE__*/Object.freeze({
+    __proto__: null,
+    selectNodeBackward: selectNodeBackward
+  });
+
+  const selectNodeForward = () => ({ state, dispatch }) => {
+    return selectNodeForward$2(state, dispatch);
+  };
+
+  var selectNodeForward$1 = /*#__PURE__*/Object.freeze({
+    __proto__: null,
+    selectNodeForward: selectNodeForward
+  });
+
+  const selectParentNode = () => ({ state, dispatch }) => {
+    return selectParentNode$2(state, dispatch);
+  };
+
+  var selectParentNode$1 = /*#__PURE__*/Object.freeze({
+    __proto__: null,
+    selectParentNode: selectParentNode
+  });
+
+  const setContent$1 = (content, emitUpdate = false, parseOptions = {}) => ({ tr, editor, dispatch }) => {
+    const { doc } = tr;
+    const document = createDocument(content, editor.schema, parseOptions);
+    const selection = TextSelection.create(doc, 0, doc.content.size);
+    if (dispatch) {
+      tr.setSelection(selection)
+        .replaceSelectionWith(document, false)
+        .setMeta('preventUpdate', !emitUpdate);
+    }
+    return true;
+  };
+
+  var setContent$1$1 = /*#__PURE__*/Object.freeze({
+    __proto__: null,
+    setContent: setContent$1
+  });
+
+  const setMark = (typeOrName, attributes = {}) => ({ tr, state, dispatch }) => {
+    const { selection } = tr;
+    const { empty, ranges } = selection;
+    const type = getMarkType(typeOrName, state.schema);
+    if (dispatch) {
+      if (empty) {
+        const oldAttributes = getMarkAttributes(state, type);
+        tr.addStoredMark(type.create({
+          ...oldAttributes,
+          ...attributes,
+        }));
+      }
+      else {
+        ranges.forEach(range => {
+          const from = range.$from.pos;
+          const to = range.$to.pos;
+          state.doc.nodesBetween(from, to, (node, pos) => {
+            const trimmedFrom = Math.max(pos, from);
+            const trimmedTo = Math.min(pos + node.nodeSize, to);
+            const someHasMark = node.marks.find(mark => mark.type === type);
+            // if there is already a mark of this type
+            // we know that we have to merge its attributes
+            // otherwise we add a fresh new mark
+            if (someHasMark) {
+              node.marks.forEach(mark => {
+                if (type === mark.type) {
+                  tr.addMark(trimmedFrom, trimmedTo, type.create({
+                    ...mark.attrs,
+                    ...attributes,
+                  }));
+                }
+              });
+            }
+            else {
+              tr.addMark(trimmedFrom, trimmedTo, type.create(attributes));
+            }
+          });
+        });
+      }
+    }
+    return true;
+  };
+
+  var setMark$1 = /*#__PURE__*/Object.freeze({
+    __proto__: null,
+    setMark: setMark
+  });
+
+  const setNode = (typeOrName, attributes = {}) => ({ state, dispatch }) => {
+    const type = getNodeType(typeOrName, state.schema);
+    return setBlockType(type, attributes)(state, dispatch);
+  };
+
+  var setNode$1 = /*#__PURE__*/Object.freeze({
+    __proto__: null,
+    setNode: setNode
+  });
+
+  const setNodeSelection = position => ({ tr, dispatch }) => {
+    if (dispatch) {
+      const { doc } = tr;
+      const from = minMax(position, 0, doc.content.size);
+      const selection = NodeSelection.create(doc, from);
+      tr.setSelection(selection);
+    }
+    return true;
+  };
+
+  var setNodeSelection$1 = /*#__PURE__*/Object.freeze({
+    __proto__: null,
+    setNodeSelection: setNodeSelection
+  });
+
+  const setTextSelection = range => ({ tr, dispatch }) => {
+    if (dispatch) {
+      const { doc } = tr;
+      const from = minMax(range.from, 0, doc.content.size);
+      const to = minMax(range.to, 0, doc.content.size);
+      const selection = TextSelection.create(doc, from, to);
+      tr.setSelection(selection);
+    }
+    return true;
+  };
+
+  var setTextSelection$1 = /*#__PURE__*/Object.freeze({
+    __proto__: null,
+    setTextSelection: setTextSelection
+  });
+
+  const sinkListItem = typeOrName => ({ state, dispatch }) => {
+    const type = getNodeType(typeOrName, state.schema);
+    return sinkListItem$2(type)(state, dispatch);
+  };
+
+  var sinkListItem$1 = /*#__PURE__*/Object.freeze({
+    __proto__: null,
+    sinkListItem: sinkListItem
+  });
+
+  function getSplittedAttributes(extensionAttributes, typeName, attributes) {
+    return Object.fromEntries(Object
+      .entries(attributes)
+      .filter(([name]) => {
+        const extensionAttribute = extensionAttributes.find(item => {
+          return item.type === typeName && item.name === name;
+        });
+        if (!extensionAttribute) {
+          return false;
+        }
+        return extensionAttribute.attribute.keepOnSplit;
+      }));
+  }
+
+  function defaultBlockAt(match) {
+    for (let i = 0; i < match.edgeCount; i + 1) {
+      const { type } = match.edge(i);
+      if (type.isTextblock && !type.hasRequiredAttrs()) {
+        return type;
+      }
+    }
+    return null;
+  }
+  function ensureMarks(state, splittableMarks) {
+    const marks = state.storedMarks
+      || (state.selection.$to.parentOffset && state.selection.$from.marks());
+    if (marks) {
+      const filteredMarks = marks.filter(mark => splittableMarks === null || splittableMarks === void 0 ? void 0 : splittableMarks.includes(mark.type.name));
+      state.tr.ensureMarks(filteredMarks);
+    }
+  }
+  const splitBlock = ({ keepMarks = true } = {}) => ({ tr, state, dispatch, editor, }) => {
+    const { selection, doc } = tr;
+    const { $from, $to } = selection;
+    const extensionAttributes = editor.extensionManager.attributes;
+    const newAttributes = getSplittedAttributes(extensionAttributes, $from.node().type.name, $from.node().attrs);
+    if (selection instanceof NodeSelection && selection.node.isBlock) {
+      if (!$from.parentOffset || !canSplit(doc, $from.pos)) {
+        return false;
+      }
+      if (dispatch) {
+        if (keepMarks) {
+          ensureMarks(state, editor.extensionManager.splittableMarks);
+        }
+        tr.split($from.pos).scrollIntoView();
+      }
+      return true;
+    }
+    if (!$from.parent.isBlock) {
+      return false;
+    }
+    if (dispatch) {
+      const atEnd = $to.parentOffset === $to.parent.content.size;
+      if (selection instanceof TextSelection) {
+        tr.deleteSelection();
+      }
+      const deflt = $from.depth === 0
+        ? undefined
+        : defaultBlockAt($from.node(-1).contentMatchAt($from.indexAfter(-1)));
+      let types = atEnd && deflt
+        ? [{
+          type: deflt,
+          attrs: newAttributes,
+        }]
+        : undefined;
+      let can = canSplit(tr.doc, tr.mapping.map($from.pos), 1, types);
+      if (!types
+        && !can
+        && canSplit(tr.doc, tr.mapping.map($from.pos), 1, deflt ? [{ type: deflt }] : undefined)) {
+        can = true;
+        types = deflt
+          ? [{
+            type: deflt,
+            attrs: newAttributes,
+          }]
+          : undefined;
+      }
+      if (can) {
+        tr.split(tr.mapping.map($from.pos), 1, types);
+        if (!atEnd
+          && !$from.parentOffset
+          && $from.parent.type !== deflt
+          && $from.node(-1).canReplace($from.index(-1), $from.indexAfter(-1), Fragment.from(deflt === null || deflt === void 0 ? void 0 : deflt.create()))) {
+          tr.setNodeMarkup(tr.mapping.map($from.before()), deflt || undefined);
+        }
+      }
+      if (keepMarks) {
+        ensureMarks(state, editor.extensionManager.splittableMarks);
+      }
+      tr.scrollIntoView();
+    }
+    return true;
+  };
+
+  var splitBlock$1 = /*#__PURE__*/Object.freeze({
+    __proto__: null,
+    splitBlock: splitBlock
+  });
+
+  const splitListItem = typeOrName => ({ tr, state, dispatch, editor, }) => {
+    var _a;
+    const type = getNodeType(typeOrName, state.schema);
+    const { $from, $to } = state.selection;
+    // @ts-ignore
+    // eslint-disable-next-line
+    const node = state.selection.node;
+    if ((node && node.isBlock) || $from.depth < 2 || !$from.sameParent($to)) {
+      return false;
+    }
+    const grandParent = $from.node(-1);
+    if (grandParent.type !== type) {
+      return false;
+    }
+    const extensionAttributes = editor.extensionManager.attributes;
+    if ($from.parent.content.size === 0 && $from.node(-1).childCount === $from.indexAfter(-1)) {
+      // In an empty block. If this is a nested list, the wrapping
+      // list item should be split. Otherwise, bail out and let next
+      // command handle lifting.
+      if ($from.depth === 2
+        || $from.node(-3).type !== type
+        || $from.index(-2) !== $from.node(-2).childCount - 1) {
+        return false;
+      }
+      if (dispatch) {
+        let wrap = Fragment.empty;
+        const keepItem = $from.index(-1) > 0;
+        // Build a fragment containing empty versions of the structure
+        // from the outer list item to the parent node of the cursor
+        for (let d = $from.depth - (keepItem ? 1 : 2); d >= $from.depth - 3; d -= 1) {
+          wrap = Fragment.from($from.node(d).copy(wrap));
+        }
+        // Add a second list item with an empty default start node
+        const newNextTypeAttributes = getSplittedAttributes(extensionAttributes, $from.node().type.name, $from.node().attrs);
+        const nextType = ((_a = type.contentMatch.defaultType) === null || _a === void 0 ? void 0 : _a.createAndFill(newNextTypeAttributes)) || undefined;
+        wrap = wrap.append(Fragment.from(type.createAndFill(null, nextType) || undefined));
+        tr
+          .replace($from.before(keepItem ? undefined : -1), $from.after(-3), new Slice(wrap, keepItem ? 3 : 2, 2))
+          .setSelection(TextSelection.near(tr.doc.resolve($from.pos + (keepItem ? 3 : 2))))
+          .scrollIntoView();
+      }
+      return true;
+    }
+    const nextType = $to.pos === $from.end()
+      ? grandParent.contentMatchAt(0).defaultType
+      : null;
+    const newTypeAttributes = getSplittedAttributes(extensionAttributes, grandParent.type.name, grandParent.attrs);
+    const newNextTypeAttributes = getSplittedAttributes(extensionAttributes, $from.node().type.name, $from.node().attrs);
+    tr.delete($from.pos, $to.pos);
+    const types = nextType
+      ? [{ type, attrs: newTypeAttributes }, { type: nextType, attrs: newNextTypeAttributes }]
+      : [{ type, attrs: newTypeAttributes }];
+    if (!canSplit(tr.doc, $from.pos, 2)) {
+      return false;
+    }
+    if (dispatch) {
+      tr.split($from.pos, 2, types).scrollIntoView();
+    }
+    return true;
+  };
+
+  var splitListItem$1 = /*#__PURE__*/Object.freeze({
+    __proto__: null,
+    splitListItem: splitListItem
+  });
+
+  function findParentNodeClosestToPos($pos, predicate) {
+    for (let i = $pos.depth; i > 0; i -= 1) {
+      const node = $pos.node(i);
+      if (predicate(node)) {
+        return {
+          pos: i > 0 ? $pos.before(i) : 0,
+          start: $pos.start(i),
+          depth: i,
+          node,
+        };
+      }
+    }
+  }
+
+  function findParentNode(predicate) {
+    return (selection) => findParentNodeClosestToPos(selection.$from, predicate);
+  }
+
+  function isList(name, extensions) {
+    const { nodeExtensions } = splitExtensions(extensions);
+    const extension = nodeExtensions.find(item => item.name === name);
+    if (!extension) {
+      return false;
+    }
+    const context = {
+      name: extension.name,
+      options: extension.options,
+    };
+    const group = callOrReturn(getExtensionField(extension, 'group', context));
+    if (typeof group !== 'string') {
+      return false;
+    }
+    return group.split(' ').includes('list');
+  }
+
+  const toggleList = (listTypeOrName, itemTypeOrName) => ({ editor, tr, state, dispatch, chain, commands, can, }) => {
+    const { extensions } = editor.options;
+    const listType = getNodeType(listTypeOrName, state.schema);
+    const itemType = getNodeType(itemTypeOrName, state.schema);
+    const { selection } = state;
+    const { $from, $to } = selection;
+    const range = $from.blockRange($to);
+    if (!range) {
+      return false;
+    }
+    const parentList = findParentNode(node => isList(node.type.name, extensions))(selection);
+    if (range.depth >= 1 && parentList && range.depth - parentList.depth <= 1) {
+      // remove list
+      if (parentList.node.type === listType) {
+        return commands.liftListItem(itemType);
+      }
+      // change list type
+      if (isList(parentList.node.type.name, extensions)
+        && listType.validContent(parentList.node.content)
+        && dispatch) {
+        tr.setNodeMarkup(parentList.pos, listType);
+        return true;
+      }
+    }
+    const canWrapInList = can().wrapInList(listType);
+    // try to convert node to paragraph if needed
+    if (!canWrapInList) {
+      return chain()
+        .clearNodes()
+        .wrapInList(listType)
+        .run();
+    }
+    return commands.wrapInList(listType);
+  };
+
+  var toggleList$1 = /*#__PURE__*/Object.freeze({
+    __proto__: null,
+    toggleList: toggleList
+  });
+
+  const toggleMark = (typeOrName, attributes = {}) => ({ state, commands }) => {
+    const type = getMarkType(typeOrName, state.schema);
+    const isActive = isMarkActive(state, type, attributes);
+    if (isActive) {
+      return commands.unsetMark(type);
+    }
+    return commands.setMark(type, attributes);
+  };
+
+  var toggleMark$1 = /*#__PURE__*/Object.freeze({
+    __proto__: null,
+    toggleMark: toggleMark
+  });
+
+  const toggleNode = (typeOrName, toggleTypeOrName, attributes = {}) => ({ state, commands }) => {
+    const type = getNodeType(typeOrName, state.schema);
+    const toggleType = getNodeType(toggleTypeOrName, state.schema);
+    const isActive = isNodeActive(state, type, attributes);
+    if (isActive) {
+      return commands.setNode(toggleType);
+    }
+    return commands.setNode(type, attributes);
+  };
+
+  var toggleNode$1 = /*#__PURE__*/Object.freeze({
+    __proto__: null,
+    toggleNode: toggleNode
+  });
+
+  const toggleWrap = (typeOrName, attributes = {}) => ({ state, dispatch }) => {
+    const type = getNodeType(typeOrName, state.schema);
+    const isActive = isNodeActive(state, type, attributes);
+    if (isActive) {
+      return lift$2(state, dispatch);
+    }
+    return wrapIn$2(type, attributes)(state, dispatch);
+  };
+
+  var toggleWrap$1 = /*#__PURE__*/Object.freeze({
+    __proto__: null,
+    toggleWrap: toggleWrap
+  });
+
+  const undoInputRule = () => ({ state, dispatch }) => {
+    return undoInputRule$2(state, dispatch);
+  };
+
+  var undoInputRule$1 = /*#__PURE__*/Object.freeze({
+    __proto__: null,
+    undoInputRule: undoInputRule
+  });
+
+  const unsetAllMarks = () => ({ tr, state, dispatch }) => {
+    const { selection } = tr;
+    const { empty, ranges } = selection;
+    if (empty) {
+      return true;
+    }
+    if (dispatch) {
+      Object
+        .entries(state.schema.marks)
+        .forEach(([, mark]) => {
+          ranges.forEach(range => {
+            tr.removeMark(range.$from.pos, range.$to.pos, mark);
+          });
+        });
+    }
+    return true;
+  };
+
+  var unsetAllMarks$1 = /*#__PURE__*/Object.freeze({
+    __proto__: null,
+    unsetAllMarks: unsetAllMarks
+  });
+
+  const unsetMark = typeOrName => ({ tr, state, dispatch }) => {
+    const { selection } = tr;
+    const type = getMarkType(typeOrName, state.schema);
+    const { $from, empty, ranges } = selection;
+    if (dispatch) {
+      if (empty) {
+        let { from, to } = selection;
+        const range = getMarkRange($from, type);
+        if (range) {
+          from = range.from;
+          to = range.to;
+        }
+        tr.removeMark(from, to, type);
+      }
+      else {
+        ranges.forEach(range => {
+          tr.removeMark(range.$from.pos, range.$to.pos, type);
+        });
+      }
+      tr.removeStoredMark(type);
+    }
+    return true;
+  };
+
+  var unsetMark$1 = /*#__PURE__*/Object.freeze({
+    __proto__: null,
+    unsetMark: unsetMark
+  });
+
+  const updateAttributes = (typeOrName, attributes = {}) => ({ tr, state, dispatch }) => {
+    let nodeType = null;
+    let markType = null;
+    const schemaType = getSchemaTypeNameByName(typeof typeOrName === 'string'
+      ? typeOrName
+      : typeOrName.name, state.schema);
+    if (!schemaType) {
+      return false;
+    }
+    if (schemaType === 'node') {
+      nodeType = getNodeType(typeOrName, state.schema);
+    }
+    if (schemaType === 'mark') {
+      markType = getMarkType(typeOrName, state.schema);
+    }
+    if (dispatch) {
+      tr.selection.ranges.forEach(range => {
+        const from = range.$from.pos;
+        const to = range.$to.pos;
+        state.doc.nodesBetween(from, to, (node, pos) => {
+          if (nodeType && nodeType === node.type) {
+            tr.setNodeMarkup(pos, undefined, {
+              ...node.attrs,
+              ...attributes,
+            });
+          }
+          if (markType && node.marks.length) {
+            node.marks.forEach(mark => {
+              if (markType === mark.type) {
+                const trimmedFrom = Math.max(pos, from);
+                const trimmedTo = Math.min(pos + node.nodeSize, to);
+                tr.addMark(trimmedFrom, trimmedTo, markType.create({
+                  ...mark.attrs,
+                  ...attributes,
+                }));
+              }
+            });
+          }
+        });
+      });
+    }
+    return true;
+  };
+
+  var updateAttributes$1 = /*#__PURE__*/Object.freeze({
+    __proto__: null,
+    updateAttributes: updateAttributes
+  });
+
+  const wrapIn = (typeOrName, attributes = {}) => ({ state, dispatch }) => {
+    const type = getNodeType(typeOrName, state.schema);
+    const isActive = isNodeActive(state, type, attributes);
+    if (isActive) {
+      return false;
+    }
+    return wrapIn$2(type, attributes)(state, dispatch);
+  };
+
+  var wrapIn$1 = /*#__PURE__*/Object.freeze({
+    __proto__: null,
+    wrapIn: wrapIn
+  });
+
+  const wrapInList = (typeOrName, attributes = {}) => ({ state, dispatch }) => {
+    const type = getNodeType(typeOrName, state.schema);
+    return wrapInList$2(type, attributes)(state, dispatch);
+  };
+
+  var wrapInList$1 = /*#__PURE__*/Object.freeze({
+    __proto__: null,
+    wrapInList: wrapInList
+  });
+
+  Extension.create({
+    name: 'commands',
+    addCommands() {
+      return {
+        ...blur$1,
+        ...clearContent$1,
+        ...clearNodes$1,
+        ...command$1,
+        ...createParagraphNear$1,
+        ...deleteRange$1,
+        ...deleteSelection$1,
+        ...enter$1,
+        ...exitCode$1,
+        ...extendMarkRange$1,
+        ...first$1,
+        ...focus$1,
+        ...insertContent$1,
+        ...insertContentAt$1,
+        ...joinBackward$1,
+        ...joinForward$1,
+        ...keyboardShortcut$1,
+        ...lift$1,
+        ...liftEmptyBlock$1,
+        ...liftListItem$1,
+        ...newlineInCode$1,
+        ...replace$1,
+        ...replaceRange$1,
+        ...resetAttributes$1,
+        ...scrollIntoView$1,
+        ...selectAll$1,
+        ...selectNodeBackward$1,
+        ...selectNodeForward$1,
+        ...selectParentNode$1,
+        ...setContent$1$1,
+        ...setMark$1,
+        ...setNode$1,
+        ...setNodeSelection$1,
+        ...setTextSelection$1,
+        ...sinkListItem$1,
+        ...splitBlock$1,
+        ...splitListItem$1,
+        ...toggleList$1,
+        ...toggleMark$1,
+        ...toggleNode$1,
+        ...toggleWrap$1,
+        ...undoInputRule$1,
+        ...unsetAllMarks$1,
+        ...unsetMark$1,
+        ...updateAttributes$1,
+        ...wrapIn$1,
+        ...wrapInList$1,
+      };
+    },
+  });
+
+  Extension.create({
+    name: 'editable',
+    addProseMirrorPlugins() {
+      return [
+        new Plugin({
+          key: new PluginKey('editable'),
+          props: {
+            editable: () => this.editor.options.editable,
+          },
+        }),
+      ];
+    },
+  });
+
+  Extension.create({
+    name: 'focusEvents',
+    addProseMirrorPlugins() {
+      const { editor } = this;
+      return [
+        new Plugin({
+          key: new PluginKey('focusEvents'),
+          props: {
+            attributes: {
+              tabindex: '0',
+            },
+            handleDOMEvents: {
+              focus: (view, event) => {
+                editor.isFocused = true;
+                const transaction = editor.state.tr
+                  .setMeta('focus', { event })
+                  .setMeta('addToHistory', false);
+                view.dispatch(transaction);
+                return false;
+              },
+              blur: (view, event) => {
+                editor.isFocused = false;
+                const transaction = editor.state.tr
+                  .setMeta('blur', { event })
+                  .setMeta('addToHistory', false);
+                view.dispatch(transaction);
+                return false;
+              },
+            },
+          },
+        }),
+      ];
+    },
+  });
+
+  Extension.create({
+    name: 'keymap',
+    addKeyboardShortcuts() {
+      const handleBackspace = () => this.editor.commands.first(({ commands }) => [
+        () => commands.undoInputRule(),
+        () => commands.deleteSelection(),
+        () => commands.joinBackward(),
+        () => commands.selectNodeBackward(),
+      ]);
+      const handleDelete = () => this.editor.commands.first(({ commands }) => [
+        () => commands.deleteSelection(),
+        () => commands.joinForward(),
+        () => commands.selectNodeForward(),
+      ]);
+      return {
+        Enter: () => this.editor.commands.first(({ commands }) => [
+          () => commands.newlineInCode(),
+          () => commands.createParagraphNear(),
+          () => commands.liftEmptyBlock(),
+          () => commands.splitBlock(),
+        ]),
+        'Mod-Enter': () => this.editor.commands.exitCode(),
+        Backspace: () => handleBackspace(),
+        'Mod-Backspace': () => handleBackspace(),
+        Delete: () => handleDelete(),
+        'Mod-Delete': () => handleDelete(),
+        // we don’t need a custom `selectAll` for now
+        // 'Mod-a': () => this.editor.commands.selectAll(),
+      };
+    },
+  });
+
+  class Node {
+    constructor(config = {}) {
+      this.type = 'node';
+      this.name = 'node';
+      this.parent = null;
+      this.child = null;
+      this.config = {
+        name: this.name,
+        defaultOptions: {},
+      };
+      this.config = {
+        ...this.config,
+        ...config,
+      };
+      this.name = this.config.name;
+      this.options = this.config.defaultOptions;
+    }
+    static create(config = {}) {
+      return new Node(config);
+    }
+    configure(options = {}) {
+      this.options = mergeDeep(this.options, options);
+      return this;
+    }
+    extend(extendedConfig = {}) {
+      const extension = new Node(extendedConfig);
+      extension.parent = this;
+      this.child = extension;
+      extension.name = extendedConfig.name
+        ? extendedConfig.name
+        : extension.parent.name;
+      extension.options = extendedConfig.defaultOptions
+        ? extendedConfig.defaultOptions
+        : extension.parent.options;
+      return extension;
+    }
+  }
+
+  class Mark {
+    constructor(config = {}) {
+      this.type = 'mark';
+      this.name = 'mark';
+      this.parent = null;
+      this.child = null;
+      this.config = {
+        name: this.name,
+        defaultOptions: {},
+      };
+      this.config = {
+        ...this.config,
+        ...config,
+      };
+      this.name = this.config.name;
+      this.options = this.config.defaultOptions;
+    }
+    static create(config = {}) {
+      return new Mark(config);
+    }
+    configure(options = {}) {
+      this.options = mergeDeep(this.options, options);
+      return this;
+    }
+    extend(extendedConfig = {}) {
+      const extension = new Mark(extendedConfig);
+      extension.parent = this;
+      this.child = extension;
+      extension.name = extendedConfig.name
+        ? extendedConfig.name
+        : extension.parent.name;
+      extension.options = extendedConfig.defaultOptions
+        ? extendedConfig.defaultOptions
+        : extension.parent.options;
+      return extension;
+    }
+  }
+
+  function nodeInputRule(regexp, type, getAttributes) {
+    return new InputRule(regexp, (state, match, start, end) => {
+      const attributes = getAttributes instanceof Function
+        ? getAttributes(match)
+        : getAttributes;
+      const { tr } = state;
+      if (match[0]) {
+        tr.replaceWith(start - 1, end, type.create(attributes));
+      }
+      return tr;
+    });
+  }
+
+  function getMarksBetween(from, to, state) {
+    let marks = [];
+    state.doc.nodesBetween(from, to, (node, pos) => {
+      marks = [...marks, ...node.marks.map(mark => ({
+        from: pos,
+        to: pos + node.nodeSize,
+        mark,
+      }))];
+    });
+    return marks;
+  }
+
+  function markInputRule(regexp, markType, getAttributes) {
+    return new InputRule(regexp, (state, match, start, end) => {
+      const attributes = getAttributes instanceof Function
+        ? getAttributes(match)
+        : getAttributes;
+      const { tr } = state;
+      const captureGroup = match[match.length - 1];
+      const fullMatch = match[0];
+      let markEnd = end;
+      if (captureGroup) {
+        const startSpaces = fullMatch.search(/\S/);
+        const textStart = start + fullMatch.indexOf(captureGroup);
+        const textEnd = textStart + captureGroup.length;
+        const excludedMarks = getMarksBetween(start, end, state)
+          .filter(item => {
+            // TODO: PR to add excluded to MarkType
+            // @ts-ignore
+            const { excluded } = item.mark.type;
+            return excluded.find((type) => type.name === markType.name);
+          })
+          .filter(item => item.to > textStart);
+        if (excludedMarks.length) {
+          return null;
+        }
+        if (textEnd < end) {
+          tr.delete(textEnd, end);
+        }
+        if (textStart > start) {
+          tr.delete(start + startSpaces, textStart);
+        }
+        markEnd = start + startSpaces + captureGroup.length;
+        tr.addMark(start + startSpaces, markEnd, markType.create(attributes));
+        tr.removeStoredMark(markType);
+      }
+      return tr;
+    });
+  }
+
+  function markPasteRule(regexp, type, getAttributes) {
+    const handler = (fragment, parent) => {
+      const nodes = [];
+      fragment.forEach(child => {
+        if (child.isText && child.text) {
+          const { text } = child;
+          let pos = 0;
+          let match;
+          // eslint-disable-next-line
+          while ((match = regexp.exec(text)) !== null) {
+            const outerMatch = Math.max(match.length - 2, 0);
+            const innerMatch = Math.max(match.length - 1, 0);
+            if (parent === null || parent === void 0 ? void 0 : parent.type.allowsMarkType(type)) {
+              const start = match.index;
+              const matchStart = start + match[0].indexOf(match[outerMatch]);
+              const matchEnd = matchStart + match[outerMatch].length;
+              const textStart = matchStart + match[outerMatch].lastIndexOf(match[innerMatch]);
+              const textEnd = textStart + match[innerMatch].length;
+              const attrs = getAttributes instanceof Function
+                ? getAttributes(match)
+                : getAttributes;
+              // adding text before markdown to nodes
+              if (matchStart > 0) {
+                nodes.push(child.cut(pos, matchStart));
+              }
+              // adding the markdown part to nodes
+              nodes.push(child
+                .cut(textStart, textEnd)
+                .mark(type.create(attrs).addToSet(child.marks)));
+              pos = matchEnd;
+            }
+          }
+          // adding rest of text to nodes
+          if (pos < text.length) {
+            nodes.push(child.cut(pos));
+          }
+        }
+        else {
+          nodes.push(child.copy(handler(child.content, child)));
+        }
+      });
+      return Fragment.fromArray(nodes);
+    };
+    return new Plugin({
+      key: new PluginKey('markPasteRule'),
+      props: {
+        transformPasted: slice => {
+          return new Slice(handler(slice.content), slice.openStart, slice.openEnd);
+        },
+      },
+    });
+  }
+
+  function textRange(node, from, to) {
+    const range = document.createRange();
+    range.setEnd(node, typeof to === 'number' ? to : (node.nodeValue || '').length);
+    range.setStart(node, Math.max(from || 0, 0));
+    return range;
+  }
+  function singleRect(object, bias) {
+    const rects = object.getClientRects();
+    return !rects.length
+      ? object.getBoundingClientRect()
+      : rects[bias < 0 ? 0 : rects.length - 1];
+  }
+  function coordsAtPos(view, pos, end = false) {
+    const { node, offset } = view.domAtPos(pos); // view.docView.domFromPos(pos);
+    let side = null;
+    let rect = null;
+    if (node.nodeType === 3) {
+      const nodeValue = node.nodeValue || '';
+      if (end && offset < nodeValue.length) {
+        rect = singleRect(textRange(node, offset - 1, offset), -1);
+        side = 'right';
+      }
+      else if (offset < nodeValue.length) {
+        rect = singleRect(textRange(node, offset, offset + 1), -1);
+        side = 'left';
+      }
+    }
+    else if (node.firstChild) {
+      if (offset < node.childNodes.length) {
+        const child = node.childNodes[offset];
+        rect = singleRect(child.nodeType === 3 ? textRange(child) : child, -1);
+        side = 'left';
+      }
+      if ((!rect || rect.top === rect.bottom) && offset) {
+        const child = node.childNodes[offset - 1];
+        rect = singleRect(child.nodeType === 3 ? textRange(child) : child, 1);
+        side = 'right';
+      }
+    }
+    else {
+      const element = node;
+      rect = element.getBoundingClientRect();
+      side = 'left';
+    }
+    if (rect && side) {
+      const x = rect[side];
+      return {
+        top: rect.top,
+        bottom: rect.bottom,
+        left: x,
+        right: x,
+      };
+    }
+    return {
+      top: 0,
+      bottom: 0,
+      left: 0,
+      right: 0,
+    };
+  }
+
+  function posToDOMRect(view, from, to) {
+    const start = coordsAtPos(view, from);
+    const end = coordsAtPos(view, to, true);
+    const top = Math.min(start.top, end.top);
+    const bottom = Math.max(start.bottom, end.bottom);
+    const left = Math.min(start.left, end.left);
+    const right = Math.max(start.right, end.right);
+    const width = right - left;
+    const height = bottom - top;
+    const x = left;
+    const y = top;
+    const data = {
+      top,
+      bottom,
+      left,
+      right,
+      width,
+      height,
+      x,
+      y,
+    };
+    console.log(data);
+    return {
+      ...data,
+      toJSON: () => data,
+    };
+  }
+
+  const FONT_SIZES = ['8', '10', '12', '14', '16', '18', '20', '24', '30', '36', '48', '60', '72'];
+  var FontSize = Extension.create({
+    name: 'fontSize',
+    defaultOptions: {
+      types: ['textStyle']
+    },
+
+    addGlobalAttributes() {
+      return [{
+        types: this.options.types,
+        attributes: {
+          fontSize: {
+            default: null,
+            renderHTML: attributes => {
+              if (!attributes.fontSize) {
+                return {};
+              }
+
+              return {
+                style: `font-size: ${attributes.fontSize}px`
+              };
+            },
+            parseHTML: element => ({
+              fontSize: element.style.fontSize.replace(/['"px]+/g, '')
+            })
+          }
+        }
+      }];
+    },
+
+    addCommands() {
+      return {
+        setFontSize: fontSize => ({
+          chain
+        }) => {
+          return chain().setMark('textStyle', {
+            fontSize
+          }).run();
+        },
+        unsetFontSize: () => ({
+          chain
+        }) => {
+          return chain().setMark('textStyle', {
+            fontSize: null
+          }).removeEmptyTextStyle().run();
+        }
+      };
+    }
+
+  });
+
+  var Image = Image__default['default'].extend({
+    addAttributes() {
+      return {
+        src: {
+          default: null
+        },
+        alt: {
+          default: null
+        },
+        width: {
+          default: 200
+        },
+        height: {
+          default: 'auto'
+        },
+        display: {
+          default: 'block',
+          renderHTML: ({
+            display
+          }) => {
+            if (!display) {
+              return {};
+            }
+
+            const options = {
+              inline: 'display: inline',
+              block: 'display: block',
+              left: 'float: left',
+              right: 'float: right'
+            };
+            return {
+              style: options[display]
+            };
+          },
+          parseHTML: element => {
+            const display = element.style.float ? element.style.float.replace(/['"]+/g, '') : element.style.display.replace(/['"]+/g, '');
+            return {
+              display
+            };
+          }
+        }
+      };
+    }
+
+  });
+
+  var Indent = Extension.create({
+    name: 'indent',
+    defaultOptions: {
+      types: ['heading', 'paragraph']
+    },
+
+    addGlobalAttributes() {
+      return [{
+        types: this.options.types,
+        attributes: {
+          marginLeft: {
+            default: null,
+            renderHTML: attributes => {
+              if (!attributes.marginLeft) {
+                return {};
+              }
+
+              return {
+                style: `margin-left: ${attributes.marginLeft}px`
+              };
+            },
+            parseHTML: element => {
+              return {
+                marginLeft: Number(element.style.marginLeft.replace(/['"px]+/g, ''))
+              };
+            }
+          }
+        }
+      }];
+    },
+
+    addCommands() {
+      return {
+        indent: value => ({
+          commands,
+          state
+        }) => {
+          return this.options.types.every(type => {
+            let {
+              marginLeft = 0
+            } = getNodeAttributes(state, type);
+            marginLeft = marginLeft + value;
+            if (marginLeft > 200) marginLeft = 200;
+            return commands.updateAttributes(type, {
+              marginLeft
+            });
+          });
+        },
+        outdent: value => ({
+          commands,
+          state
+        }) => {
+          return this.options.types.every(type => {
+            let {
+              marginLeft = 0
+            } = getNodeAttributes(state, type);
+            marginLeft = marginLeft - value;
+            if (marginLeft < 0) return this.options.types.every(type => commands.resetAttributes(type, 'marginLeft'));
+            return commands.updateAttributes(type, {
+              marginLeft
+            });
+          });
+        }
+      };
+    }
+
+  });
+
+  var TextColor = Extension.create({
+    name: 'textColor',
+    defaultOptions: {
+      types: ['textStyle']
+    },
+
+    addGlobalAttributes() {
+      return [{
+        types: this.options.types,
+        attributes: {
+          color: {
+            default: null,
+            renderHTML: attributes => {
+              if (!attributes.color) {
+                return {};
+              }
+
+              return {
+                style: `color: ${attributes.color}`
+              };
+            },
+            parseHTML: element => ({
+              color: element.style.color.replace(/['"]+/g, '')
+            })
+          }
+        }
+      }];
+    },
+
+    addCommands() {
+      return {
+        setTextColor: color => ({
+          chain
+        }) => {
+          return chain().setMark('textStyle', {
+            color
+          }).run();
+        },
+        unsetTextColor: () => ({
+          chain
+        }) => {
+          return chain().setMark('textStyle', {
+            color: null
+          }).removeEmptyTextStyle().run();
+        }
+      };
+    }
+
+  });
+
+  var TextHighlight = Extension.create({
+    name: 'textHighlight',
+    defaultOptions: {
+      types: ['textStyle']
+    },
+
+    addGlobalAttributes() {
+      return [{
+        types: this.options.types,
+        attributes: {
+          backgroundColor: {
+            default: null,
+            renderHTML: attributes => {
+              if (!attributes.backgroundColor) {
+                return {};
+              }
+
+              return {
+                style: `background-color: ${attributes.backgroundColor}`
+              };
+            },
+            parseHTML: element => ({
+              backgroundColor: element.style.backgroundColor.replace(/['"]+/g, '')
+            })
+          }
+        }
+      }];
+    },
+
+    addCommands() {
+      return {
+        setTextHighlight: backgroundColor => ({
+          chain
+        }) => {
+          return chain().setMark('textStyle', {
+            backgroundColor
+          }).run();
+        },
+        unsetTextHighlight: () => ({
+          chain
+        }) => {
+          return chain().setMark('textStyle', {
+            backgroundColor: null
+          }).removeEmptyTextStyle().run();
+        }
+      };
+    }
+
+  });
+
+  const inputRegex$4 = /^\s*>\s$/gm;
+  const Blockquote = Node.create({
+      name: 'blockquote',
+      defaultOptions: {
+          HTMLAttributes: {},
+      },
+      content: 'block*',
+      group: 'block',
+      defining: true,
+      parseHTML() {
+          return [
+              { tag: 'blockquote' },
+          ];
+      },
+      renderHTML({ HTMLAttributes }) {
+          return ['blockquote', mergeAttributes(this.options.HTMLAttributes, HTMLAttributes), 0];
+      },
+      addCommands() {
+          return {
+              setBlockquote: () => ({ commands }) => {
+                  return commands.wrapIn('blockquote');
+              },
+              toggleBlockquote: () => ({ commands }) => {
+                  return commands.toggleWrap('blockquote');
+              },
+              unsetBlockquote: () => ({ commands }) => {
+                  return commands.lift('blockquote');
+              },
+          };
+      },
+      addKeyboardShortcuts() {
+          return {
+              'Mod-Shift-b': () => this.editor.commands.toggleBlockquote(),
+          };
+      },
+      addInputRules() {
+          return [
+              wrappingInputRule(inputRegex$4, this.type),
+          ];
+      },
+  });
+
+  const starInputRegex$1 = /(?:^|\s)((?:\*\*)((?:[^*]+))(?:\*\*))$/gm;
+  const starPasteRegex$1 = /(?:^|\s)((?:\*\*)((?:[^*]+))(?:\*\*))/gm;
+  const underscoreInputRegex$1 = /(?:^|\s)((?:__)((?:[^__]+))(?:__))$/gm;
+  const underscorePasteRegex$1 = /(?:^|\s)((?:__)((?:[^__]+))(?:__))/gm;
+  const Bold = Mark.create({
+      name: 'bold',
+      defaultOptions: {
+          HTMLAttributes: {},
+      },
+      parseHTML() {
+          return [
+              {
+                  tag: 'strong',
+              },
+              {
+                  tag: 'b',
+                  getAttrs: node => node.style.fontWeight !== 'normal' && null,
+              },
+              {
+                  style: 'font-weight',
+                  getAttrs: value => /^(bold(er)?|[5-9]\d{2,})$/.test(value) && null,
+              },
+          ];
+      },
+      renderHTML({ HTMLAttributes }) {
+          return ['strong', mergeAttributes(this.options.HTMLAttributes, HTMLAttributes), 0];
+      },
+      addCommands() {
+          return {
+              setBold: () => ({ commands }) => {
+                  return commands.setMark('bold');
+              },
+              toggleBold: () => ({ commands }) => {
+                  return commands.toggleMark('bold');
+              },
+              unsetBold: () => ({ commands }) => {
+                  return commands.unsetMark('bold');
+              },
+          };
+      },
+      addKeyboardShortcuts() {
+          return {
+              'Mod-b': () => this.editor.commands.toggleBold(),
+          };
+      },
+      addInputRules() {
+          return [
+              markInputRule(starInputRegex$1, this.type),
+              markInputRule(underscoreInputRegex$1, this.type),
+          ];
+      },
+      addPasteRules() {
+          return [
+              markPasteRule(starPasteRegex$1, this.type),
+              markPasteRule(underscorePasteRegex$1, this.type),
+          ];
+      },
+  });
+
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  var script$i = {
+    name: 'tce-tiptap-menu-button',
+    props: {
+      isActive: {
+        type: Boolean,
+        default: false
+      },
+      icon: {
+        type: String,
+        required: true
+      },
+      tooltip: {
+        type: String,
+        default: null
+      }
+    }
+  };
+
+  function normalizeComponent(template, style, script, scopeId, isFunctionalTemplate, moduleIdentifier /* server only */, shadowMode, createInjector, createInjectorSSR, createInjectorShadow) {
+      if (typeof shadowMode !== 'boolean') {
+          createInjectorSSR = createInjector;
+          createInjector = shadowMode;
+          shadowMode = false;
+      }
+      // Vue.extend constructor export interop.
+      const options = typeof script === 'function' ? script.options : script;
+      // render functions
+      if (template && template.render) {
+          options.render = template.render;
+          options.staticRenderFns = template.staticRenderFns;
+          options._compiled = true;
+          // functional template
+          if (isFunctionalTemplate) {
+              options.functional = true;
+          }
+      }
+      // scopedId
+      if (scopeId) {
+          options._scopeId = scopeId;
+      }
+      let hook;
+      if (moduleIdentifier) {
+          // server build
+          hook = function (context) {
+              // 2.3 injection
+              context =
+                  context || // cached call
+                      (this.$vnode && this.$vnode.ssrContext) || // stateful
+                      (this.parent && this.parent.$vnode && this.parent.$vnode.ssrContext); // functional
+              // 2.2 with runInNewContext: true
+              if (!context && typeof __VUE_SSR_CONTEXT__ !== 'undefined') {
+                  context = __VUE_SSR_CONTEXT__;
+              }
+              // inject component styles
+              if (style) {
+                  style.call(this, createInjectorSSR(context));
+              }
+              // register component module identifier for async chunk inference
+              if (context && context._registeredComponents) {
+                  context._registeredComponents.add(moduleIdentifier);
+              }
+          };
+          // used by ssr in case component is cached and beforeCreate
+          // never gets called
+          options._ssrRegister = hook;
+      }
+      else if (style) {
+          hook = shadowMode
+              ? function (context) {
+                  style.call(this, createInjectorShadow(context, this.$root.$options.shadowRoot));
+              }
+              : function (context) {
+                  style.call(this, createInjector(context));
+              };
+      }
+      if (hook) {
+          if (options.functional) {
+              // register for functional component in vue file
+              const originalRender = options.render;
+              options.render = function renderWithStyleInjection(h, context) {
+                  hook.call(context);
+                  return originalRender(h, context);
+              };
+          }
+          else {
+              // inject component registration as beforeCreate hook
+              const existing = options.beforeCreate;
+              options.beforeCreate = existing ? [].concat(existing, hook) : [hook];
+          }
+      }
+      return script;
+  }
+
+  /* script */
+  const __vue_script__$i = script$i;
+  /* template */
+
+  var __vue_render__$i = function () {
+    var _vm = this;
+
+    var _h = _vm.$createElement;
+
+    var _c = _vm._self._c || _h;
+
+    return _c('div', {
+      staticStyle: {
+        "position": "relative"
+      }
+    }, [_c('v-tooltip', {
+      attrs: {
+        "disabled": !_vm.tooltip,
+        "bottom": ""
+      },
+      scopedSlots: _vm._u([{
+        key: "activator",
+        fn: function (ref) {
+          var on = ref.on;
+          var attrs = ref.attrs;
+          return [_c('v-btn', _vm._g(_vm._b({
+            staticClass: "menu-button mx-1",
+            class: {
+              'active': _vm.isActive
+            },
+            attrs: {
+              "text": "",
+              "rounded": ""
+            }
+          }, 'v-btn', Object.assign({}, _vm.$attrs, attrs), false), Object.assign({}, _vm.$listeners, on)), [_c('v-icon', [_vm._v(_vm._s("mdi-" + _vm.icon))]), _vm._v(" "), _c('span', {
+            staticClass: "slot"
+          }, [_vm._t("default")], 2)], 1)];
+        }
+      }], null, true)
+    }, [_vm._v(" "), _c('span', [_vm._v(_vm._s(_vm.tooltip))])])], 1);
+  };
+
+  var __vue_staticRenderFns__$i = [];
+  /* style */
+
+  const __vue_inject_styles__$i = undefined;
+  /* scoped */
+
+  const __vue_scope_id__$i = "data-v-32c11d74";
+  /* module identifier */
+
+  const __vue_module_identifier__$i = undefined;
+  /* functional template */
+
+  const __vue_is_functional_template__$i = false;
+  /* style inject */
+
+  /* style inject SSR */
+
+  /* style inject shadow dom */
+
+  const __vue_component__$i = /*#__PURE__*/normalizeComponent({
+    render: __vue_render__$i,
+    staticRenderFns: __vue_staticRenderFns__$i
+  }, __vue_inject_styles__$i, __vue_script__$i, __vue_scope_id__$i, __vue_is_functional_template__$i, __vue_module_identifier__$i, false, undefined, undefined, undefined);
+
+  //
+  var script$h = {
+    name: 'tce-tiptap-image-display',
+    props: {
+      editor: {
+        type: Object,
+        required: true
+      }
+    },
+    data: () => ({
+      display: ''
+    }),
+    computed: {
+      alignments: () => ['inline', 'block', 'left', 'right']
+    },
+    methods: {
+      updateAligment(display) {
+        this.editor.commands.updateAttributes('image', {
+          display
+        });
+      }
+
+    },
+    watch: {
+      display: 'updateAligment'
+    },
+    components: {
+      MenuButton: __vue_component__$i
+    }
+  };
+
+  /* script */
+  const __vue_script__$h = script$h;
+  /* template */
+
+  var __vue_render__$h = function () {
+    var _vm = this;
+
+    var _h = _vm.$createElement;
+
+    var _c = _vm._self._c || _h;
+
+    return _c('v-menu', {
+      attrs: {
+        "transition": "slide-y-transition",
+        "bottom": ""
+      },
+      scopedSlots: _vm._u([{
+        key: "activator",
+        fn: function (ref) {
+          var on = ref.on;
+          var attrs = ref.attrs;
+          return [_c('menu-button', _vm._g(_vm._b({
+            attrs: {
+              "icon": "image-text",
+              "tooltip": "Align image"
+            }
+          }, 'menu-button', attrs, false), on))];
+        }
+      }])
+    }, [_vm._v(" "), _c('v-list', {
+      staticClass: "font-sizes",
+      attrs: {
+        "dense": ""
+      }
+    }, [_c('v-list-item-group', {
+      model: {
+        value: _vm.display,
+        callback: function ($$v) {
+          _vm.display = $$v;
+        },
+        expression: "display"
+      }
+    }, _vm._l(_vm.alignments, function (alignment) {
+      return _c('v-list-item', {
+        key: alignment,
+        attrs: {
+          "value": alignment
+        }
+      }, [_c('v-list-item-title', [_vm._v("\n          " + _vm._s(alignment) + "\n        ")])], 1);
+    }), 1)], 1)], 1);
+  };
+
+  var __vue_staticRenderFns__$h = [];
+  /* style */
+
+  const __vue_inject_styles__$h = undefined;
+  /* scoped */
+
+  const __vue_scope_id__$h = undefined;
+  /* module identifier */
+
+  const __vue_module_identifier__$h = undefined;
+  /* functional template */
+
+  const __vue_is_functional_template__$h = false;
+  /* style inject */
+
+  /* style inject SSR */
+
+  /* style inject shadow dom */
+
+  const __vue_component__$h = /*#__PURE__*/normalizeComponent({
+    render: __vue_render__$h,
+    staticRenderFns: __vue_staticRenderFns__$h
+  }, __vue_inject_styles__$h, __vue_script__$h, __vue_scope_id__$h, __vue_is_functional_template__$h, __vue_module_identifier__$h, false, undefined, undefined, undefined);
+
+  //
+  var script$g = {
+    name: 'tce-tiptap-image-edit',
+    props: {
+      editor: {
+        type: Object,
+        required: true
+      }
+    },
+    data: () => ({
+      imageAttrs: {},
+      menu: false
+    }),
+    methods: {
+      save() {
+        this.editor.commands.updateAttributes('image', this.imageAttrs);
+        this.close();
+      },
+
+      close() {
+        this.menu = false;
+      }
+
+    },
+
+    created() {
+      this.imageAttrs = this.editor.getAttributes('image');
+    },
+
+    components: {
+      MenuButton: __vue_component__$i
+    }
+  };
+
+  /* script */
+  const __vue_script__$g = script$g;
+  /* template */
+
+  var __vue_render__$g = function () {
+    var _vm = this;
+
+    var _h = _vm.$createElement;
+
+    var _c = _vm._self._c || _h;
+
+    return _c('v-menu', {
+      attrs: {
+        "transition": "slide-y-transition",
+        "close-on-content-click": false,
+        "bottom": ""
+      },
+      scopedSlots: _vm._u([{
+        key: "activator",
+        fn: function (ref) {
+          var on = ref.on;
+          var attrs = ref.attrs;
+          return [_c('menu-button', _vm._g(_vm._b({
+            attrs: {
+              "icon": "image-edit",
+              "tooltip": "Edit image"
+            }
+          }, 'menu-button', attrs, false), on))];
+        }
+      }]),
+      model: {
+        value: _vm.menu,
+        callback: function ($$v) {
+          _vm.menu = $$v;
+        },
+        expression: "menu"
+      }
+    }, [_vm._v(" "), _c('v-card', {
+      attrs: {
+        "min-width": "300"
+      }
+    }, [_c('v-card-text', {
+      staticClass: "pb-0"
+    }, [_c('v-text-field', {
+      attrs: {
+        "disabled": "",
+        "label": "Image url",
+        "placeholder": "https://example.com",
+        "type": "url"
+      },
+      model: {
+        value: _vm.imageAttrs.src,
+        callback: function ($$v) {
+          _vm.$set(_vm.imageAttrs, "src", $$v);
+        },
+        expression: "imageAttrs.src"
+      }
+    }), _vm._v(" "), _c('v-text-field', {
+      attrs: {
+        "label": "Alt text",
+        "type": "text"
+      },
+      model: {
+        value: _vm.imageAttrs.alt,
+        callback: function ($$v) {
+          _vm.$set(_vm.imageAttrs, "alt", $$v);
+        },
+        expression: "imageAttrs.alt"
+      }
+    }), _vm._v(" "), _c('v-text-field', {
+      attrs: {
+        "label": "Width",
+        "placeholder": "https://example.com",
+        "type": "number"
+      },
+      model: {
+        value: _vm.imageAttrs.width,
+        callback: function ($$v) {
+          _vm.$set(_vm.imageAttrs, "width", $$v);
+        },
+        expression: "imageAttrs.width"
+      }
+    }), _vm._v(" "), _c('v-text-field', {
+      attrs: {
+        "label": "Height",
+        "placeholder": "https://example.com",
+        "type": "number"
+      },
+      model: {
+        value: _vm.imageAttrs.height,
+        callback: function ($$v) {
+          _vm.$set(_vm.imageAttrs, "height", $$v);
+        },
+        expression: "imageAttrs.height"
+      }
+    })], 1), _vm._v(" "), _c('v-card-actions', {
+      staticClass: "pt-0"
+    }, [_c('v-spacer'), _vm._v(" "), _c('v-btn', {
+      attrs: {
+        "text": ""
+      },
+      on: {
+        "click": _vm.save
+      }
+    }, [_vm._v("\n        Save\n      ")]), _vm._v(" "), _c('v-btn', {
+      attrs: {
+        "text": ""
+      },
+      on: {
+        "click": _vm.close
+      }
+    }, [_vm._v("\n        Cancel\n      ")])], 1)], 1)], 1);
+  };
+
+  var __vue_staticRenderFns__$g = [];
+  /* style */
+
+  const __vue_inject_styles__$g = undefined;
+  /* scoped */
+
+  const __vue_scope_id__$g = undefined;
+  /* module identifier */
+
+  const __vue_module_identifier__$g = undefined;
+  /* functional template */
+
+  const __vue_is_functional_template__$g = false;
+  /* style inject */
+
+  /* style inject SSR */
+
+  /* style inject shadow dom */
+
+  const __vue_component__$g = /*#__PURE__*/normalizeComponent({
+    render: __vue_render__$g,
+    staticRenderFns: __vue_staticRenderFns__$g
+  }, __vue_inject_styles__$g, __vue_script__$g, __vue_scope_id__$g, __vue_is_functional_template__$g, __vue_module_identifier__$g, false, undefined, undefined, undefined);
+
+  //
+  var script$f = {
+    name: 'tce-tiptap-remove-image',
+    props: {
+      editor: {
+        type: Object,
+        required: true
+      }
+    },
+    methods: {
+      removeImage() {
+        const {
+          state,
+          dispatch
+        } = this.editor.view;
+        deleteSelection$2(state, dispatch);
+      }
+
+    },
+    components: {
+      MenuButton: __vue_component__$i
+    }
+  };
+
+  /* script */
+  const __vue_script__$f = script$f;
+  /* template */
+
+  var __vue_render__$f = function () {
+    var _vm = this;
+
+    var _h = _vm.$createElement;
+
+    var _c = _vm._self._c || _h;
+
+    return _c('div', [_c('menu-button', {
+      attrs: {
+        "command": function () {
+          return _vm.removeImage();
+        },
+        "icon": "delete",
+        "tooltip": "Remove image"
+      }
+    })], 1);
+  };
+
+  var __vue_staticRenderFns__$f = [];
+  /* style */
+
+  const __vue_inject_styles__$f = undefined;
+  /* scoped */
+
+  const __vue_scope_id__$f = undefined;
+  /* module identifier */
+
+  const __vue_module_identifier__$f = undefined;
+  /* functional template */
+
+  const __vue_is_functional_template__$f = false;
+  /* style inject */
+
+  /* style inject SSR */
+
+  /* style inject shadow dom */
+
+  const __vue_component__$f = /*#__PURE__*/normalizeComponent({
+    render: __vue_render__$f,
+    staticRenderFns: __vue_staticRenderFns__$f
+  }, __vue_inject_styles__$f, __vue_script__$f, __vue_scope_id__$f, __vue_is_functional_template__$f, __vue_module_identifier__$f, false, undefined, undefined, undefined);
+
+  //
+  var script$e = {
+    name: 'tce-tiptap-image-menu',
+    props: {
+      editor: {
+        type: Object,
+        required: true
+      }
+    },
+    components: {
+      ImageDisplay: __vue_component__$h,
+      ImageEdit: __vue_component__$g,
+      ImageRemove: __vue_component__$f
+    }
+  };
+
+  /* script */
+  const __vue_script__$e = script$e;
+  /* template */
+
+  var __vue_render__$e = function () {
+    var _vm = this;
+
+    var _h = _vm.$createElement;
+
+    var _c = _vm._self._c || _h;
+
+    return _c('div', {
+      staticClass: "d-flex"
+    }, [_c('image-display', {
+      attrs: {
+        "editor": _vm.editor
+      }
+    }), _vm._v(" "), _c('image-edit', {
+      attrs: {
+        "editor": _vm.editor
+      }
+    }), _vm._v(" "), _c('image-remove', {
+      attrs: {
+        "editor": _vm.editor
+      }
+    })], 1);
+  };
+
+  var __vue_staticRenderFns__$e = [];
+  /* style */
+
+  const __vue_inject_styles__$e = undefined;
+  /* scoped */
+
+  const __vue_scope_id__$e = undefined;
+  /* module identifier */
+
+  const __vue_module_identifier__$e = undefined;
+  /* functional template */
+
+  const __vue_is_functional_template__$e = false;
+  /* style inject */
+
+  /* style inject SSR */
+
+  /* style inject shadow dom */
+
+  const __vue_component__$e = /*#__PURE__*/normalizeComponent({
+    render: __vue_render__$e,
+    staticRenderFns: __vue_staticRenderFns__$e
+  }, __vue_inject_styles__$e, __vue_script__$e, __vue_scope_id__$e, __vue_is_functional_template__$e, __vue_module_identifier__$e, false, undefined, undefined, undefined);
+
+  //
+  var script$d = {
+    name: 'tce-tiptap-link-button',
+    props: {
+      editor: {
+        type: Object,
+        required: true
+      },
+      icon: {
+        type: String,
+        required: true
+      }
+    },
+    data: () => ({
+      url: null,
+      newTab: true,
+      menu: false
+    }),
+    methods: {
+      close() {
+        this.url = null;
+        this.menu = false;
+      },
+
+      save() {
+        this.editor.chain().focus().setLink({
+          href: this.url,
+          target: this.newTab ? '_blank' : '_self'
+        }).run();
+        this.close();
+      },
+
+      remove() {
+        this.editor.commands.unsetLink();
+        this.close();
+      }
+
+    },
+    watch: {
+      menu() {
+        const attributes = this.editor.getAttributes('link');
+        this.url = attributes.href || null;
+        this.newTab = attributes && attributes.target === '_blank';
+      }
+
+    },
+    components: {
+      MenuButton: __vue_component__$i
+    }
+  };
+
+  /* script */
+  const __vue_script__$d = script$d;
+  /* template */
+
+  var __vue_render__$d = function () {
+    var _vm = this;
+
+    var _h = _vm.$createElement;
+
+    var _c = _vm._self._c || _h;
+
+    return _c('v-menu', {
+      attrs: {
+        "transition": "slide-y-transition",
+        "close-on-content-click": false,
+        "bottom": ""
+      },
+      scopedSlots: _vm._u([{
+        key: "activator",
+        fn: function (ref) {
+          var on = ref.on;
+          var attrs = ref.attrs;
+          return [_c('menu-button', _vm._g(_vm._b({
+            attrs: {
+              "is-active": _vm.editor.isActive('link'),
+              "icon": _vm.icon,
+              "tooltip": _vm.editor.isActive('link') ? 'Edit link' : 'Insert link'
+            }
+          }, 'menu-button', attrs, false), on))];
+        }
+      }]),
+      model: {
+        value: _vm.menu,
+        callback: function ($$v) {
+          _vm.menu = $$v;
+        },
+        expression: "menu"
+      }
+    }, [_vm._v(" "), _c('v-card', {
+      attrs: {
+        "min-width": "300"
+      }
+    }, [_c('v-card-text', {
+      staticClass: "pb-0"
+    }, [_c('v-text-field', {
+      ref: "url",
+      attrs: {
+        "label": "Url",
+        "placeholder": "https://example.com",
+        "type": "url"
+      },
+      model: {
+        value: _vm.url,
+        callback: function ($$v) {
+          _vm.url = $$v;
+        },
+        expression: "url"
+      }
+    }), _vm._v(" "), _c('v-checkbox', {
+      attrs: {
+        "label": "Open in new tab",
+        "type": "checkbox"
+      },
+      model: {
+        value: _vm.newTab,
+        callback: function ($$v) {
+          _vm.newTab = $$v;
+        },
+        expression: "newTab"
+      }
+    })], 1), _vm._v(" "), _c('v-card-actions', {
+      staticClass: "pt-0"
+    }, [_c('v-spacer'), _vm._v(" "), _c('v-btn', {
+      attrs: {
+        "text": ""
+      },
+      on: {
+        "click": function ($event) {
+          return _vm.save();
+        }
+      }
+    }, [_vm._v("Save")]), _vm._v(" "), _vm.url ? _c('v-btn', {
+      attrs: {
+        "text": ""
+      },
+      on: {
+        "click": _vm.remove
+      }
+    }, [_vm._v("\n        Remove\n      ")]) : _vm._e(), _vm._v(" "), _c('v-btn', {
+      attrs: {
+        "text": ""
+      },
+      on: {
+        "click": function ($event) {
+          return _vm.close();
+        }
+      }
+    }, [_vm._v("Cancel")])], 1)], 1)], 1);
+  };
+
+  var __vue_staticRenderFns__$d = [];
+  /* style */
+
+  const __vue_inject_styles__$d = undefined;
+  /* scoped */
+
+  const __vue_scope_id__$d = "data-v-1d510dee";
+  /* module identifier */
+
+  const __vue_module_identifier__$d = undefined;
+  /* functional template */
+
+  const __vue_is_functional_template__$d = false;
+  /* style inject */
+
+  /* style inject SSR */
+
+  /* style inject shadow dom */
+
+  const __vue_component__$d = /*#__PURE__*/normalizeComponent({
+    render: __vue_render__$d,
+    staticRenderFns: __vue_staticRenderFns__$d
+  }, __vue_inject_styles__$d, __vue_script__$d, __vue_scope_id__$d, __vue_is_functional_template__$d, __vue_module_identifier__$d, false, undefined, undefined, undefined);
+
+  //
+  var script$c = {
+    name: 'tce-tiptap-link-menu',
+    props: {
+      editor: {
+        type: Object,
+        required: true
+      },
+      isLinkSelection: {
+        type: Boolean,
+        default: false
+      },
+      linkAttributes: {
+        type: Object,
+        default: () => ({})
+      }
+    },
+    methods: {
+      openLink() {
+        window.open(this.linkAttributes.href, '_blank');
+      }
+
+    },
+    components: {
+      LinkButton: __vue_component__$d,
+      MenuButton: __vue_component__$i
+    }
+  };
+
+  /* script */
+  const __vue_script__$c = script$c;
+  /* template */
+
+  var __vue_render__$c = function () {
+    var _vm = this;
+
+    var _h = _vm.$createElement;
+
+    var _c = _vm._self._c || _h;
+
+    return _c('div', {
+      staticClass: "d-flex"
+    }, [_c('link-button', {
+      attrs: {
+        "editor": _vm.editor,
+        "icon": _vm.isLinkSelection ? 'pencil' : 'link'
+      }
+    }), _vm._v(" "), _vm.isLinkSelection ? [_c('menu-button', {
+      staticClass: "menu-button",
+      attrs: {
+        "icon": "eye"
+      },
+      on: {
+        "click": _vm.openLink
+      }
+    }), _vm._v(" "), _c('menu-button', {
+      staticClass: "menu-button",
+      attrs: {
+        "icon": "link-off"
+      },
+      on: {
+        "click": function ($event) {
+          return _vm.editor.commands.unsetLink();
+        }
+      }
+    }), _vm._v(" "), _c('v-divider', {
+      staticClass: "mx-1",
+      attrs: {
+        "vertical": ""
+      }
+    })] : _vm._e()], 2);
+  };
+
+  var __vue_staticRenderFns__$c = [];
+  /* style */
+
+  const __vue_inject_styles__$c = undefined;
+  /* scoped */
+
+  const __vue_scope_id__$c = undefined;
+  /* module identifier */
+
+  const __vue_module_identifier__$c = undefined;
+  /* functional template */
+
+  const __vue_is_functional_template__$c = false;
+  /* style inject */
+
+  /* style inject SSR */
+
+  /* style inject shadow dom */
+
+  const __vue_component__$c = /*#__PURE__*/normalizeComponent({
+    render: __vue_render__$c,
+    staticRenderFns: __vue_staticRenderFns__$c
+  }, __vue_inject_styles__$c, __vue_script__$c, __vue_scope_id__$c, __vue_is_functional_template__$c, __vue_module_identifier__$c, false, undefined, undefined, undefined);
+
+  //
+  var script$b = {
+    name: 'tce-tiptap-bubble-menu',
+    props: {
+      editor: {
+        type: Object,
+        default: null
+      }
+    },
+    data: () => ({
+      isLink: false,
+      isImage: false,
+      isText: false,
+      linkAttributes: {}
+    }),
+    methods: {
+      isLinkSelection() {
+        this.linkAttributes = this.editor.getAttributes('link');
+        this.isLink = !!this.linkAttributes.href;
+      },
+
+      isImageSelection(selection) {
+        if (!selection.node) {
+          this.isImage = false;
+          return;
+        }
+
+        this.isImage = selection.node.type.name === 'image';
+      },
+
+      isTextSelection(selection) {
+        this.isText = selection instanceof TextSelection;
+      },
+
+      getSelectionType(selection) {
+        this.isTextSelection(selection);
+        this.isLinkSelection(selection);
+        this.isImageSelection(selection);
+      }
+
+    },
+    watch: {
+      'editor.state.selection': 'getSelectionType'
+    },
+    components: {
+      BubbleMenu: vue2.BubbleMenu,
+      ImageMenu: __vue_component__$e,
+      LinkMenu: __vue_component__$c,
+      MenuButton: __vue_component__$i
+    }
+  };
+
+  /* script */
+  const __vue_script__$b = script$b;
+  /* template */
+
+  var __vue_render__$b = function () {
+    var _vm = this;
+
+    var _h = _vm.$createElement;
+
+    var _c = _vm._self._c || _h;
+
+    return _vm.editor ? _c('bubble-menu', {
+      attrs: {
+        "editor": _vm.editor
+      }
+    }, [_c('v-card', [_c('v-card-text', {
+      staticClass: "d-flex pa-1"
+    }, [_vm.isImage ? _c('image-menu', {
+      attrs: {
+        "editor": _vm.editor
+      }
+    }) : [_c('link-menu', {
+      attrs: {
+        "editor": _vm.editor,
+        "is-link-selection": _vm.isLink,
+        "link-attributes": _vm.linkAttributes
+      }
+    }), _vm._v(" "), _c('menu-button', {
+      attrs: {
+        "is-active": _vm.editor.isActive('bold'),
+        "icon": "format-bold",
+        "tooltip": "Bold"
+      },
+      on: {
+        "click": function ($event) {
+          _vm.editor.chain().focus().toggleBold().run();
+        }
+      }
+    }), _vm._v(" "), _c('menu-button', {
+      attrs: {
+        "is-active": _vm.editor.isActive('italic'),
+        "icon": "format-italic",
+        "tooltip": "italic"
+      },
+      on: {
+        "click": function ($event) {
+          _vm.editor.chain().focus().toggleItalic().run();
+        }
+      }
+    }), _vm._v(" "), _c('menu-button', {
+      attrs: {
+        "is-active": _vm.editor.isActive('underline'),
+        "icon": "format-underline",
+        "tooltip": "Underline"
+      },
+      on: {
+        "click": function ($event) {
+          _vm.editor.chain().focus().toggleUnderline().run();
+        }
+      }
+    }), _vm._v(" "), _c('menu-button', {
+      attrs: {
+        "is-active": _vm.editor.isActive('strike'),
+        "icon": "format-strikethrough",
+        "tooltip": "Strikethrough"
+      },
+      on: {
+        "click": function ($event) {
+          _vm.editor.chain().focus().toggleStrike().run();
+        }
+      }
+    })]], 2)], 1)], 1) : _vm._e();
+  };
+
+  var __vue_staticRenderFns__$b = [];
+  /* style */
+
+  const __vue_inject_styles__$b = undefined;
+  /* scoped */
+
+  const __vue_scope_id__$b = "data-v-128262c1";
+  /* module identifier */
+
+  const __vue_module_identifier__$b = undefined;
+  /* functional template */
+
+  const __vue_is_functional_template__$b = false;
+  /* style inject */
+
+  /* style inject SSR */
+
+  /* style inject shadow dom */
+
+  const __vue_component__$b = /*#__PURE__*/normalizeComponent({
+    render: __vue_render__$b,
+    staticRenderFns: __vue_staticRenderFns__$b
+  }, __vue_inject_styles__$b, __vue_script__$b, __vue_scope_id__$b, __vue_is_functional_template__$b, __vue_module_identifier__$b, false, undefined, undefined, undefined);
+
+  var top = 'top';
+  var bottom = 'bottom';
+  var right = 'right';
+  var left = 'left';
+  var auto = 'auto';
+  var basePlacements = [top, bottom, right, left];
+  var start = 'start';
+  var end = 'end';
+  var clippingParents = 'clippingParents';
+  var viewport = 'viewport';
+  var popper = 'popper';
+  var reference = 'reference';
+  var variationPlacements = /*#__PURE__*/basePlacements.reduce(function (acc, placement) {
+    return acc.concat([placement + "-" + start, placement + "-" + end]);
+  }, []);
+  var placements = /*#__PURE__*/[].concat(basePlacements, [auto]).reduce(function (acc, placement) {
+    return acc.concat([placement, placement + "-" + start, placement + "-" + end]);
+  }, []); // modifiers that need to read the DOM
+
+  var beforeRead = 'beforeRead';
+  var read = 'read';
+  var afterRead = 'afterRead'; // pure-logic modifiers
+
+  var beforeMain = 'beforeMain';
+  var main = 'main';
+  var afterMain = 'afterMain'; // modifier with the purpose to write to the DOM (or write into a framework state)
+
+  var beforeWrite = 'beforeWrite';
+  var write = 'write';
+  var afterWrite = 'afterWrite';
+  var modifierPhases = [beforeRead, read, afterRead, beforeMain, main, afterMain, beforeWrite, write, afterWrite];
+
+  function getNodeName(element) {
+    return element ? (element.nodeName || '').toLowerCase() : null;
+  }
+
+  function getWindow(node) {
+    if (node == null) {
+      return window;
+    }
+
+    if (node.toString() !== '[object Window]') {
+      var ownerDocument = node.ownerDocument;
+      return ownerDocument ? ownerDocument.defaultView || window : window;
+    }
+
+    return node;
+  }
+
+  function isElement$1(node) {
+    var OwnElement = getWindow(node).Element;
+    return node instanceof OwnElement || node instanceof Element;
+  }
+
+  function isHTMLElement(node) {
+    var OwnElement = getWindow(node).HTMLElement;
+    return node instanceof OwnElement || node instanceof HTMLElement;
+  }
+
+  function isShadowRoot(node) {
+    // IE 11 has no ShadowRoot
+    if (typeof ShadowRoot === 'undefined') {
+      return false;
+    }
+
+    var OwnElement = getWindow(node).ShadowRoot;
+    return node instanceof OwnElement || node instanceof ShadowRoot;
+  }
+
+  // and applies them to the HTMLElements such as popper and arrow
+
+  function applyStyles(_ref) {
+    var state = _ref.state;
+    Object.keys(state.elements).forEach(function (name) {
+      var style = state.styles[name] || {};
+      var attributes = state.attributes[name] || {};
+      var element = state.elements[name]; // arrow is optional + virtual elements
+
+      if (!isHTMLElement(element) || !getNodeName(element)) {
+        return;
+      } // Flow doesn't support to extend this property, but it's the most
+      // effective way to apply styles to an HTMLElement
+      // $FlowFixMe[cannot-write]
+
+
+      Object.assign(element.style, style);
+      Object.keys(attributes).forEach(function (name) {
+        var value = attributes[name];
+
+        if (value === false) {
+          element.removeAttribute(name);
+        } else {
+          element.setAttribute(name, value === true ? '' : value);
+        }
+      });
+    });
+  }
+
+  function effect$2(_ref2) {
+    var state = _ref2.state;
+    var initialStyles = {
+      popper: {
+        position: state.options.strategy,
+        left: '0',
+        top: '0',
+        margin: '0'
+      },
+      arrow: {
+        position: 'absolute'
+      },
+      reference: {}
+    };
+    Object.assign(state.elements.popper.style, initialStyles.popper);
+    state.styles = initialStyles;
+
+    if (state.elements.arrow) {
+      Object.assign(state.elements.arrow.style, initialStyles.arrow);
+    }
+
+    return function () {
+      Object.keys(state.elements).forEach(function (name) {
+        var element = state.elements[name];
+        var attributes = state.attributes[name] || {};
+        var styleProperties = Object.keys(state.styles.hasOwnProperty(name) ? state.styles[name] : initialStyles[name]); // Set all values to an empty string to unset them
+
+        var style = styleProperties.reduce(function (style, property) {
+          style[property] = '';
+          return style;
+        }, {}); // arrow is optional + virtual elements
+
+        if (!isHTMLElement(element) || !getNodeName(element)) {
+          return;
+        }
+
+        Object.assign(element.style, style);
+        Object.keys(attributes).forEach(function (attribute) {
+          element.removeAttribute(attribute);
+        });
+      });
+    };
+  } // eslint-disable-next-line import/no-unused-modules
+
+
+  var applyStyles$1 = {
+    name: 'applyStyles',
+    enabled: true,
+    phase: 'write',
+    fn: applyStyles,
+    effect: effect$2,
+    requires: ['computeStyles']
+  };
+
+  function getBasePlacement$1(placement) {
+    return placement.split('-')[0];
+  }
+
+  function getBoundingClientRect(element) {
+    var rect = element.getBoundingClientRect();
+    return {
+      width: rect.width,
+      height: rect.height,
+      top: rect.top,
+      right: rect.right,
+      bottom: rect.bottom,
+      left: rect.left,
+      x: rect.left,
+      y: rect.top
+    };
+  }
+
+  // means it doesn't take into account transforms.
+
+  function getLayoutRect(element) {
+    var clientRect = getBoundingClientRect(element); // Use the clientRect sizes if it's not been transformed.
+    // Fixes https://github.com/popperjs/popper-core/issues/1223
+
+    var width = element.offsetWidth;
+    var height = element.offsetHeight;
+
+    if (Math.abs(clientRect.width - width) <= 1) {
+      width = clientRect.width;
+    }
+
+    if (Math.abs(clientRect.height - height) <= 1) {
+      height = clientRect.height;
+    }
+
+    return {
+      x: element.offsetLeft,
+      y: element.offsetTop,
+      width: width,
+      height: height
+    };
+  }
+
+  function contains(parent, child) {
+    var rootNode = child.getRootNode && child.getRootNode(); // First, attempt with faster native method
+
+    if (parent.contains(child)) {
+      return true;
+    } // then fallback to custom implementation with Shadow DOM support
+    else if (rootNode && isShadowRoot(rootNode)) {
+        var next = child;
+
+        do {
+          if (next && parent.isSameNode(next)) {
+            return true;
+          } // $FlowFixMe[prop-missing]: need a better way to handle this...
+
+
+          next = next.parentNode || next.host;
+        } while (next);
+      } // Give up, the result is false
+
+
+    return false;
+  }
+
+  function getComputedStyle$1(element) {
+    return getWindow(element).getComputedStyle(element);
+  }
+
+  function isTableElement(element) {
+    return ['table', 'td', 'th'].indexOf(getNodeName(element)) >= 0;
+  }
+
+  function getDocumentElement(element) {
+    // $FlowFixMe[incompatible-return]: assume body is always available
+    return ((isElement$1(element) ? element.ownerDocument : // $FlowFixMe[prop-missing]
+    element.document) || window.document).documentElement;
+  }
+
+  function getParentNode(element) {
+    if (getNodeName(element) === 'html') {
+      return element;
+    }
+
+    return (// this is a quicker (but less type safe) way to save quite some bytes from the bundle
+      // $FlowFixMe[incompatible-return]
+      // $FlowFixMe[prop-missing]
+      element.assignedSlot || // step into the shadow DOM of the parent of a slotted node
+      element.parentNode || ( // DOM Element detected
+      isShadowRoot(element) ? element.host : null) || // ShadowRoot detected
+      // $FlowFixMe[incompatible-call]: HTMLElement is a Node
+      getDocumentElement(element) // fallback
+
+    );
+  }
+
+  function getTrueOffsetParent(element) {
+    if (!isHTMLElement(element) || // https://github.com/popperjs/popper-core/issues/837
+    getComputedStyle$1(element).position === 'fixed') {
+      return null;
+    }
+
+    return element.offsetParent;
+  } // `.offsetParent` reports `null` for fixed elements, while absolute elements
+  // return the containing block
+
+
+  function getContainingBlock(element) {
+    var isFirefox = navigator.userAgent.toLowerCase().indexOf('firefox') !== -1;
+    var isIE = navigator.userAgent.indexOf('Trident') !== -1;
+
+    if (isIE && isHTMLElement(element)) {
+      // In IE 9, 10 and 11 fixed elements containing block is always established by the viewport
+      var elementCss = getComputedStyle$1(element);
+
+      if (elementCss.position === 'fixed') {
+        return null;
+      }
+    }
+
+    var currentNode = getParentNode(element);
+
+    while (isHTMLElement(currentNode) && ['html', 'body'].indexOf(getNodeName(currentNode)) < 0) {
+      var css = getComputedStyle$1(currentNode); // This is non-exhaustive but covers the most common CSS properties that
+      // create a containing block.
+      // https://developer.mozilla.org/en-US/docs/Web/CSS/Containing_block#identifying_the_containing_block
+
+      if (css.transform !== 'none' || css.perspective !== 'none' || css.contain === 'paint' || ['transform', 'perspective'].indexOf(css.willChange) !== -1 || isFirefox && css.willChange === 'filter' || isFirefox && css.filter && css.filter !== 'none') {
+        return currentNode;
+      } else {
+        currentNode = currentNode.parentNode;
+      }
+    }
+
+    return null;
+  } // Gets the closest ancestor positioned element. Handles some edge cases,
+  // such as table ancestors and cross browser bugs.
+
+
+  function getOffsetParent(element) {
+    var window = getWindow(element);
+    var offsetParent = getTrueOffsetParent(element);
+
+    while (offsetParent && isTableElement(offsetParent) && getComputedStyle$1(offsetParent).position === 'static') {
+      offsetParent = getTrueOffsetParent(offsetParent);
+    }
+
+    if (offsetParent && (getNodeName(offsetParent) === 'html' || getNodeName(offsetParent) === 'body' && getComputedStyle$1(offsetParent).position === 'static')) {
+      return window;
+    }
+
+    return offsetParent || getContainingBlock(element) || window;
+  }
+
+  function getMainAxisFromPlacement(placement) {
+    return ['top', 'bottom'].indexOf(placement) >= 0 ? 'x' : 'y';
+  }
+
+  var max = Math.max;
+  var min = Math.min;
+  var round = Math.round;
+
+  function within(min$1, value, max$1) {
+    return max(min$1, min(value, max$1));
+  }
+
+  function getFreshSideObject() {
+    return {
+      top: 0,
+      right: 0,
+      bottom: 0,
+      left: 0
+    };
+  }
+
+  function mergePaddingObject(paddingObject) {
+    return Object.assign({}, getFreshSideObject(), paddingObject);
+  }
+
+  function expandToHashMap(value, keys) {
+    return keys.reduce(function (hashMap, key) {
+      hashMap[key] = value;
+      return hashMap;
+    }, {});
+  }
+
+  var toPaddingObject = function toPaddingObject(padding, state) {
+    padding = typeof padding === 'function' ? padding(Object.assign({}, state.rects, {
+      placement: state.placement
+    })) : padding;
+    return mergePaddingObject(typeof padding !== 'number' ? padding : expandToHashMap(padding, basePlacements));
+  };
+
+  function arrow$2(_ref) {
+    var _state$modifiersData$;
+
+    var state = _ref.state,
+        name = _ref.name,
+        options = _ref.options;
+    var arrowElement = state.elements.arrow;
+    var popperOffsets = state.modifiersData.popperOffsets;
+    var basePlacement = getBasePlacement$1(state.placement);
+    var axis = getMainAxisFromPlacement(basePlacement);
+    var isVertical = [left, right].indexOf(basePlacement) >= 0;
+    var len = isVertical ? 'height' : 'width';
+
+    if (!arrowElement || !popperOffsets) {
+      return;
+    }
+
+    var paddingObject = toPaddingObject(options.padding, state);
+    var arrowRect = getLayoutRect(arrowElement);
+    var minProp = axis === 'y' ? top : left;
+    var maxProp = axis === 'y' ? bottom : right;
+    var endDiff = state.rects.reference[len] + state.rects.reference[axis] - popperOffsets[axis] - state.rects.popper[len];
+    var startDiff = popperOffsets[axis] - state.rects.reference[axis];
+    var arrowOffsetParent = getOffsetParent(arrowElement);
+    var clientSize = arrowOffsetParent ? axis === 'y' ? arrowOffsetParent.clientHeight || 0 : arrowOffsetParent.clientWidth || 0 : 0;
+    var centerToReference = endDiff / 2 - startDiff / 2; // Make sure the arrow doesn't overflow the popper if the center point is
+    // outside of the popper bounds
+
+    var min = paddingObject[minProp];
+    var max = clientSize - arrowRect[len] - paddingObject[maxProp];
+    var center = clientSize / 2 - arrowRect[len] / 2 + centerToReference;
+    var offset = within(min, center, max); // Prevents breaking syntax highlighting...
+
+    var axisProp = axis;
+    state.modifiersData[name] = (_state$modifiersData$ = {}, _state$modifiersData$[axisProp] = offset, _state$modifiersData$.centerOffset = offset - center, _state$modifiersData$);
+  }
+
+  function effect$1(_ref2) {
+    var state = _ref2.state,
+        options = _ref2.options;
+    var _options$element = options.element,
+        arrowElement = _options$element === void 0 ? '[data-popper-arrow]' : _options$element;
+
+    if (arrowElement == null) {
+      return;
+    } // CSS selector
+
+
+    if (typeof arrowElement === 'string') {
+      arrowElement = state.elements.popper.querySelector(arrowElement);
+
+      if (!arrowElement) {
+        return;
+      }
+    }
+
+    {
+      if (!isHTMLElement(arrowElement)) {
+        console.error(['Popper: "arrow" element must be an HTMLElement (not an SVGElement).', 'To use an SVG arrow, wrap it in an HTMLElement that will be used as', 'the arrow.'].join(' '));
+      }
+    }
+
+    if (!contains(state.elements.popper, arrowElement)) {
+      {
+        console.error(['Popper: "arrow" modifier\'s `element` must be a child of the popper', 'element.'].join(' '));
+      }
+
+      return;
+    }
+
+    state.elements.arrow = arrowElement;
+  } // eslint-disable-next-line import/no-unused-modules
+
+
+  var arrow$3 = {
+    name: 'arrow',
+    enabled: true,
+    phase: 'main',
+    fn: arrow$2,
+    effect: effect$1,
+    requires: ['popperOffsets'],
+    requiresIfExists: ['preventOverflow']
+  };
+
+  var unsetSides = {
+    top: 'auto',
+    right: 'auto',
+    bottom: 'auto',
+    left: 'auto'
+  }; // Round the offsets to the nearest suitable subpixel based on the DPR.
+  // Zooming can change the DPR, but it seems to report a value that will
+  // cleanly divide the values into the appropriate subpixels.
+
+  function roundOffsetsByDPR(_ref) {
+    var x = _ref.x,
+        y = _ref.y;
+    var win = window;
+    var dpr = win.devicePixelRatio || 1;
+    return {
+      x: round(round(x * dpr) / dpr) || 0,
+      y: round(round(y * dpr) / dpr) || 0
+    };
+  }
+
+  function mapToStyles(_ref2) {
+    var _Object$assign2;
+
+    var popper = _ref2.popper,
+        popperRect = _ref2.popperRect,
+        placement = _ref2.placement,
+        offsets = _ref2.offsets,
+        position = _ref2.position,
+        gpuAcceleration = _ref2.gpuAcceleration,
+        adaptive = _ref2.adaptive,
+        roundOffsets = _ref2.roundOffsets;
+
+    var _ref3 = roundOffsets === true ? roundOffsetsByDPR(offsets) : typeof roundOffsets === 'function' ? roundOffsets(offsets) : offsets,
+        _ref3$x = _ref3.x,
+        x = _ref3$x === void 0 ? 0 : _ref3$x,
+        _ref3$y = _ref3.y,
+        y = _ref3$y === void 0 ? 0 : _ref3$y;
+
+    var hasX = offsets.hasOwnProperty('x');
+    var hasY = offsets.hasOwnProperty('y');
+    var sideX = left;
+    var sideY = top;
+    var win = window;
+
+    if (adaptive) {
+      var offsetParent = getOffsetParent(popper);
+      var heightProp = 'clientHeight';
+      var widthProp = 'clientWidth';
+
+      if (offsetParent === getWindow(popper)) {
+        offsetParent = getDocumentElement(popper);
+
+        if (getComputedStyle$1(offsetParent).position !== 'static') {
+          heightProp = 'scrollHeight';
+          widthProp = 'scrollWidth';
+        }
+      } // $FlowFixMe[incompatible-cast]: force type refinement, we compare offsetParent with window above, but Flow doesn't detect it
+
+
+      offsetParent = offsetParent;
+
+      if (placement === top) {
+        sideY = bottom; // $FlowFixMe[prop-missing]
+
+        y -= offsetParent[heightProp] - popperRect.height;
+        y *= gpuAcceleration ? 1 : -1;
+      }
+
+      if (placement === left) {
+        sideX = right; // $FlowFixMe[prop-missing]
+
+        x -= offsetParent[widthProp] - popperRect.width;
+        x *= gpuAcceleration ? 1 : -1;
+      }
+    }
+
+    var commonStyles = Object.assign({
+      position: position
+    }, adaptive && unsetSides);
+
+    if (gpuAcceleration) {
+      var _Object$assign;
+
+      return Object.assign({}, commonStyles, (_Object$assign = {}, _Object$assign[sideY] = hasY ? '0' : '', _Object$assign[sideX] = hasX ? '0' : '', _Object$assign.transform = (win.devicePixelRatio || 1) < 2 ? "translate(" + x + "px, " + y + "px)" : "translate3d(" + x + "px, " + y + "px, 0)", _Object$assign));
+    }
+
+    return Object.assign({}, commonStyles, (_Object$assign2 = {}, _Object$assign2[sideY] = hasY ? y + "px" : '', _Object$assign2[sideX] = hasX ? x + "px" : '', _Object$assign2.transform = '', _Object$assign2));
+  }
+
+  function computeStyles(_ref4) {
+    var state = _ref4.state,
+        options = _ref4.options;
+    var _options$gpuAccelerat = options.gpuAcceleration,
+        gpuAcceleration = _options$gpuAccelerat === void 0 ? true : _options$gpuAccelerat,
+        _options$adaptive = options.adaptive,
+        adaptive = _options$adaptive === void 0 ? true : _options$adaptive,
+        _options$roundOffsets = options.roundOffsets,
+        roundOffsets = _options$roundOffsets === void 0 ? true : _options$roundOffsets;
+
+    {
+      var transitionProperty = getComputedStyle$1(state.elements.popper).transitionProperty || '';
+
+      if (adaptive && ['transform', 'top', 'right', 'bottom', 'left'].some(function (property) {
+        return transitionProperty.indexOf(property) >= 0;
+      })) {
+        console.warn(['Popper: Detected CSS transitions on at least one of the following', 'CSS properties: "transform", "top", "right", "bottom", "left".', '\n\n', 'Disable the "computeStyles" modifier\'s `adaptive` option to allow', 'for smooth transitions, or remove these properties from the CSS', 'transition declaration on the popper element if only transitioning', 'opacity or background-color for example.', '\n\n', 'We recommend using the popper element as a wrapper around an inner', 'element that can have any CSS property transitioned for animations.'].join(' '));
+      }
+    }
+
+    var commonStyles = {
+      placement: getBasePlacement$1(state.placement),
+      popper: state.elements.popper,
+      popperRect: state.rects.popper,
+      gpuAcceleration: gpuAcceleration
+    };
+
+    if (state.modifiersData.popperOffsets != null) {
+      state.styles.popper = Object.assign({}, state.styles.popper, mapToStyles(Object.assign({}, commonStyles, {
+        offsets: state.modifiersData.popperOffsets,
+        position: state.options.strategy,
+        adaptive: adaptive,
+        roundOffsets: roundOffsets
+      })));
+    }
+
+    if (state.modifiersData.arrow != null) {
+      state.styles.arrow = Object.assign({}, state.styles.arrow, mapToStyles(Object.assign({}, commonStyles, {
+        offsets: state.modifiersData.arrow,
+        position: 'absolute',
+        adaptive: false,
+        roundOffsets: roundOffsets
+      })));
+    }
+
+    state.attributes.popper = Object.assign({}, state.attributes.popper, {
+      'data-popper-placement': state.placement
+    });
+  } // eslint-disable-next-line import/no-unused-modules
+
+
+  var computeStyles$1 = {
+    name: 'computeStyles',
+    enabled: true,
+    phase: 'beforeWrite',
+    fn: computeStyles,
+    data: {}
+  };
+
+  var passive = {
+    passive: true
+  };
+
+  function effect(_ref) {
+    var state = _ref.state,
+        instance = _ref.instance,
+        options = _ref.options;
+    var _options$scroll = options.scroll,
+        scroll = _options$scroll === void 0 ? true : _options$scroll,
+        _options$resize = options.resize,
+        resize = _options$resize === void 0 ? true : _options$resize;
+    var window = getWindow(state.elements.popper);
+    var scrollParents = [].concat(state.scrollParents.reference, state.scrollParents.popper);
+
+    if (scroll) {
+      scrollParents.forEach(function (scrollParent) {
+        scrollParent.addEventListener('scroll', instance.update, passive);
+      });
+    }
+
+    if (resize) {
+      window.addEventListener('resize', instance.update, passive);
+    }
+
+    return function () {
+      if (scroll) {
+        scrollParents.forEach(function (scrollParent) {
+          scrollParent.removeEventListener('scroll', instance.update, passive);
+        });
+      }
+
+      if (resize) {
+        window.removeEventListener('resize', instance.update, passive);
+      }
+    };
+  } // eslint-disable-next-line import/no-unused-modules
+
+
+  var eventListeners = {
+    name: 'eventListeners',
+    enabled: true,
+    phase: 'write',
+    fn: function fn() {},
+    effect: effect,
+    data: {}
+  };
+
+  var hash$1 = {
+    left: 'right',
+    right: 'left',
+    bottom: 'top',
+    top: 'bottom'
+  };
+  function getOppositePlacement(placement) {
+    return placement.replace(/left|right|bottom|top/g, function (matched) {
+      return hash$1[matched];
+    });
+  }
+
+  var hash = {
+    start: 'end',
+    end: 'start'
+  };
+  function getOppositeVariationPlacement(placement) {
+    return placement.replace(/start|end/g, function (matched) {
+      return hash[matched];
+    });
+  }
+
+  function getWindowScroll(node) {
+    var win = getWindow(node);
+    var scrollLeft = win.pageXOffset;
+    var scrollTop = win.pageYOffset;
+    return {
+      scrollLeft: scrollLeft,
+      scrollTop: scrollTop
+    };
+  }
+
+  function getWindowScrollBarX(element) {
+    // If <html> has a CSS width greater than the viewport, then this will be
+    // incorrect for RTL.
+    // Popper 1 is broken in this case and never had a bug report so let's assume
+    // it's not an issue. I don't think anyone ever specifies width on <html>
+    // anyway.
+    // Browsers where the left scrollbar doesn't cause an issue report `0` for
+    // this (e.g. Edge 2019, IE11, Safari)
+    return getBoundingClientRect(getDocumentElement(element)).left + getWindowScroll(element).scrollLeft;
+  }
+
+  function getViewportRect(element) {
+    var win = getWindow(element);
+    var html = getDocumentElement(element);
+    var visualViewport = win.visualViewport;
+    var width = html.clientWidth;
+    var height = html.clientHeight;
+    var x = 0;
+    var y = 0; // NB: This isn't supported on iOS <= 12. If the keyboard is open, the popper
+    // can be obscured underneath it.
+    // Also, `html.clientHeight` adds the bottom bar height in Safari iOS, even
+    // if it isn't open, so if this isn't available, the popper will be detected
+    // to overflow the bottom of the screen too early.
+
+    if (visualViewport) {
+      width = visualViewport.width;
+      height = visualViewport.height; // Uses Layout Viewport (like Chrome; Safari does not currently)
+      // In Chrome, it returns a value very close to 0 (+/-) but contains rounding
+      // errors due to floating point numbers, so we need to check precision.
+      // Safari returns a number <= 0, usually < -1 when pinch-zoomed
+      // Feature detection fails in mobile emulation mode in Chrome.
+      // Math.abs(win.innerWidth / visualViewport.scale - visualViewport.width) <
+      // 0.001
+      // Fallback here: "Not Safari" userAgent
+
+      if (!/^((?!chrome|android).)*safari/i.test(navigator.userAgent)) {
+        x = visualViewport.offsetLeft;
+        y = visualViewport.offsetTop;
+      }
+    }
+
+    return {
+      width: width,
+      height: height,
+      x: x + getWindowScrollBarX(element),
+      y: y
+    };
+  }
+
+  // of the `<html>` and `<body>` rect bounds if horizontally scrollable
+
+  function getDocumentRect(element) {
+    var _element$ownerDocumen;
+
+    var html = getDocumentElement(element);
+    var winScroll = getWindowScroll(element);
+    var body = (_element$ownerDocumen = element.ownerDocument) == null ? void 0 : _element$ownerDocumen.body;
+    var width = max(html.scrollWidth, html.clientWidth, body ? body.scrollWidth : 0, body ? body.clientWidth : 0);
+    var height = max(html.scrollHeight, html.clientHeight, body ? body.scrollHeight : 0, body ? body.clientHeight : 0);
+    var x = -winScroll.scrollLeft + getWindowScrollBarX(element);
+    var y = -winScroll.scrollTop;
+
+    if (getComputedStyle$1(body || html).direction === 'rtl') {
+      x += max(html.clientWidth, body ? body.clientWidth : 0) - width;
+    }
+
+    return {
+      width: width,
+      height: height,
+      x: x,
+      y: y
+    };
+  }
+
+  function isScrollParent(element) {
+    // Firefox wants us to check `-x` and `-y` variations as well
+    var _getComputedStyle = getComputedStyle$1(element),
+        overflow = _getComputedStyle.overflow,
+        overflowX = _getComputedStyle.overflowX,
+        overflowY = _getComputedStyle.overflowY;
+
+    return /auto|scroll|overlay|hidden/.test(overflow + overflowY + overflowX);
+  }
+
+  function getScrollParent(node) {
+    if (['html', 'body', '#document'].indexOf(getNodeName(node)) >= 0) {
+      // $FlowFixMe[incompatible-return]: assume body is always available
+      return node.ownerDocument.body;
+    }
+
+    if (isHTMLElement(node) && isScrollParent(node)) {
+      return node;
+    }
+
+    return getScrollParent(getParentNode(node));
+  }
+
+  /*
+  given a DOM element, return the list of all scroll parents, up the list of ancesors
+  until we get to the top window object. This list is what we attach scroll listeners
+  to, because if any of these parent elements scroll, we'll need to re-calculate the
+  reference element's position.
+  */
+
+  function listScrollParents(element, list) {
+    var _element$ownerDocumen;
+
+    if (list === void 0) {
+      list = [];
+    }
+
+    var scrollParent = getScrollParent(element);
+    var isBody = scrollParent === ((_element$ownerDocumen = element.ownerDocument) == null ? void 0 : _element$ownerDocumen.body);
+    var win = getWindow(scrollParent);
+    var target = isBody ? [win].concat(win.visualViewport || [], isScrollParent(scrollParent) ? scrollParent : []) : scrollParent;
+    var updatedList = list.concat(target);
+    return isBody ? updatedList : // $FlowFixMe[incompatible-call]: isBody tells us target will be an HTMLElement here
+    updatedList.concat(listScrollParents(getParentNode(target)));
+  }
+
+  function rectToClientRect(rect) {
+    return Object.assign({}, rect, {
+      left: rect.x,
+      top: rect.y,
+      right: rect.x + rect.width,
+      bottom: rect.y + rect.height
+    });
+  }
+
+  function getInnerBoundingClientRect(element) {
+    var rect = getBoundingClientRect(element);
+    rect.top = rect.top + element.clientTop;
+    rect.left = rect.left + element.clientLeft;
+    rect.bottom = rect.top + element.clientHeight;
+    rect.right = rect.left + element.clientWidth;
+    rect.width = element.clientWidth;
+    rect.height = element.clientHeight;
+    rect.x = rect.left;
+    rect.y = rect.top;
+    return rect;
+  }
+
+  function getClientRectFromMixedType(element, clippingParent) {
+    return clippingParent === viewport ? rectToClientRect(getViewportRect(element)) : isHTMLElement(clippingParent) ? getInnerBoundingClientRect(clippingParent) : rectToClientRect(getDocumentRect(getDocumentElement(element)));
+  } // A "clipping parent" is an overflowable container with the characteristic of
+  // clipping (or hiding) overflowing elements with a position different from
+  // `initial`
+
+
+  function getClippingParents(element) {
+    var clippingParents = listScrollParents(getParentNode(element));
+    var canEscapeClipping = ['absolute', 'fixed'].indexOf(getComputedStyle$1(element).position) >= 0;
+    var clipperElement = canEscapeClipping && isHTMLElement(element) ? getOffsetParent(element) : element;
+
+    if (!isElement$1(clipperElement)) {
+      return [];
+    } // $FlowFixMe[incompatible-return]: https://github.com/facebook/flow/issues/1414
+
+
+    return clippingParents.filter(function (clippingParent) {
+      return isElement$1(clippingParent) && contains(clippingParent, clipperElement) && getNodeName(clippingParent) !== 'body';
+    });
+  } // Gets the maximum area that the element is visible in due to any number of
+  // clipping parents
+
+
+  function getClippingRect(element, boundary, rootBoundary) {
+    var mainClippingParents = boundary === 'clippingParents' ? getClippingParents(element) : [].concat(boundary);
+    var clippingParents = [].concat(mainClippingParents, [rootBoundary]);
+    var firstClippingParent = clippingParents[0];
+    var clippingRect = clippingParents.reduce(function (accRect, clippingParent) {
+      var rect = getClientRectFromMixedType(element, clippingParent);
+      accRect.top = max(rect.top, accRect.top);
+      accRect.right = min(rect.right, accRect.right);
+      accRect.bottom = min(rect.bottom, accRect.bottom);
+      accRect.left = max(rect.left, accRect.left);
+      return accRect;
+    }, getClientRectFromMixedType(element, firstClippingParent));
+    clippingRect.width = clippingRect.right - clippingRect.left;
+    clippingRect.height = clippingRect.bottom - clippingRect.top;
+    clippingRect.x = clippingRect.left;
+    clippingRect.y = clippingRect.top;
+    return clippingRect;
+  }
+
+  function getVariation(placement) {
+    return placement.split('-')[1];
+  }
+
+  function computeOffsets(_ref) {
+    var reference = _ref.reference,
+        element = _ref.element,
+        placement = _ref.placement;
+    var basePlacement = placement ? getBasePlacement$1(placement) : null;
+    var variation = placement ? getVariation(placement) : null;
+    var commonX = reference.x + reference.width / 2 - element.width / 2;
+    var commonY = reference.y + reference.height / 2 - element.height / 2;
+    var offsets;
+
+    switch (basePlacement) {
+      case top:
+        offsets = {
+          x: commonX,
+          y: reference.y - element.height
+        };
+        break;
+
+      case bottom:
+        offsets = {
+          x: commonX,
+          y: reference.y + reference.height
+        };
+        break;
+
+      case right:
+        offsets = {
+          x: reference.x + reference.width,
+          y: commonY
+        };
+        break;
+
+      case left:
+        offsets = {
+          x: reference.x - element.width,
+          y: commonY
+        };
+        break;
+
+      default:
+        offsets = {
+          x: reference.x,
+          y: reference.y
+        };
+    }
+
+    var mainAxis = basePlacement ? getMainAxisFromPlacement(basePlacement) : null;
+
+    if (mainAxis != null) {
+      var len = mainAxis === 'y' ? 'height' : 'width';
+
+      switch (variation) {
+        case start:
+          offsets[mainAxis] = offsets[mainAxis] - (reference[len] / 2 - element[len] / 2);
+          break;
+
+        case end:
+          offsets[mainAxis] = offsets[mainAxis] + (reference[len] / 2 - element[len] / 2);
+          break;
+      }
+    }
+
+    return offsets;
+  }
+
+  function detectOverflow(state, options) {
+    if (options === void 0) {
+      options = {};
+    }
+
+    var _options = options,
+        _options$placement = _options.placement,
+        placement = _options$placement === void 0 ? state.placement : _options$placement,
+        _options$boundary = _options.boundary,
+        boundary = _options$boundary === void 0 ? clippingParents : _options$boundary,
+        _options$rootBoundary = _options.rootBoundary,
+        rootBoundary = _options$rootBoundary === void 0 ? viewport : _options$rootBoundary,
+        _options$elementConte = _options.elementContext,
+        elementContext = _options$elementConte === void 0 ? popper : _options$elementConte,
+        _options$altBoundary = _options.altBoundary,
+        altBoundary = _options$altBoundary === void 0 ? false : _options$altBoundary,
+        _options$padding = _options.padding,
+        padding = _options$padding === void 0 ? 0 : _options$padding;
+    var paddingObject = mergePaddingObject(typeof padding !== 'number' ? padding : expandToHashMap(padding, basePlacements));
+    var altContext = elementContext === popper ? reference : popper;
+    var referenceElement = state.elements.reference;
+    var popperRect = state.rects.popper;
+    var element = state.elements[altBoundary ? altContext : elementContext];
+    var clippingClientRect = getClippingRect(isElement$1(element) ? element : element.contextElement || getDocumentElement(state.elements.popper), boundary, rootBoundary);
+    var referenceClientRect = getBoundingClientRect(referenceElement);
+    var popperOffsets = computeOffsets({
+      reference: referenceClientRect,
+      element: popperRect,
+      strategy: 'absolute',
+      placement: placement
+    });
+    var popperClientRect = rectToClientRect(Object.assign({}, popperRect, popperOffsets));
+    var elementClientRect = elementContext === popper ? popperClientRect : referenceClientRect; // positive = overflowing the clipping rect
+    // 0 or negative = within the clipping rect
+
+    var overflowOffsets = {
+      top: clippingClientRect.top - elementClientRect.top + paddingObject.top,
+      bottom: elementClientRect.bottom - clippingClientRect.bottom + paddingObject.bottom,
+      left: clippingClientRect.left - elementClientRect.left + paddingObject.left,
+      right: elementClientRect.right - clippingClientRect.right + paddingObject.right
+    };
+    var offsetData = state.modifiersData.offset; // Offsets can be applied only to the popper element
+
+    if (elementContext === popper && offsetData) {
+      var offset = offsetData[placement];
+      Object.keys(overflowOffsets).forEach(function (key) {
+        var multiply = [right, bottom].indexOf(key) >= 0 ? 1 : -1;
+        var axis = [top, bottom].indexOf(key) >= 0 ? 'y' : 'x';
+        overflowOffsets[key] += offset[axis] * multiply;
+      });
+    }
+
+    return overflowOffsets;
+  }
+
+  function computeAutoPlacement(state, options) {
+    if (options === void 0) {
+      options = {};
+    }
+
+    var _options = options,
+        placement = _options.placement,
+        boundary = _options.boundary,
+        rootBoundary = _options.rootBoundary,
+        padding = _options.padding,
+        flipVariations = _options.flipVariations,
+        _options$allowedAutoP = _options.allowedAutoPlacements,
+        allowedAutoPlacements = _options$allowedAutoP === void 0 ? placements : _options$allowedAutoP;
+    var variation = getVariation(placement);
+    var placements$1 = variation ? flipVariations ? variationPlacements : variationPlacements.filter(function (placement) {
+      return getVariation(placement) === variation;
+    }) : basePlacements;
+    var allowedPlacements = placements$1.filter(function (placement) {
+      return allowedAutoPlacements.indexOf(placement) >= 0;
+    });
+
+    if (allowedPlacements.length === 0) {
+      allowedPlacements = placements$1;
+
+      {
+        console.error(['Popper: The `allowedAutoPlacements` option did not allow any', 'placements. Ensure the `placement` option matches the variation', 'of the allowed placements.', 'For example, "auto" cannot be used to allow "bottom-start".', 'Use "auto-start" instead.'].join(' '));
+      }
+    } // $FlowFixMe[incompatible-type]: Flow seems to have problems with two array unions...
+
+
+    var overflows = allowedPlacements.reduce(function (acc, placement) {
+      acc[placement] = detectOverflow(state, {
+        placement: placement,
+        boundary: boundary,
+        rootBoundary: rootBoundary,
+        padding: padding
+      })[getBasePlacement$1(placement)];
+      return acc;
+    }, {});
+    return Object.keys(overflows).sort(function (a, b) {
+      return overflows[a] - overflows[b];
+    });
+  }
+
+  function getExpandedFallbackPlacements(placement) {
+    if (getBasePlacement$1(placement) === auto) {
+      return [];
+    }
+
+    var oppositePlacement = getOppositePlacement(placement);
+    return [getOppositeVariationPlacement(placement), oppositePlacement, getOppositeVariationPlacement(oppositePlacement)];
+  }
+
+  function flip(_ref) {
+    var state = _ref.state,
+        options = _ref.options,
+        name = _ref.name;
+
+    if (state.modifiersData[name]._skip) {
+      return;
+    }
+
+    var _options$mainAxis = options.mainAxis,
+        checkMainAxis = _options$mainAxis === void 0 ? true : _options$mainAxis,
+        _options$altAxis = options.altAxis,
+        checkAltAxis = _options$altAxis === void 0 ? true : _options$altAxis,
+        specifiedFallbackPlacements = options.fallbackPlacements,
+        padding = options.padding,
+        boundary = options.boundary,
+        rootBoundary = options.rootBoundary,
+        altBoundary = options.altBoundary,
+        _options$flipVariatio = options.flipVariations,
+        flipVariations = _options$flipVariatio === void 0 ? true : _options$flipVariatio,
+        allowedAutoPlacements = options.allowedAutoPlacements;
+    var preferredPlacement = state.options.placement;
+    var basePlacement = getBasePlacement$1(preferredPlacement);
+    var isBasePlacement = basePlacement === preferredPlacement;
+    var fallbackPlacements = specifiedFallbackPlacements || (isBasePlacement || !flipVariations ? [getOppositePlacement(preferredPlacement)] : getExpandedFallbackPlacements(preferredPlacement));
+    var placements = [preferredPlacement].concat(fallbackPlacements).reduce(function (acc, placement) {
+      return acc.concat(getBasePlacement$1(placement) === auto ? computeAutoPlacement(state, {
+        placement: placement,
+        boundary: boundary,
+        rootBoundary: rootBoundary,
+        padding: padding,
+        flipVariations: flipVariations,
+        allowedAutoPlacements: allowedAutoPlacements
+      }) : placement);
+    }, []);
+    var referenceRect = state.rects.reference;
+    var popperRect = state.rects.popper;
+    var checksMap = new Map();
+    var makeFallbackChecks = true;
+    var firstFittingPlacement = placements[0];
+
+    for (var i = 0; i < placements.length; i++) {
+      var placement = placements[i];
+
+      var _basePlacement = getBasePlacement$1(placement);
+
+      var isStartVariation = getVariation(placement) === start;
+      var isVertical = [top, bottom].indexOf(_basePlacement) >= 0;
+      var len = isVertical ? 'width' : 'height';
+      var overflow = detectOverflow(state, {
+        placement: placement,
+        boundary: boundary,
+        rootBoundary: rootBoundary,
+        altBoundary: altBoundary,
+        padding: padding
+      });
+      var mainVariationSide = isVertical ? isStartVariation ? right : left : isStartVariation ? bottom : top;
+
+      if (referenceRect[len] > popperRect[len]) {
+        mainVariationSide = getOppositePlacement(mainVariationSide);
+      }
+
+      var altVariationSide = getOppositePlacement(mainVariationSide);
+      var checks = [];
+
+      if (checkMainAxis) {
+        checks.push(overflow[_basePlacement] <= 0);
+      }
+
+      if (checkAltAxis) {
+        checks.push(overflow[mainVariationSide] <= 0, overflow[altVariationSide] <= 0);
+      }
+
+      if (checks.every(function (check) {
+        return check;
+      })) {
+        firstFittingPlacement = placement;
+        makeFallbackChecks = false;
+        break;
+      }
+
+      checksMap.set(placement, checks);
+    }
+
+    if (makeFallbackChecks) {
+      // `2` may be desired in some cases – research later
+      var numberOfChecks = flipVariations ? 3 : 1;
+
+      var _loop = function _loop(_i) {
+        var fittingPlacement = placements.find(function (placement) {
+          var checks = checksMap.get(placement);
+
+          if (checks) {
+            return checks.slice(0, _i).every(function (check) {
+              return check;
+            });
+          }
+        });
+
+        if (fittingPlacement) {
+          firstFittingPlacement = fittingPlacement;
+          return "break";
+        }
+      };
+
+      for (var _i = numberOfChecks; _i > 0; _i--) {
+        var _ret = _loop(_i);
+
+        if (_ret === "break") break;
+      }
+    }
+
+    if (state.placement !== firstFittingPlacement) {
+      state.modifiersData[name]._skip = true;
+      state.placement = firstFittingPlacement;
+      state.reset = true;
+    }
+  } // eslint-disable-next-line import/no-unused-modules
+
+
+  var flip$1 = {
+    name: 'flip',
+    enabled: true,
+    phase: 'main',
+    fn: flip,
+    requiresIfExists: ['offset'],
+    data: {
+      _skip: false
+    }
+  };
+
+  function getSideOffsets(overflow, rect, preventedOffsets) {
+    if (preventedOffsets === void 0) {
+      preventedOffsets = {
+        x: 0,
+        y: 0
+      };
+    }
+
+    return {
+      top: overflow.top - rect.height - preventedOffsets.y,
+      right: overflow.right - rect.width + preventedOffsets.x,
+      bottom: overflow.bottom - rect.height + preventedOffsets.y,
+      left: overflow.left - rect.width - preventedOffsets.x
+    };
+  }
+
+  function isAnySideFullyClipped(overflow) {
+    return [top, right, bottom, left].some(function (side) {
+      return overflow[side] >= 0;
+    });
+  }
+
+  function hide(_ref) {
+    var state = _ref.state,
+        name = _ref.name;
+    var referenceRect = state.rects.reference;
+    var popperRect = state.rects.popper;
+    var preventedOffsets = state.modifiersData.preventOverflow;
+    var referenceOverflow = detectOverflow(state, {
+      elementContext: 'reference'
+    });
+    var popperAltOverflow = detectOverflow(state, {
+      altBoundary: true
+    });
+    var referenceClippingOffsets = getSideOffsets(referenceOverflow, referenceRect);
+    var popperEscapeOffsets = getSideOffsets(popperAltOverflow, popperRect, preventedOffsets);
+    var isReferenceHidden = isAnySideFullyClipped(referenceClippingOffsets);
+    var hasPopperEscaped = isAnySideFullyClipped(popperEscapeOffsets);
+    state.modifiersData[name] = {
+      referenceClippingOffsets: referenceClippingOffsets,
+      popperEscapeOffsets: popperEscapeOffsets,
+      isReferenceHidden: isReferenceHidden,
+      hasPopperEscaped: hasPopperEscaped
+    };
+    state.attributes.popper = Object.assign({}, state.attributes.popper, {
+      'data-popper-reference-hidden': isReferenceHidden,
+      'data-popper-escaped': hasPopperEscaped
+    });
+  } // eslint-disable-next-line import/no-unused-modules
+
+
+  var hide$1 = {
+    name: 'hide',
+    enabled: true,
+    phase: 'main',
+    requiresIfExists: ['preventOverflow'],
+    fn: hide
+  };
+
+  function distanceAndSkiddingToXY(placement, rects, offset) {
+    var basePlacement = getBasePlacement$1(placement);
+    var invertDistance = [left, top].indexOf(basePlacement) >= 0 ? -1 : 1;
+
+    var _ref = typeof offset === 'function' ? offset(Object.assign({}, rects, {
+      placement: placement
+    })) : offset,
+        skidding = _ref[0],
+        distance = _ref[1];
+
+    skidding = skidding || 0;
+    distance = (distance || 0) * invertDistance;
+    return [left, right].indexOf(basePlacement) >= 0 ? {
+      x: distance,
+      y: skidding
+    } : {
+      x: skidding,
+      y: distance
+    };
+  }
+
+  function offset(_ref2) {
+    var state = _ref2.state,
+        options = _ref2.options,
+        name = _ref2.name;
+    var _options$offset = options.offset,
+        offset = _options$offset === void 0 ? [0, 0] : _options$offset;
+    var data = placements.reduce(function (acc, placement) {
+      acc[placement] = distanceAndSkiddingToXY(placement, state.rects, offset);
+      return acc;
+    }, {});
+    var _data$state$placement = data[state.placement],
+        x = _data$state$placement.x,
+        y = _data$state$placement.y;
+
+    if (state.modifiersData.popperOffsets != null) {
+      state.modifiersData.popperOffsets.x += x;
+      state.modifiersData.popperOffsets.y += y;
+    }
+
+    state.modifiersData[name] = data;
+  } // eslint-disable-next-line import/no-unused-modules
+
+
+  var offset$1 = {
+    name: 'offset',
+    enabled: true,
+    phase: 'main',
+    requires: ['popperOffsets'],
+    fn: offset
+  };
+
+  function popperOffsets(_ref) {
+    var state = _ref.state,
+        name = _ref.name;
+    // Offsets are the actual position the popper needs to have to be
+    // properly positioned near its reference element
+    // This is the most basic placement, and will be adjusted by
+    // the modifiers in the next step
+    state.modifiersData[name] = computeOffsets({
+      reference: state.rects.reference,
+      element: state.rects.popper,
+      strategy: 'absolute',
+      placement: state.placement
+    });
+  } // eslint-disable-next-line import/no-unused-modules
+
+
+  var popperOffsets$1 = {
+    name: 'popperOffsets',
+    enabled: true,
+    phase: 'read',
+    fn: popperOffsets,
+    data: {}
+  };
+
+  function getAltAxis(axis) {
+    return axis === 'x' ? 'y' : 'x';
+  }
+
+  function preventOverflow(_ref) {
+    var state = _ref.state,
+        options = _ref.options,
+        name = _ref.name;
+    var _options$mainAxis = options.mainAxis,
+        checkMainAxis = _options$mainAxis === void 0 ? true : _options$mainAxis,
+        _options$altAxis = options.altAxis,
+        checkAltAxis = _options$altAxis === void 0 ? false : _options$altAxis,
+        boundary = options.boundary,
+        rootBoundary = options.rootBoundary,
+        altBoundary = options.altBoundary,
+        padding = options.padding,
+        _options$tether = options.tether,
+        tether = _options$tether === void 0 ? true : _options$tether,
+        _options$tetherOffset = options.tetherOffset,
+        tetherOffset = _options$tetherOffset === void 0 ? 0 : _options$tetherOffset;
+    var overflow = detectOverflow(state, {
+      boundary: boundary,
+      rootBoundary: rootBoundary,
+      padding: padding,
+      altBoundary: altBoundary
+    });
+    var basePlacement = getBasePlacement$1(state.placement);
+    var variation = getVariation(state.placement);
+    var isBasePlacement = !variation;
+    var mainAxis = getMainAxisFromPlacement(basePlacement);
+    var altAxis = getAltAxis(mainAxis);
+    var popperOffsets = state.modifiersData.popperOffsets;
+    var referenceRect = state.rects.reference;
+    var popperRect = state.rects.popper;
+    var tetherOffsetValue = typeof tetherOffset === 'function' ? tetherOffset(Object.assign({}, state.rects, {
+      placement: state.placement
+    })) : tetherOffset;
+    var data = {
+      x: 0,
+      y: 0
+    };
+
+    if (!popperOffsets) {
+      return;
+    }
+
+    if (checkMainAxis || checkAltAxis) {
+      var mainSide = mainAxis === 'y' ? top : left;
+      var altSide = mainAxis === 'y' ? bottom : right;
+      var len = mainAxis === 'y' ? 'height' : 'width';
+      var offset = popperOffsets[mainAxis];
+      var min$1 = popperOffsets[mainAxis] + overflow[mainSide];
+      var max$1 = popperOffsets[mainAxis] - overflow[altSide];
+      var additive = tether ? -popperRect[len] / 2 : 0;
+      var minLen = variation === start ? referenceRect[len] : popperRect[len];
+      var maxLen = variation === start ? -popperRect[len] : -referenceRect[len]; // We need to include the arrow in the calculation so the arrow doesn't go
+      // outside the reference bounds
+
+      var arrowElement = state.elements.arrow;
+      var arrowRect = tether && arrowElement ? getLayoutRect(arrowElement) : {
+        width: 0,
+        height: 0
+      };
+      var arrowPaddingObject = state.modifiersData['arrow#persistent'] ? state.modifiersData['arrow#persistent'].padding : getFreshSideObject();
+      var arrowPaddingMin = arrowPaddingObject[mainSide];
+      var arrowPaddingMax = arrowPaddingObject[altSide]; // If the reference length is smaller than the arrow length, we don't want
+      // to include its full size in the calculation. If the reference is small
+      // and near the edge of a boundary, the popper can overflow even if the
+      // reference is not overflowing as well (e.g. virtual elements with no
+      // width or height)
+
+      var arrowLen = within(0, referenceRect[len], arrowRect[len]);
+      var minOffset = isBasePlacement ? referenceRect[len] / 2 - additive - arrowLen - arrowPaddingMin - tetherOffsetValue : minLen - arrowLen - arrowPaddingMin - tetherOffsetValue;
+      var maxOffset = isBasePlacement ? -referenceRect[len] / 2 + additive + arrowLen + arrowPaddingMax + tetherOffsetValue : maxLen + arrowLen + arrowPaddingMax + tetherOffsetValue;
+      var arrowOffsetParent = state.elements.arrow && getOffsetParent(state.elements.arrow);
+      var clientOffset = arrowOffsetParent ? mainAxis === 'y' ? arrowOffsetParent.clientTop || 0 : arrowOffsetParent.clientLeft || 0 : 0;
+      var offsetModifierValue = state.modifiersData.offset ? state.modifiersData.offset[state.placement][mainAxis] : 0;
+      var tetherMin = popperOffsets[mainAxis] + minOffset - offsetModifierValue - clientOffset;
+      var tetherMax = popperOffsets[mainAxis] + maxOffset - offsetModifierValue;
+
+      if (checkMainAxis) {
+        var preventedOffset = within(tether ? min(min$1, tetherMin) : min$1, offset, tether ? max(max$1, tetherMax) : max$1);
+        popperOffsets[mainAxis] = preventedOffset;
+        data[mainAxis] = preventedOffset - offset;
+      }
+
+      if (checkAltAxis) {
+        var _mainSide = mainAxis === 'x' ? top : left;
+
+        var _altSide = mainAxis === 'x' ? bottom : right;
+
+        var _offset = popperOffsets[altAxis];
+
+        var _min = _offset + overflow[_mainSide];
+
+        var _max = _offset - overflow[_altSide];
+
+        var _preventedOffset = within(tether ? min(_min, tetherMin) : _min, _offset, tether ? max(_max, tetherMax) : _max);
+
+        popperOffsets[altAxis] = _preventedOffset;
+        data[altAxis] = _preventedOffset - _offset;
+      }
+    }
+
+    state.modifiersData[name] = data;
+  } // eslint-disable-next-line import/no-unused-modules
+
+
+  var preventOverflow$1 = {
+    name: 'preventOverflow',
+    enabled: true,
+    phase: 'main',
+    fn: preventOverflow,
+    requiresIfExists: ['offset']
+  };
+
+  function getHTMLElementScroll(element) {
+    return {
+      scrollLeft: element.scrollLeft,
+      scrollTop: element.scrollTop
+    };
+  }
+
+  function getNodeScroll(node) {
+    if (node === getWindow(node) || !isHTMLElement(node)) {
+      return getWindowScroll(node);
+    } else {
+      return getHTMLElementScroll(node);
+    }
+  }
+
+  // Composite means it takes into account transforms as well as layout.
+
+  function getCompositeRect(elementOrVirtualElement, offsetParent, isFixed) {
+    if (isFixed === void 0) {
+      isFixed = false;
+    }
+
+    var documentElement = getDocumentElement(offsetParent);
+    var rect = getBoundingClientRect(elementOrVirtualElement);
+    var isOffsetParentAnElement = isHTMLElement(offsetParent);
+    var scroll = {
+      scrollLeft: 0,
+      scrollTop: 0
+    };
+    var offsets = {
+      x: 0,
+      y: 0
+    };
+
+    if (isOffsetParentAnElement || !isOffsetParentAnElement && !isFixed) {
+      if (getNodeName(offsetParent) !== 'body' || // https://github.com/popperjs/popper-core/issues/1078
+      isScrollParent(documentElement)) {
+        scroll = getNodeScroll(offsetParent);
+      }
+
+      if (isHTMLElement(offsetParent)) {
+        offsets = getBoundingClientRect(offsetParent);
+        offsets.x += offsetParent.clientLeft;
+        offsets.y += offsetParent.clientTop;
+      } else if (documentElement) {
+        offsets.x = getWindowScrollBarX(documentElement);
+      }
+    }
+
+    return {
+      x: rect.left + scroll.scrollLeft - offsets.x,
+      y: rect.top + scroll.scrollTop - offsets.y,
+      width: rect.width,
+      height: rect.height
+    };
+  }
+
+  function order(modifiers) {
+    var map = new Map();
+    var visited = new Set();
+    var result = [];
+    modifiers.forEach(function (modifier) {
+      map.set(modifier.name, modifier);
+    }); // On visiting object, check for its dependencies and visit them recursively
+
+    function sort(modifier) {
+      visited.add(modifier.name);
+      var requires = [].concat(modifier.requires || [], modifier.requiresIfExists || []);
+      requires.forEach(function (dep) {
+        if (!visited.has(dep)) {
+          var depModifier = map.get(dep);
+
+          if (depModifier) {
+            sort(depModifier);
+          }
+        }
+      });
+      result.push(modifier);
+    }
+
+    modifiers.forEach(function (modifier) {
+      if (!visited.has(modifier.name)) {
+        // check for visited object
+        sort(modifier);
+      }
+    });
+    return result;
+  }
+
+  function orderModifiers(modifiers) {
+    // order based on dependencies
+    var orderedModifiers = order(modifiers); // order based on phase
+
+    return modifierPhases.reduce(function (acc, phase) {
+      return acc.concat(orderedModifiers.filter(function (modifier) {
+        return modifier.phase === phase;
+      }));
+    }, []);
+  }
+
+  function debounce$2(fn) {
+    var pending;
+    return function () {
+      if (!pending) {
+        pending = new Promise(function (resolve) {
+          Promise.resolve().then(function () {
+            pending = undefined;
+            resolve(fn());
+          });
+        });
+      }
+
+      return pending;
+    };
+  }
+
+  function format(str) {
+    for (var _len = arguments.length, args = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+      args[_key - 1] = arguments[_key];
+    }
+
+    return [].concat(args).reduce(function (p, c) {
+      return p.replace(/%s/, c);
+    }, str);
+  }
+
+  var INVALID_MODIFIER_ERROR = 'Popper: modifier "%s" provided an invalid %s property, expected %s but got %s';
+  var MISSING_DEPENDENCY_ERROR = 'Popper: modifier "%s" requires "%s", but "%s" modifier is not available';
+  var VALID_PROPERTIES = ['name', 'enabled', 'phase', 'fn', 'effect', 'requires', 'options'];
+  function validateModifiers(modifiers) {
+    modifiers.forEach(function (modifier) {
+      Object.keys(modifier).forEach(function (key) {
+        switch (key) {
+          case 'name':
+            if (typeof modifier.name !== 'string') {
+              console.error(format(INVALID_MODIFIER_ERROR, String(modifier.name), '"name"', '"string"', "\"" + String(modifier.name) + "\""));
+            }
+
+            break;
+
+          case 'enabled':
+            if (typeof modifier.enabled !== 'boolean') {
+              console.error(format(INVALID_MODIFIER_ERROR, modifier.name, '"enabled"', '"boolean"', "\"" + String(modifier.enabled) + "\""));
+            }
+
+          case 'phase':
+            if (modifierPhases.indexOf(modifier.phase) < 0) {
+              console.error(format(INVALID_MODIFIER_ERROR, modifier.name, '"phase"', "either " + modifierPhases.join(', '), "\"" + String(modifier.phase) + "\""));
+            }
+
+            break;
+
+          case 'fn':
+            if (typeof modifier.fn !== 'function') {
+              console.error(format(INVALID_MODIFIER_ERROR, modifier.name, '"fn"', '"function"', "\"" + String(modifier.fn) + "\""));
+            }
+
+            break;
+
+          case 'effect':
+            if (typeof modifier.effect !== 'function') {
+              console.error(format(INVALID_MODIFIER_ERROR, modifier.name, '"effect"', '"function"', "\"" + String(modifier.fn) + "\""));
+            }
+
+            break;
+
+          case 'requires':
+            if (!Array.isArray(modifier.requires)) {
+              console.error(format(INVALID_MODIFIER_ERROR, modifier.name, '"requires"', '"array"', "\"" + String(modifier.requires) + "\""));
+            }
+
+            break;
+
+          case 'requiresIfExists':
+            if (!Array.isArray(modifier.requiresIfExists)) {
+              console.error(format(INVALID_MODIFIER_ERROR, modifier.name, '"requiresIfExists"', '"array"', "\"" + String(modifier.requiresIfExists) + "\""));
+            }
+
+            break;
+
+          case 'options':
+          case 'data':
+            break;
+
+          default:
+            console.error("PopperJS: an invalid property has been provided to the \"" + modifier.name + "\" modifier, valid properties are " + VALID_PROPERTIES.map(function (s) {
+              return "\"" + s + "\"";
+            }).join(', ') + "; but \"" + key + "\" was provided.");
+        }
+
+        modifier.requires && modifier.requires.forEach(function (requirement) {
+          if (modifiers.find(function (mod) {
+            return mod.name === requirement;
+          }) == null) {
+            console.error(format(MISSING_DEPENDENCY_ERROR, String(modifier.name), requirement, requirement));
+          }
+        });
+      });
+    });
+  }
+
+  function uniqueBy(arr, fn) {
+    var identifiers = new Set();
+    return arr.filter(function (item) {
+      var identifier = fn(item);
+
+      if (!identifiers.has(identifier)) {
+        identifiers.add(identifier);
+        return true;
+      }
+    });
+  }
+
+  function mergeByName(modifiers) {
+    var merged = modifiers.reduce(function (merged, current) {
+      var existing = merged[current.name];
+      merged[current.name] = existing ? Object.assign({}, existing, current, {
+        options: Object.assign({}, existing.options, current.options),
+        data: Object.assign({}, existing.data, current.data)
+      }) : current;
+      return merged;
+    }, {}); // IE11 does not support Object.values
+
+    return Object.keys(merged).map(function (key) {
+      return merged[key];
+    });
+  }
+
+  var INVALID_ELEMENT_ERROR = 'Popper: Invalid reference or popper argument provided. They must be either a DOM element or virtual element.';
+  var INFINITE_LOOP_ERROR = 'Popper: An infinite loop in the modifiers cycle has been detected! The cycle has been interrupted to prevent a browser crash.';
+  var DEFAULT_OPTIONS = {
+    placement: 'bottom',
+    modifiers: [],
+    strategy: 'absolute'
+  };
+
+  function areValidElements() {
+    for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
+      args[_key] = arguments[_key];
+    }
+
+    return !args.some(function (element) {
+      return !(element && typeof element.getBoundingClientRect === 'function');
+    });
+  }
+
+  function popperGenerator(generatorOptions) {
+    if (generatorOptions === void 0) {
+      generatorOptions = {};
+    }
+
+    var _generatorOptions = generatorOptions,
+        _generatorOptions$def = _generatorOptions.defaultModifiers,
+        defaultModifiers = _generatorOptions$def === void 0 ? [] : _generatorOptions$def,
+        _generatorOptions$def2 = _generatorOptions.defaultOptions,
+        defaultOptions = _generatorOptions$def2 === void 0 ? DEFAULT_OPTIONS : _generatorOptions$def2;
+    return function createPopper(reference, popper, options) {
+      if (options === void 0) {
+        options = defaultOptions;
+      }
+
+      var state = {
+        placement: 'bottom',
+        orderedModifiers: [],
+        options: Object.assign({}, DEFAULT_OPTIONS, defaultOptions),
+        modifiersData: {},
+        elements: {
+          reference: reference,
+          popper: popper
+        },
+        attributes: {},
+        styles: {}
+      };
+      var effectCleanupFns = [];
+      var isDestroyed = false;
+      var instance = {
+        state: state,
+        setOptions: function setOptions(options) {
+          cleanupModifierEffects();
+          state.options = Object.assign({}, defaultOptions, state.options, options);
+          state.scrollParents = {
+            reference: isElement$1(reference) ? listScrollParents(reference) : reference.contextElement ? listScrollParents(reference.contextElement) : [],
+            popper: listScrollParents(popper)
+          }; // Orders the modifiers based on their dependencies and `phase`
+          // properties
+
+          var orderedModifiers = orderModifiers(mergeByName([].concat(defaultModifiers, state.options.modifiers))); // Strip out disabled modifiers
+
+          state.orderedModifiers = orderedModifiers.filter(function (m) {
+            return m.enabled;
+          }); // Validate the provided modifiers so that the consumer will get warned
+          // if one of the modifiers is invalid for any reason
+
+          {
+            var modifiers = uniqueBy([].concat(orderedModifiers, state.options.modifiers), function (_ref) {
+              var name = _ref.name;
+              return name;
+            });
+            validateModifiers(modifiers);
+
+            if (getBasePlacement$1(state.options.placement) === auto) {
+              var flipModifier = state.orderedModifiers.find(function (_ref2) {
+                var name = _ref2.name;
+                return name === 'flip';
+              });
+
+              if (!flipModifier) {
+                console.error(['Popper: "auto" placements require the "flip" modifier be', 'present and enabled to work.'].join(' '));
+              }
+            }
+
+            var _getComputedStyle = getComputedStyle$1(popper),
+                marginTop = _getComputedStyle.marginTop,
+                marginRight = _getComputedStyle.marginRight,
+                marginBottom = _getComputedStyle.marginBottom,
+                marginLeft = _getComputedStyle.marginLeft; // We no longer take into account `margins` on the popper, and it can
+            // cause bugs with positioning, so we'll warn the consumer
+
+
+            if ([marginTop, marginRight, marginBottom, marginLeft].some(function (margin) {
+              return parseFloat(margin);
+            })) {
+              console.warn(['Popper: CSS "margin" styles cannot be used to apply padding', 'between the popper and its reference element or boundary.', 'To replicate margin, use the `offset` modifier, as well as', 'the `padding` option in the `preventOverflow` and `flip`', 'modifiers.'].join(' '));
+            }
+          }
+
+          runModifierEffects();
+          return instance.update();
+        },
+        // Sync update – it will always be executed, even if not necessary. This
+        // is useful for low frequency updates where sync behavior simplifies the
+        // logic.
+        // For high frequency updates (e.g. `resize` and `scroll` events), always
+        // prefer the async Popper#update method
+        forceUpdate: function forceUpdate() {
+          if (isDestroyed) {
+            return;
+          }
+
+          var _state$elements = state.elements,
+              reference = _state$elements.reference,
+              popper = _state$elements.popper; // Don't proceed if `reference` or `popper` are not valid elements
+          // anymore
+
+          if (!areValidElements(reference, popper)) {
+            {
+              console.error(INVALID_ELEMENT_ERROR);
+            }
+
+            return;
+          } // Store the reference and popper rects to be read by modifiers
+
+
+          state.rects = {
+            reference: getCompositeRect(reference, getOffsetParent(popper), state.options.strategy === 'fixed'),
+            popper: getLayoutRect(popper)
+          }; // Modifiers have the ability to reset the current update cycle. The
+          // most common use case for this is the `flip` modifier changing the
+          // placement, which then needs to re-run all the modifiers, because the
+          // logic was previously ran for the previous placement and is therefore
+          // stale/incorrect
+
+          state.reset = false;
+          state.placement = state.options.placement; // On each update cycle, the `modifiersData` property for each modifier
+          // is filled with the initial data specified by the modifier. This means
+          // it doesn't persist and is fresh on each update.
+          // To ensure persistent data, use `${name}#persistent`
+
+          state.orderedModifiers.forEach(function (modifier) {
+            return state.modifiersData[modifier.name] = Object.assign({}, modifier.data);
+          });
+          var __debug_loops__ = 0;
+
+          for (var index = 0; index < state.orderedModifiers.length; index++) {
+            {
+              __debug_loops__ += 1;
+
+              if (__debug_loops__ > 100) {
+                console.error(INFINITE_LOOP_ERROR);
+                break;
+              }
+            }
+
+            if (state.reset === true) {
+              state.reset = false;
+              index = -1;
+              continue;
+            }
+
+            var _state$orderedModifie = state.orderedModifiers[index],
+                fn = _state$orderedModifie.fn,
+                _state$orderedModifie2 = _state$orderedModifie.options,
+                _options = _state$orderedModifie2 === void 0 ? {} : _state$orderedModifie2,
+                name = _state$orderedModifie.name;
+
+            if (typeof fn === 'function') {
+              state = fn({
+                state: state,
+                options: _options,
+                name: name,
+                instance: instance
+              }) || state;
+            }
+          }
+        },
+        // Async and optimistically optimized update – it will not be executed if
+        // not necessary (debounced to run at most once-per-tick)
+        update: debounce$2(function () {
+          return new Promise(function (resolve) {
+            instance.forceUpdate();
+            resolve(state);
+          });
+        }),
+        destroy: function destroy() {
+          cleanupModifierEffects();
+          isDestroyed = true;
+        }
+      };
+
+      if (!areValidElements(reference, popper)) {
+        {
+          console.error(INVALID_ELEMENT_ERROR);
+        }
+
+        return instance;
+      }
+
+      instance.setOptions(options).then(function (state) {
+        if (!isDestroyed && options.onFirstUpdate) {
+          options.onFirstUpdate(state);
+        }
+      }); // Modifiers have the ability to execute arbitrary code before the first
+      // update cycle runs. They will be executed in the same order as the update
+      // cycle. This is useful when a modifier adds some persistent data that
+      // other modifiers need to use, but the modifier is run after the dependent
+      // one.
+
+      function runModifierEffects() {
+        state.orderedModifiers.forEach(function (_ref3) {
+          var name = _ref3.name,
+              _ref3$options = _ref3.options,
+              options = _ref3$options === void 0 ? {} : _ref3$options,
+              effect = _ref3.effect;
+
+          if (typeof effect === 'function') {
+            var cleanupFn = effect({
+              state: state,
+              name: name,
+              instance: instance,
+              options: options
+            });
+
+            var noopFn = function noopFn() {};
+
+            effectCleanupFns.push(cleanupFn || noopFn);
+          }
+        });
+      }
+
+      function cleanupModifierEffects() {
+        effectCleanupFns.forEach(function (fn) {
+          return fn();
+        });
+        effectCleanupFns = [];
+      }
+
+      return instance;
+    };
+  }
+
+  var defaultModifiers = [eventListeners, popperOffsets$1, computeStyles$1, applyStyles$1, offset$1, flip$1, preventOverflow$1, arrow$3, hide$1];
+  var createPopper = /*#__PURE__*/popperGenerator({
+    defaultModifiers: defaultModifiers
+  }); // eslint-disable-next-line import/no-unused-modules
+
+  /**!
+  * tippy.js v6.3.1
+  * (c) 2017-2021 atomiks
+  * MIT License
+  */
+  var BOX_CLASS = "tippy-box";
+  var CONTENT_CLASS = "tippy-content";
+  var BACKDROP_CLASS = "tippy-backdrop";
+  var ARROW_CLASS = "tippy-arrow";
+  var SVG_ARROW_CLASS = "tippy-svg-arrow";
+  var TOUCH_OPTIONS = {
+    passive: true,
+    capture: true
+  };
+
+  function hasOwnProperty$1(obj, key) {
+    return {}.hasOwnProperty.call(obj, key);
+  }
+  function getValueAtIndexOrReturn(value, index, defaultValue) {
+    if (Array.isArray(value)) {
+      var v = value[index];
+      return v == null ? Array.isArray(defaultValue) ? defaultValue[index] : defaultValue : v;
+    }
+
+    return value;
+  }
+  function isType(value, type) {
+    var str = {}.toString.call(value);
+    return str.indexOf('[object') === 0 && str.indexOf(type + "]") > -1;
+  }
+  function invokeWithArgsOrReturn(value, args) {
+    return typeof value === 'function' ? value.apply(void 0, args) : value;
+  }
+  function debounce$1(fn, ms) {
+    // Avoid wrapping in `setTimeout` if ms is 0 anyway
+    if (ms === 0) {
+      return fn;
+    }
+
+    var timeout;
+    return function (arg) {
+      clearTimeout(timeout);
+      timeout = setTimeout(function () {
+        fn(arg);
+      }, ms);
+    };
+  }
+  function removeProperties(obj, keys) {
+    var clone = Object.assign({}, obj);
+    keys.forEach(function (key) {
+      delete clone[key];
+    });
+    return clone;
+  }
+  function splitBySpaces(value) {
+    return value.split(/\s+/).filter(Boolean);
+  }
+  function normalizeToArray(value) {
+    return [].concat(value);
+  }
+  function pushIfUnique(arr, value) {
+    if (arr.indexOf(value) === -1) {
+      arr.push(value);
+    }
+  }
+  function unique(arr) {
+    return arr.filter(function (item, index) {
+      return arr.indexOf(item) === index;
+    });
+  }
+  function getBasePlacement(placement) {
+    return placement.split('-')[0];
+  }
+  function arrayFrom(value) {
+    return [].slice.call(value);
+  }
+  function removeUndefinedProps(obj) {
+    return Object.keys(obj).reduce(function (acc, key) {
+      if (obj[key] !== undefined) {
+        acc[key] = obj[key];
+      }
+
+      return acc;
+    }, {});
+  }
+
+  function div() {
+    return document.createElement('div');
+  }
+  function isElement(value) {
+    return ['Element', 'Fragment'].some(function (type) {
+      return isType(value, type);
+    });
+  }
+  function isNodeList(value) {
+    return isType(value, 'NodeList');
+  }
+  function isMouseEvent(value) {
+    return isType(value, 'MouseEvent');
+  }
+  function isReferenceElement(value) {
+    return !!(value && value._tippy && value._tippy.reference === value);
+  }
+  function getArrayOfElements(value) {
+    if (isElement(value)) {
+      return [value];
+    }
+
+    if (isNodeList(value)) {
+      return arrayFrom(value);
+    }
+
+    if (Array.isArray(value)) {
+      return value;
+    }
+
+    return arrayFrom(document.querySelectorAll(value));
+  }
+  function setTransitionDuration(els, value) {
+    els.forEach(function (el) {
+      if (el) {
+        el.style.transitionDuration = value + "ms";
+      }
+    });
+  }
+  function setVisibilityState(els, state) {
+    els.forEach(function (el) {
+      if (el) {
+        el.setAttribute('data-state', state);
+      }
+    });
+  }
+  function getOwnerDocument(elementOrElements) {
+    var _element$ownerDocumen;
+
+    var _normalizeToArray = normalizeToArray(elementOrElements),
+        element = _normalizeToArray[0]; // Elements created via a <template> have an ownerDocument with no reference to the body
+
+
+    return (element == null ? void 0 : (_element$ownerDocumen = element.ownerDocument) == null ? void 0 : _element$ownerDocumen.body) ? element.ownerDocument : document;
+  }
+  function isCursorOutsideInteractiveBorder(popperTreeData, event) {
+    var clientX = event.clientX,
+        clientY = event.clientY;
+    return popperTreeData.every(function (_ref) {
+      var popperRect = _ref.popperRect,
+          popperState = _ref.popperState,
+          props = _ref.props;
+      var interactiveBorder = props.interactiveBorder;
+      var basePlacement = getBasePlacement(popperState.placement);
+      var offsetData = popperState.modifiersData.offset;
+
+      if (!offsetData) {
+        return true;
+      }
+
+      var topDistance = basePlacement === 'bottom' ? offsetData.top.y : 0;
+      var bottomDistance = basePlacement === 'top' ? offsetData.bottom.y : 0;
+      var leftDistance = basePlacement === 'right' ? offsetData.left.x : 0;
+      var rightDistance = basePlacement === 'left' ? offsetData.right.x : 0;
+      var exceedsTop = popperRect.top - clientY + topDistance > interactiveBorder;
+      var exceedsBottom = clientY - popperRect.bottom - bottomDistance > interactiveBorder;
+      var exceedsLeft = popperRect.left - clientX + leftDistance > interactiveBorder;
+      var exceedsRight = clientX - popperRect.right - rightDistance > interactiveBorder;
+      return exceedsTop || exceedsBottom || exceedsLeft || exceedsRight;
+    });
+  }
+  function updateTransitionEndListener(box, action, listener) {
+    var method = action + "EventListener"; // some browsers apparently support `transition` (unprefixed) but only fire
+    // `webkitTransitionEnd`...
+
+    ['transitionend', 'webkitTransitionEnd'].forEach(function (event) {
+      box[method](event, listener);
+    });
+  }
+
+  var currentInput = {
+    isTouch: false
+  };
+  var lastMouseMoveTime = 0;
+  /**
+   * When a `touchstart` event is fired, it's assumed the user is using touch
+   * input. We'll bind a `mousemove` event listener to listen for mouse input in
+   * the future. This way, the `isTouch` property is fully dynamic and will handle
+   * hybrid devices that use a mix of touch + mouse input.
+   */
+
+  function onDocumentTouchStart() {
+    if (currentInput.isTouch) {
+      return;
+    }
+
+    currentInput.isTouch = true;
+
+    if (window.performance) {
+      document.addEventListener('mousemove', onDocumentMouseMove);
+    }
+  }
+  /**
+   * When two `mousemove` event are fired consecutively within 20ms, it's assumed
+   * the user is using mouse input again. `mousemove` can fire on touch devices as
+   * well, but very rarely that quickly.
+   */
+
+  function onDocumentMouseMove() {
+    var now = performance.now();
+
+    if (now - lastMouseMoveTime < 20) {
+      currentInput.isTouch = false;
+      document.removeEventListener('mousemove', onDocumentMouseMove);
+    }
+
+    lastMouseMoveTime = now;
+  }
+  /**
+   * When an element is in focus and has a tippy, leaving the tab/window and
+   * returning causes it to show again. For mouse users this is unexpected, but
+   * for keyboard use it makes sense.
+   * TODO: find a better technique to solve this problem
+   */
+
+  function onWindowBlur() {
+    var activeElement = document.activeElement;
+
+    if (isReferenceElement(activeElement)) {
+      var instance = activeElement._tippy;
+
+      if (activeElement.blur && !instance.state.isVisible) {
+        activeElement.blur();
+      }
+    }
+  }
+  function bindGlobalEventListeners() {
+    document.addEventListener('touchstart', onDocumentTouchStart, TOUCH_OPTIONS);
+    window.addEventListener('blur', onWindowBlur);
+  }
+
+  var isBrowser = typeof window !== 'undefined' && typeof document !== 'undefined';
+  var ua = isBrowser ? navigator.userAgent : '';
+  var isIE = /MSIE |Trident\//.test(ua);
+
+  function createMemoryLeakWarning(method) {
+    var txt = method === 'destroy' ? 'n already-' : ' ';
+    return [method + "() was called on a" + txt + "destroyed instance. This is a no-op but", 'indicates a potential memory leak.'].join(' ');
+  }
+  function clean(value) {
+    var spacesAndTabs = /[ \t]{2,}/g;
+    var lineStartWithSpaces = /^[ \t]*/gm;
+    return value.replace(spacesAndTabs, ' ').replace(lineStartWithSpaces, '').trim();
+  }
+
+  function getDevMessage(message) {
+    return clean("\n  %ctippy.js\n\n  %c" + clean(message) + "\n\n  %c\uD83D\uDC77\u200D This is a development-only message. It will be removed in production.\n  ");
+  }
+
+  function getFormattedMessage(message) {
+    return [getDevMessage(message), // title
+    'color: #00C584; font-size: 1.3em; font-weight: bold;', // message
+    'line-height: 1.5', // footer
+    'color: #a6a095;'];
+  } // Assume warnings and errors never have the same message
+
+  var visitedMessages;
+
+  {
+    resetVisitedMessages();
+  }
+
+  function resetVisitedMessages() {
+    visitedMessages = new Set();
+  }
+  function warnWhen(condition, message) {
+    if (condition && !visitedMessages.has(message)) {
+      var _console;
+
+      visitedMessages.add(message);
+
+      (_console = console).warn.apply(_console, getFormattedMessage(message));
+    }
+  }
+  function errorWhen(condition, message) {
+    if (condition && !visitedMessages.has(message)) {
+      var _console2;
+
+      visitedMessages.add(message);
+
+      (_console2 = console).error.apply(_console2, getFormattedMessage(message));
+    }
+  }
+  function validateTargets(targets) {
+    var didPassFalsyValue = !targets;
+    var didPassPlainObject = Object.prototype.toString.call(targets) === '[object Object]' && !targets.addEventListener;
+    errorWhen(didPassFalsyValue, ['tippy() was passed', '`' + String(targets) + '`', 'as its targets (first) argument. Valid types are: String, Element,', 'Element[], or NodeList.'].join(' '));
+    errorWhen(didPassPlainObject, ['tippy() was passed a plain object which is not supported as an argument', 'for virtual positioning. Use props.getReferenceClientRect instead.'].join(' '));
+  }
+
+  var pluginProps = {
+    animateFill: false,
+    followCursor: false,
+    inlinePositioning: false,
+    sticky: false
+  };
+  var renderProps = {
+    allowHTML: false,
+    animation: 'fade',
+    arrow: true,
+    content: '',
+    inertia: false,
+    maxWidth: 350,
+    role: 'tooltip',
+    theme: '',
+    zIndex: 9999
+  };
+  var defaultProps = Object.assign({
+    appendTo: function appendTo() {
+      return document.body;
+    },
+    aria: {
+      content: 'auto',
+      expanded: 'auto'
+    },
+    delay: 0,
+    duration: [300, 250],
+    getReferenceClientRect: null,
+    hideOnClick: true,
+    ignoreAttributes: false,
+    interactive: false,
+    interactiveBorder: 2,
+    interactiveDebounce: 0,
+    moveTransition: '',
+    offset: [0, 10],
+    onAfterUpdate: function onAfterUpdate() {},
+    onBeforeUpdate: function onBeforeUpdate() {},
+    onCreate: function onCreate() {},
+    onDestroy: function onDestroy() {},
+    onHidden: function onHidden() {},
+    onHide: function onHide() {},
+    onMount: function onMount() {},
+    onShow: function onShow() {},
+    onShown: function onShown() {},
+    onTrigger: function onTrigger() {},
+    onUntrigger: function onUntrigger() {},
+    onClickOutside: function onClickOutside() {},
+    placement: 'top',
+    plugins: [],
+    popperOptions: {},
+    render: null,
+    showOnCreate: false,
+    touch: true,
+    trigger: 'mouseenter focus',
+    triggerTarget: null
+  }, pluginProps, {}, renderProps);
+  var defaultKeys = Object.keys(defaultProps);
+  var setDefaultProps = function setDefaultProps(partialProps) {
+    /* istanbul ignore else */
+    {
+      validateProps(partialProps, []);
+    }
+
+    var keys = Object.keys(partialProps);
+    keys.forEach(function (key) {
+      defaultProps[key] = partialProps[key];
+    });
+  };
+  function getExtendedPassedProps(passedProps) {
+    var plugins = passedProps.plugins || [];
+    var pluginProps = plugins.reduce(function (acc, plugin) {
+      var name = plugin.name,
+          defaultValue = plugin.defaultValue;
+
+      if (name) {
+        acc[name] = passedProps[name] !== undefined ? passedProps[name] : defaultValue;
+      }
+
+      return acc;
+    }, {});
+    return Object.assign({}, passedProps, {}, pluginProps);
+  }
+  function getDataAttributeProps(reference, plugins) {
+    var propKeys = plugins ? Object.keys(getExtendedPassedProps(Object.assign({}, defaultProps, {
+      plugins: plugins
+    }))) : defaultKeys;
+    var props = propKeys.reduce(function (acc, key) {
+      var valueAsString = (reference.getAttribute("data-tippy-" + key) || '').trim();
+
+      if (!valueAsString) {
+        return acc;
+      }
+
+      if (key === 'content') {
+        acc[key] = valueAsString;
+      } else {
+        try {
+          acc[key] = JSON.parse(valueAsString);
+        } catch (e) {
+          acc[key] = valueAsString;
+        }
+      }
+
+      return acc;
+    }, {});
+    return props;
+  }
+  function evaluateProps(reference, props) {
+    var out = Object.assign({}, props, {
+      content: invokeWithArgsOrReturn(props.content, [reference])
+    }, props.ignoreAttributes ? {} : getDataAttributeProps(reference, props.plugins));
+    out.aria = Object.assign({}, defaultProps.aria, {}, out.aria);
+    out.aria = {
+      expanded: out.aria.expanded === 'auto' ? props.interactive : out.aria.expanded,
+      content: out.aria.content === 'auto' ? props.interactive ? null : 'describedby' : out.aria.content
+    };
+    return out;
+  }
+  function validateProps(partialProps, plugins) {
+    if (partialProps === void 0) {
+      partialProps = {};
+    }
+
+    if (plugins === void 0) {
+      plugins = [];
+    }
+
+    var keys = Object.keys(partialProps);
+    keys.forEach(function (prop) {
+      var nonPluginProps = removeProperties(defaultProps, Object.keys(pluginProps));
+      var didPassUnknownProp = !hasOwnProperty$1(nonPluginProps, prop); // Check if the prop exists in `plugins`
+
+      if (didPassUnknownProp) {
+        didPassUnknownProp = plugins.filter(function (plugin) {
+          return plugin.name === prop;
+        }).length === 0;
+      }
+
+      warnWhen(didPassUnknownProp, ["`" + prop + "`", "is not a valid prop. You may have spelled it incorrectly, or if it's", 'a plugin, forgot to pass it in an array as props.plugins.', '\n\n', 'All props: https://atomiks.github.io/tippyjs/v6/all-props/\n', 'Plugins: https://atomiks.github.io/tippyjs/v6/plugins/'].join(' '));
+    });
+  }
+
+  var innerHTML = function innerHTML() {
+    return 'innerHTML';
+  };
+
+  function dangerouslySetInnerHTML(element, html) {
+    element[innerHTML()] = html;
+  }
+
+  function createArrowElement(value) {
+    var arrow = div();
+
+    if (value === true) {
+      arrow.className = ARROW_CLASS;
+    } else {
+      arrow.className = SVG_ARROW_CLASS;
+
+      if (isElement(value)) {
+        arrow.appendChild(value);
+      } else {
+        dangerouslySetInnerHTML(arrow, value);
+      }
+    }
+
+    return arrow;
+  }
+
+  function setContent(content, props) {
+    if (isElement(props.content)) {
+      dangerouslySetInnerHTML(content, '');
+      content.appendChild(props.content);
+    } else if (typeof props.content !== 'function') {
+      if (props.allowHTML) {
+        dangerouslySetInnerHTML(content, props.content);
+      } else {
+        content.textContent = props.content;
+      }
+    }
+  }
+  function getChildren(popper) {
+    var box = popper.firstElementChild;
+    var boxChildren = arrayFrom(box.children);
+    return {
+      box: box,
+      content: boxChildren.find(function (node) {
+        return node.classList.contains(CONTENT_CLASS);
+      }),
+      arrow: boxChildren.find(function (node) {
+        return node.classList.contains(ARROW_CLASS) || node.classList.contains(SVG_ARROW_CLASS);
+      }),
+      backdrop: boxChildren.find(function (node) {
+        return node.classList.contains(BACKDROP_CLASS);
+      })
+    };
+  }
+  function render(instance) {
+    var popper = div();
+    var box = div();
+    box.className = BOX_CLASS;
+    box.setAttribute('data-state', 'hidden');
+    box.setAttribute('tabindex', '-1');
+    var content = div();
+    content.className = CONTENT_CLASS;
+    content.setAttribute('data-state', 'hidden');
+    setContent(content, instance.props);
+    popper.appendChild(box);
+    box.appendChild(content);
+    onUpdate(instance.props, instance.props);
+
+    function onUpdate(prevProps, nextProps) {
+      var _getChildren = getChildren(popper),
+          box = _getChildren.box,
+          content = _getChildren.content,
+          arrow = _getChildren.arrow;
+
+      if (nextProps.theme) {
+        box.setAttribute('data-theme', nextProps.theme);
+      } else {
+        box.removeAttribute('data-theme');
+      }
+
+      if (typeof nextProps.animation === 'string') {
+        box.setAttribute('data-animation', nextProps.animation);
+      } else {
+        box.removeAttribute('data-animation');
+      }
+
+      if (nextProps.inertia) {
+        box.setAttribute('data-inertia', '');
+      } else {
+        box.removeAttribute('data-inertia');
+      }
+
+      box.style.maxWidth = typeof nextProps.maxWidth === 'number' ? nextProps.maxWidth + "px" : nextProps.maxWidth;
+
+      if (nextProps.role) {
+        box.setAttribute('role', nextProps.role);
+      } else {
+        box.removeAttribute('role');
+      }
+
+      if (prevProps.content !== nextProps.content || prevProps.allowHTML !== nextProps.allowHTML) {
+        setContent(content, instance.props);
+      }
+
+      if (nextProps.arrow) {
+        if (!arrow) {
+          box.appendChild(createArrowElement(nextProps.arrow));
+        } else if (prevProps.arrow !== nextProps.arrow) {
+          box.removeChild(arrow);
+          box.appendChild(createArrowElement(nextProps.arrow));
+        }
+      } else if (arrow) {
+        box.removeChild(arrow);
+      }
+    }
+
+    return {
+      popper: popper,
+      onUpdate: onUpdate
+    };
+  } // Runtime check to identify if the render function is the default one; this
+  // way we can apply default CSS transitions logic and it can be tree-shaken away
+
+  render.$$tippy = true;
+
+  var idCounter = 1;
+  var mouseMoveListeners = []; // Used by `hideAll()`
+
+  var mountedInstances = [];
+  function createTippy(reference, passedProps) {
+    var props = evaluateProps(reference, Object.assign({}, defaultProps, {}, getExtendedPassedProps(removeUndefinedProps(passedProps)))); // ===========================================================================
+    // 🔒 Private members
+    // ===========================================================================
+
+    var showTimeout;
+    var hideTimeout;
+    var scheduleHideAnimationFrame;
+    var isVisibleFromClick = false;
+    var didHideDueToDocumentMouseDown = false;
+    var didTouchMove = false;
+    var ignoreOnFirstUpdate = false;
+    var lastTriggerEvent;
+    var currentTransitionEndListener;
+    var onFirstUpdate;
+    var listeners = [];
+    var debouncedOnMouseMove = debounce$1(onMouseMove, props.interactiveDebounce);
+    var currentTarget; // ===========================================================================
+    // 🔑 Public members
+    // ===========================================================================
+
+    var id = idCounter++;
+    var popperInstance = null;
+    var plugins = unique(props.plugins);
+    var state = {
+      // Is the instance currently enabled?
+      isEnabled: true,
+      // Is the tippy currently showing and not transitioning out?
+      isVisible: false,
+      // Has the instance been destroyed?
+      isDestroyed: false,
+      // Is the tippy currently mounted to the DOM?
+      isMounted: false,
+      // Has the tippy finished transitioning in?
+      isShown: false
+    };
+    var instance = {
+      // properties
+      id: id,
+      reference: reference,
+      popper: div(),
+      popperInstance: popperInstance,
+      props: props,
+      state: state,
+      plugins: plugins,
+      // methods
+      clearDelayTimeouts: clearDelayTimeouts,
+      setProps: setProps,
+      setContent: setContent,
+      show: show,
+      hide: hide,
+      hideWithInteractivity: hideWithInteractivity,
+      enable: enable,
+      disable: disable,
+      unmount: unmount,
+      destroy: destroy
+    }; // TODO: Investigate why this early return causes a TDZ error in the tests —
+    // it doesn't seem to happen in the browser
+
+    /* istanbul ignore if */
+
+    if (!props.render) {
+      {
+        errorWhen(true, 'render() function has not been supplied.');
+      }
+
+      return instance;
+    } // ===========================================================================
+    // Initial mutations
+    // ===========================================================================
+
+
+    var _props$render = props.render(instance),
+        popper = _props$render.popper,
+        onUpdate = _props$render.onUpdate;
+
+    popper.setAttribute('data-tippy-root', '');
+    popper.id = "tippy-" + instance.id;
+    instance.popper = popper;
+    reference._tippy = instance;
+    popper._tippy = instance;
+    var pluginsHooks = plugins.map(function (plugin) {
+      return plugin.fn(instance);
+    });
+    var hasAriaExpanded = reference.hasAttribute('aria-expanded');
+    addListeners();
+    handleAriaExpandedAttribute();
+    handleStyles();
+    invokeHook('onCreate', [instance]);
+
+    if (props.showOnCreate) {
+      scheduleShow();
+    } // Prevent a tippy with a delay from hiding if the cursor left then returned
+    // before it started hiding
+
+
+    popper.addEventListener('mouseenter', function () {
+      if (instance.props.interactive && instance.state.isVisible) {
+        instance.clearDelayTimeouts();
+      }
+    });
+    popper.addEventListener('mouseleave', function (event) {
+      if (instance.props.interactive && instance.props.trigger.indexOf('mouseenter') >= 0) {
+        getDocument().addEventListener('mousemove', debouncedOnMouseMove);
+        debouncedOnMouseMove(event);
+      }
+    });
+    return instance; // ===========================================================================
+    // 🔒 Private methods
+    // ===========================================================================
+
+    function getNormalizedTouchSettings() {
+      var touch = instance.props.touch;
+      return Array.isArray(touch) ? touch : [touch, 0];
+    }
+
+    function getIsCustomTouchBehavior() {
+      return getNormalizedTouchSettings()[0] === 'hold';
+    }
+
+    function getIsDefaultRenderFn() {
+      var _instance$props$rende;
+
+      // @ts-ignore
+      return !!((_instance$props$rende = instance.props.render) == null ? void 0 : _instance$props$rende.$$tippy);
+    }
+
+    function getCurrentTarget() {
+      return currentTarget || reference;
+    }
+
+    function getDocument() {
+      var parent = getCurrentTarget().parentNode;
+      return parent ? getOwnerDocument(parent) : document;
+    }
+
+    function getDefaultTemplateChildren() {
+      return getChildren(popper);
+    }
+
+    function getDelay(isShow) {
+      // For touch or keyboard input, force `0` delay for UX reasons
+      // Also if the instance is mounted but not visible (transitioning out),
+      // ignore delay
+      if (instance.state.isMounted && !instance.state.isVisible || currentInput.isTouch || lastTriggerEvent && lastTriggerEvent.type === 'focus') {
+        return 0;
+      }
+
+      return getValueAtIndexOrReturn(instance.props.delay, isShow ? 0 : 1, defaultProps.delay);
+    }
+
+    function handleStyles() {
+      popper.style.pointerEvents = instance.props.interactive && instance.state.isVisible ? '' : 'none';
+      popper.style.zIndex = "" + instance.props.zIndex;
+    }
+
+    function invokeHook(hook, args, shouldInvokePropsHook) {
+      if (shouldInvokePropsHook === void 0) {
+        shouldInvokePropsHook = true;
+      }
+
+      pluginsHooks.forEach(function (pluginHooks) {
+        if (pluginHooks[hook]) {
+          pluginHooks[hook].apply(void 0, args);
+        }
+      });
+
+      if (shouldInvokePropsHook) {
+        var _instance$props;
+
+        (_instance$props = instance.props)[hook].apply(_instance$props, args);
+      }
+    }
+
+    function handleAriaContentAttribute() {
+      var aria = instance.props.aria;
+
+      if (!aria.content) {
+        return;
+      }
+
+      var attr = "aria-" + aria.content;
+      var id = popper.id;
+      var nodes = normalizeToArray(instance.props.triggerTarget || reference);
+      nodes.forEach(function (node) {
+        var currentValue = node.getAttribute(attr);
+
+        if (instance.state.isVisible) {
+          node.setAttribute(attr, currentValue ? currentValue + " " + id : id);
+        } else {
+          var nextValue = currentValue && currentValue.replace(id, '').trim();
+
+          if (nextValue) {
+            node.setAttribute(attr, nextValue);
+          } else {
+            node.removeAttribute(attr);
+          }
+        }
+      });
+    }
+
+    function handleAriaExpandedAttribute() {
+      if (hasAriaExpanded || !instance.props.aria.expanded) {
+        return;
+      }
+
+      var nodes = normalizeToArray(instance.props.triggerTarget || reference);
+      nodes.forEach(function (node) {
+        if (instance.props.interactive) {
+          node.setAttribute('aria-expanded', instance.state.isVisible && node === getCurrentTarget() ? 'true' : 'false');
+        } else {
+          node.removeAttribute('aria-expanded');
+        }
+      });
+    }
+
+    function cleanupInteractiveMouseListeners() {
+      getDocument().removeEventListener('mousemove', debouncedOnMouseMove);
+      mouseMoveListeners = mouseMoveListeners.filter(function (listener) {
+        return listener !== debouncedOnMouseMove;
+      });
+    }
+
+    function onDocumentPress(event) {
+      // Moved finger to scroll instead of an intentional tap outside
+      if (currentInput.isTouch) {
+        if (didTouchMove || event.type === 'mousedown') {
+          return;
+        }
+      } // Clicked on interactive popper
+
+
+      if (instance.props.interactive && popper.contains(event.target)) {
+        return;
+      } // Clicked on the event listeners target
+
+
+      if (getCurrentTarget().contains(event.target)) {
+        if (currentInput.isTouch) {
+          return;
+        }
+
+        if (instance.state.isVisible && instance.props.trigger.indexOf('click') >= 0) {
+          return;
+        }
+      } else {
+        invokeHook('onClickOutside', [instance, event]);
+      }
+
+      if (instance.props.hideOnClick === true) {
+        instance.clearDelayTimeouts();
+        instance.hide(); // `mousedown` event is fired right before `focus` if pressing the
+        // currentTarget. This lets a tippy with `focus` trigger know that it
+        // should not show
+
+        didHideDueToDocumentMouseDown = true;
+        setTimeout(function () {
+          didHideDueToDocumentMouseDown = false;
+        }); // The listener gets added in `scheduleShow()`, but this may be hiding it
+        // before it shows, and hide()'s early bail-out behavior can prevent it
+        // from being cleaned up
+
+        if (!instance.state.isMounted) {
+          removeDocumentPress();
+        }
+      }
+    }
+
+    function onTouchMove() {
+      didTouchMove = true;
+    }
+
+    function onTouchStart() {
+      didTouchMove = false;
+    }
+
+    function addDocumentPress() {
+      var doc = getDocument();
+      doc.addEventListener('mousedown', onDocumentPress, true);
+      doc.addEventListener('touchend', onDocumentPress, TOUCH_OPTIONS);
+      doc.addEventListener('touchstart', onTouchStart, TOUCH_OPTIONS);
+      doc.addEventListener('touchmove', onTouchMove, TOUCH_OPTIONS);
+    }
+
+    function removeDocumentPress() {
+      var doc = getDocument();
+      doc.removeEventListener('mousedown', onDocumentPress, true);
+      doc.removeEventListener('touchend', onDocumentPress, TOUCH_OPTIONS);
+      doc.removeEventListener('touchstart', onTouchStart, TOUCH_OPTIONS);
+      doc.removeEventListener('touchmove', onTouchMove, TOUCH_OPTIONS);
+    }
+
+    function onTransitionedOut(duration, callback) {
+      onTransitionEnd(duration, function () {
+        if (!instance.state.isVisible && popper.parentNode && popper.parentNode.contains(popper)) {
+          callback();
+        }
+      });
+    }
+
+    function onTransitionedIn(duration, callback) {
+      onTransitionEnd(duration, callback);
+    }
+
+    function onTransitionEnd(duration, callback) {
+      var box = getDefaultTemplateChildren().box;
+
+      function listener(event) {
+        if (event.target === box) {
+          updateTransitionEndListener(box, 'remove', listener);
+          callback();
+        }
+      } // Make callback synchronous if duration is 0
+      // `transitionend` won't fire otherwise
+
+
+      if (duration === 0) {
+        return callback();
+      }
+
+      updateTransitionEndListener(box, 'remove', currentTransitionEndListener);
+      updateTransitionEndListener(box, 'add', listener);
+      currentTransitionEndListener = listener;
+    }
+
+    function on(eventType, handler, options) {
+      if (options === void 0) {
+        options = false;
+      }
+
+      var nodes = normalizeToArray(instance.props.triggerTarget || reference);
+      nodes.forEach(function (node) {
+        node.addEventListener(eventType, handler, options);
+        listeners.push({
+          node: node,
+          eventType: eventType,
+          handler: handler,
+          options: options
+        });
+      });
+    }
+
+    function addListeners() {
+      if (getIsCustomTouchBehavior()) {
+        on('touchstart', onTrigger, {
+          passive: true
+        });
+        on('touchend', onMouseLeave, {
+          passive: true
+        });
+      }
+
+      splitBySpaces(instance.props.trigger).forEach(function (eventType) {
+        if (eventType === 'manual') {
+          return;
+        }
+
+        on(eventType, onTrigger);
+
+        switch (eventType) {
+          case 'mouseenter':
+            on('mouseleave', onMouseLeave);
+            break;
+
+          case 'focus':
+            on(isIE ? 'focusout' : 'blur', onBlurOrFocusOut);
+            break;
+
+          case 'focusin':
+            on('focusout', onBlurOrFocusOut);
+            break;
+        }
+      });
+    }
+
+    function removeListeners() {
+      listeners.forEach(function (_ref) {
+        var node = _ref.node,
+            eventType = _ref.eventType,
+            handler = _ref.handler,
+            options = _ref.options;
+        node.removeEventListener(eventType, handler, options);
+      });
+      listeners = [];
+    }
+
+    function onTrigger(event) {
+      var _lastTriggerEvent;
+
+      var shouldScheduleClickHide = false;
+
+      if (!instance.state.isEnabled || isEventListenerStopped(event) || didHideDueToDocumentMouseDown) {
+        return;
+      }
+
+      var wasFocused = ((_lastTriggerEvent = lastTriggerEvent) == null ? void 0 : _lastTriggerEvent.type) === 'focus';
+      lastTriggerEvent = event;
+      currentTarget = event.currentTarget;
+      handleAriaExpandedAttribute();
+
+      if (!instance.state.isVisible && isMouseEvent(event)) {
+        // If scrolling, `mouseenter` events can be fired if the cursor lands
+        // over a new target, but `mousemove` events don't get fired. This
+        // causes interactive tooltips to get stuck open until the cursor is
+        // moved
+        mouseMoveListeners.forEach(function (listener) {
+          return listener(event);
+        });
+      } // Toggle show/hide when clicking click-triggered tooltips
+
+
+      if (event.type === 'click' && (instance.props.trigger.indexOf('mouseenter') < 0 || isVisibleFromClick) && instance.props.hideOnClick !== false && instance.state.isVisible) {
+        shouldScheduleClickHide = true;
+      } else {
+        scheduleShow(event);
+      }
+
+      if (event.type === 'click') {
+        isVisibleFromClick = !shouldScheduleClickHide;
+      }
+
+      if (shouldScheduleClickHide && !wasFocused) {
+        scheduleHide(event);
+      }
+    }
+
+    function onMouseMove(event) {
+      var target = event.target;
+      var isCursorOverReferenceOrPopper = getCurrentTarget().contains(target) || popper.contains(target);
+
+      if (event.type === 'mousemove' && isCursorOverReferenceOrPopper) {
+        return;
+      }
+
+      var popperTreeData = getNestedPopperTree().concat(popper).map(function (popper) {
+        var _instance$popperInsta;
+
+        var instance = popper._tippy;
+        var state = (_instance$popperInsta = instance.popperInstance) == null ? void 0 : _instance$popperInsta.state;
+
+        if (state) {
+          return {
+            popperRect: popper.getBoundingClientRect(),
+            popperState: state,
+            props: props
+          };
+        }
+
+        return null;
+      }).filter(Boolean);
+
+      if (isCursorOutsideInteractiveBorder(popperTreeData, event)) {
+        cleanupInteractiveMouseListeners();
+        scheduleHide(event);
+      }
+    }
+
+    function onMouseLeave(event) {
+      var shouldBail = isEventListenerStopped(event) || instance.props.trigger.indexOf('click') >= 0 && isVisibleFromClick;
+
+      if (shouldBail) {
+        return;
+      }
+
+      if (instance.props.interactive) {
+        instance.hideWithInteractivity(event);
+        return;
+      }
+
+      scheduleHide(event);
+    }
+
+    function onBlurOrFocusOut(event) {
+      if (instance.props.trigger.indexOf('focusin') < 0 && event.target !== getCurrentTarget()) {
+        return;
+      } // If focus was moved to within the popper
+
+
+      if (instance.props.interactive && event.relatedTarget && popper.contains(event.relatedTarget)) {
+        return;
+      }
+
+      scheduleHide(event);
+    }
+
+    function isEventListenerStopped(event) {
+      return currentInput.isTouch ? getIsCustomTouchBehavior() !== event.type.indexOf('touch') >= 0 : false;
+    }
+
+    function createPopperInstance() {
+      destroyPopperInstance();
+      var _instance$props2 = instance.props,
+          popperOptions = _instance$props2.popperOptions,
+          placement = _instance$props2.placement,
+          offset = _instance$props2.offset,
+          getReferenceClientRect = _instance$props2.getReferenceClientRect,
+          moveTransition = _instance$props2.moveTransition;
+      var arrow = getIsDefaultRenderFn() ? getChildren(popper).arrow : null;
+      var computedReference = getReferenceClientRect ? {
+        getBoundingClientRect: getReferenceClientRect,
+        contextElement: getReferenceClientRect.contextElement || getCurrentTarget()
+      } : reference;
+      var tippyModifier = {
+        name: '$$tippy',
+        enabled: true,
+        phase: 'beforeWrite',
+        requires: ['computeStyles'],
+        fn: function fn(_ref2) {
+          var state = _ref2.state;
+
+          if (getIsDefaultRenderFn()) {
+            var _getDefaultTemplateCh = getDefaultTemplateChildren(),
+                box = _getDefaultTemplateCh.box;
+
+            ['placement', 'reference-hidden', 'escaped'].forEach(function (attr) {
+              if (attr === 'placement') {
+                box.setAttribute('data-placement', state.placement);
+              } else {
+                if (state.attributes.popper["data-popper-" + attr]) {
+                  box.setAttribute("data-" + attr, '');
+                } else {
+                  box.removeAttribute("data-" + attr);
+                }
+              }
+            });
+            state.attributes.popper = {};
+          }
+        }
+      };
+      var modifiers = [{
+        name: 'offset',
+        options: {
+          offset: offset
+        }
+      }, {
+        name: 'preventOverflow',
+        options: {
+          padding: {
+            top: 2,
+            bottom: 2,
+            left: 5,
+            right: 5
+          }
+        }
+      }, {
+        name: 'flip',
+        options: {
+          padding: 5
+        }
+      }, {
+        name: 'computeStyles',
+        options: {
+          adaptive: !moveTransition
+        }
+      }, tippyModifier];
+
+      if (getIsDefaultRenderFn() && arrow) {
+        modifiers.push({
+          name: 'arrow',
+          options: {
+            element: arrow,
+            padding: 3
+          }
+        });
+      }
+
+      modifiers.push.apply(modifiers, (popperOptions == null ? void 0 : popperOptions.modifiers) || []);
+      instance.popperInstance = createPopper(computedReference, popper, Object.assign({}, popperOptions, {
+        placement: placement,
+        onFirstUpdate: onFirstUpdate,
+        modifiers: modifiers
+      }));
+    }
+
+    function destroyPopperInstance() {
+      if (instance.popperInstance) {
+        instance.popperInstance.destroy();
+        instance.popperInstance = null;
+      }
+    }
+
+    function mount() {
+      var appendTo = instance.props.appendTo;
+      var parentNode; // By default, we'll append the popper to the triggerTargets's parentNode so
+      // it's directly after the reference element so the elements inside the
+      // tippy can be tabbed to
+      // If there are clipping issues, the user can specify a different appendTo
+      // and ensure focus management is handled correctly manually
+
+      var node = getCurrentTarget();
+
+      if (instance.props.interactive && appendTo === defaultProps.appendTo || appendTo === 'parent') {
+        parentNode = node.parentNode;
+      } else {
+        parentNode = invokeWithArgsOrReturn(appendTo, [node]);
+      } // The popper element needs to exist on the DOM before its position can be
+      // updated as Popper needs to read its dimensions
+
+
+      if (!parentNode.contains(popper)) {
+        parentNode.appendChild(popper);
+      }
+
+      createPopperInstance();
+      /* istanbul ignore else */
+
+      {
+        // Accessibility check
+        warnWhen(instance.props.interactive && appendTo === defaultProps.appendTo && node.nextElementSibling !== popper, ['Interactive tippy element may not be accessible via keyboard', 'navigation because it is not directly after the reference element', 'in the DOM source order.', '\n\n', 'Using a wrapper <div> or <span> tag around the reference element', 'solves this by creating a new parentNode context.', '\n\n', 'Specifying `appendTo: document.body` silences this warning, but it', 'assumes you are using a focus management solution to handle', 'keyboard navigation.', '\n\n', 'See: https://atomiks.github.io/tippyjs/v6/accessibility/#interactivity'].join(' '));
+      }
+    }
+
+    function getNestedPopperTree() {
+      return arrayFrom(popper.querySelectorAll('[data-tippy-root]'));
+    }
+
+    function scheduleShow(event) {
+      instance.clearDelayTimeouts();
+
+      if (event) {
+        invokeHook('onTrigger', [instance, event]);
+      }
+
+      addDocumentPress();
+      var delay = getDelay(true);
+
+      var _getNormalizedTouchSe = getNormalizedTouchSettings(),
+          touchValue = _getNormalizedTouchSe[0],
+          touchDelay = _getNormalizedTouchSe[1];
+
+      if (currentInput.isTouch && touchValue === 'hold' && touchDelay) {
+        delay = touchDelay;
+      }
+
+      if (delay) {
+        showTimeout = setTimeout(function () {
+          instance.show();
+        }, delay);
+      } else {
+        instance.show();
+      }
+    }
+
+    function scheduleHide(event) {
+      instance.clearDelayTimeouts();
+      invokeHook('onUntrigger', [instance, event]);
+
+      if (!instance.state.isVisible) {
+        removeDocumentPress();
+        return;
+      } // For interactive tippies, scheduleHide is added to a document.body handler
+      // from onMouseLeave so must intercept scheduled hides from mousemove/leave
+      // events when trigger contains mouseenter and click, and the tip is
+      // currently shown as a result of a click.
+
+
+      if (instance.props.trigger.indexOf('mouseenter') >= 0 && instance.props.trigger.indexOf('click') >= 0 && ['mouseleave', 'mousemove'].indexOf(event.type) >= 0 && isVisibleFromClick) {
+        return;
+      }
+
+      var delay = getDelay(false);
+
+      if (delay) {
+        hideTimeout = setTimeout(function () {
+          if (instance.state.isVisible) {
+            instance.hide();
+          }
+        }, delay);
+      } else {
+        // Fixes a `transitionend` problem when it fires 1 frame too
+        // late sometimes, we don't want hide() to be called.
+        scheduleHideAnimationFrame = requestAnimationFrame(function () {
+          instance.hide();
+        });
+      }
+    } // ===========================================================================
+    // 🔑 Public methods
+    // ===========================================================================
+
+
+    function enable() {
+      instance.state.isEnabled = true;
+    }
+
+    function disable() {
+      // Disabling the instance should also hide it
+      // https://github.com/atomiks/tippy.js-react/issues/106
+      instance.hide();
+      instance.state.isEnabled = false;
+    }
+
+    function clearDelayTimeouts() {
+      clearTimeout(showTimeout);
+      clearTimeout(hideTimeout);
+      cancelAnimationFrame(scheduleHideAnimationFrame);
+    }
+
+    function setProps(partialProps) {
+      /* istanbul ignore else */
+      {
+        warnWhen(instance.state.isDestroyed, createMemoryLeakWarning('setProps'));
+      }
+
+      if (instance.state.isDestroyed) {
+        return;
+      }
+
+      invokeHook('onBeforeUpdate', [instance, partialProps]);
+      removeListeners();
+      var prevProps = instance.props;
+      var nextProps = evaluateProps(reference, Object.assign({}, instance.props, {}, partialProps, {
+        ignoreAttributes: true
+      }));
+      instance.props = nextProps;
+      addListeners();
+
+      if (prevProps.interactiveDebounce !== nextProps.interactiveDebounce) {
+        cleanupInteractiveMouseListeners();
+        debouncedOnMouseMove = debounce$1(onMouseMove, nextProps.interactiveDebounce);
+      } // Ensure stale aria-expanded attributes are removed
+
+
+      if (prevProps.triggerTarget && !nextProps.triggerTarget) {
+        normalizeToArray(prevProps.triggerTarget).forEach(function (node) {
+          node.removeAttribute('aria-expanded');
+        });
+      } else if (nextProps.triggerTarget) {
+        reference.removeAttribute('aria-expanded');
+      }
+
+      handleAriaExpandedAttribute();
+      handleStyles();
+
+      if (onUpdate) {
+        onUpdate(prevProps, nextProps);
+      }
+
+      if (instance.popperInstance) {
+        createPopperInstance(); // Fixes an issue with nested tippies if they are all getting re-rendered,
+        // and the nested ones get re-rendered first.
+        // https://github.com/atomiks/tippyjs-react/issues/177
+        // TODO: find a cleaner / more efficient solution(!)
+
+        getNestedPopperTree().forEach(function (nestedPopper) {
+          // React (and other UI libs likely) requires a rAF wrapper as it flushes
+          // its work in one
+          requestAnimationFrame(nestedPopper._tippy.popperInstance.forceUpdate);
+        });
+      }
+
+      invokeHook('onAfterUpdate', [instance, partialProps]);
+    }
+
+    function setContent(content) {
+      instance.setProps({
+        content: content
+      });
+    }
+
+    function show() {
+      /* istanbul ignore else */
+      {
+        warnWhen(instance.state.isDestroyed, createMemoryLeakWarning('show'));
+      } // Early bail-out
+
+
+      var isAlreadyVisible = instance.state.isVisible;
+      var isDestroyed = instance.state.isDestroyed;
+      var isDisabled = !instance.state.isEnabled;
+      var isTouchAndTouchDisabled = currentInput.isTouch && !instance.props.touch;
+      var duration = getValueAtIndexOrReturn(instance.props.duration, 0, defaultProps.duration);
+
+      if (isAlreadyVisible || isDestroyed || isDisabled || isTouchAndTouchDisabled) {
+        return;
+      } // Normalize `disabled` behavior across browsers.
+      // Firefox allows events on disabled elements, but Chrome doesn't.
+      // Using a wrapper element (i.e. <span>) is recommended.
+
+
+      if (getCurrentTarget().hasAttribute('disabled')) {
+        return;
+      }
+
+      invokeHook('onShow', [instance], false);
+
+      if (instance.props.onShow(instance) === false) {
+        return;
+      }
+
+      instance.state.isVisible = true;
+
+      if (getIsDefaultRenderFn()) {
+        popper.style.visibility = 'visible';
+      }
+
+      handleStyles();
+      addDocumentPress();
+
+      if (!instance.state.isMounted) {
+        popper.style.transition = 'none';
+      } // If flipping to the opposite side after hiding at least once, the
+      // animation will use the wrong placement without resetting the duration
+
+
+      if (getIsDefaultRenderFn()) {
+        var _getDefaultTemplateCh2 = getDefaultTemplateChildren(),
+            box = _getDefaultTemplateCh2.box,
+            content = _getDefaultTemplateCh2.content;
+
+        setTransitionDuration([box, content], 0);
+      }
+
+      onFirstUpdate = function onFirstUpdate() {
+        var _instance$popperInsta2;
+
+        if (!instance.state.isVisible || ignoreOnFirstUpdate) {
+          return;
+        }
+
+        ignoreOnFirstUpdate = true; // reflow
+
+        void popper.offsetHeight;
+        popper.style.transition = instance.props.moveTransition;
+
+        if (getIsDefaultRenderFn() && instance.props.animation) {
+          var _getDefaultTemplateCh3 = getDefaultTemplateChildren(),
+              _box = _getDefaultTemplateCh3.box,
+              _content = _getDefaultTemplateCh3.content;
+
+          setTransitionDuration([_box, _content], duration);
+          setVisibilityState([_box, _content], 'visible');
+        }
+
+        handleAriaContentAttribute();
+        handleAriaExpandedAttribute();
+        pushIfUnique(mountedInstances, instance); // certain modifiers (e.g. `maxSize`) require a second update after the
+        // popper has been positioned for the first time
+
+        (_instance$popperInsta2 = instance.popperInstance) == null ? void 0 : _instance$popperInsta2.forceUpdate();
+        instance.state.isMounted = true;
+        invokeHook('onMount', [instance]);
+
+        if (instance.props.animation && getIsDefaultRenderFn()) {
+          onTransitionedIn(duration, function () {
+            instance.state.isShown = true;
+            invokeHook('onShown', [instance]);
+          });
+        }
+      };
+
+      mount();
+    }
+
+    function hide() {
+      /* istanbul ignore else */
+      {
+        warnWhen(instance.state.isDestroyed, createMemoryLeakWarning('hide'));
+      } // Early bail-out
+
+
+      var isAlreadyHidden = !instance.state.isVisible;
+      var isDestroyed = instance.state.isDestroyed;
+      var isDisabled = !instance.state.isEnabled;
+      var duration = getValueAtIndexOrReturn(instance.props.duration, 1, defaultProps.duration);
+
+      if (isAlreadyHidden || isDestroyed || isDisabled) {
+        return;
+      }
+
+      invokeHook('onHide', [instance], false);
+
+      if (instance.props.onHide(instance) === false) {
+        return;
+      }
+
+      instance.state.isVisible = false;
+      instance.state.isShown = false;
+      ignoreOnFirstUpdate = false;
+      isVisibleFromClick = false;
+
+      if (getIsDefaultRenderFn()) {
+        popper.style.visibility = 'hidden';
+      }
+
+      cleanupInteractiveMouseListeners();
+      removeDocumentPress();
+      handleStyles();
+
+      if (getIsDefaultRenderFn()) {
+        var _getDefaultTemplateCh4 = getDefaultTemplateChildren(),
+            box = _getDefaultTemplateCh4.box,
+            content = _getDefaultTemplateCh4.content;
+
+        if (instance.props.animation) {
+          setTransitionDuration([box, content], duration);
+          setVisibilityState([box, content], 'hidden');
+        }
+      }
+
+      handleAriaContentAttribute();
+      handleAriaExpandedAttribute();
+
+      if (instance.props.animation) {
+        if (getIsDefaultRenderFn()) {
+          onTransitionedOut(duration, instance.unmount);
+        }
+      } else {
+        instance.unmount();
+      }
+    }
+
+    function hideWithInteractivity(event) {
+      /* istanbul ignore else */
+      {
+        warnWhen(instance.state.isDestroyed, createMemoryLeakWarning('hideWithInteractivity'));
+      }
+
+      getDocument().addEventListener('mousemove', debouncedOnMouseMove);
+      pushIfUnique(mouseMoveListeners, debouncedOnMouseMove);
+      debouncedOnMouseMove(event);
+    }
+
+    function unmount() {
+      /* istanbul ignore else */
+      {
+        warnWhen(instance.state.isDestroyed, createMemoryLeakWarning('unmount'));
+      }
+
+      if (instance.state.isVisible) {
+        instance.hide();
+      }
+
+      if (!instance.state.isMounted) {
+        return;
+      }
+
+      destroyPopperInstance(); // If a popper is not interactive, it will be appended outside the popper
+      // tree by default. This seems mainly for interactive tippies, but we should
+      // find a workaround if possible
+
+      getNestedPopperTree().forEach(function (nestedPopper) {
+        nestedPopper._tippy.unmount();
+      });
+
+      if (popper.parentNode) {
+        popper.parentNode.removeChild(popper);
+      }
+
+      mountedInstances = mountedInstances.filter(function (i) {
+        return i !== instance;
+      });
+      instance.state.isMounted = false;
+      invokeHook('onHidden', [instance]);
+    }
+
+    function destroy() {
+      /* istanbul ignore else */
+      {
+        warnWhen(instance.state.isDestroyed, createMemoryLeakWarning('destroy'));
+      }
+
+      if (instance.state.isDestroyed) {
+        return;
+      }
+
+      instance.clearDelayTimeouts();
+      instance.unmount();
+      removeListeners();
+      delete reference._tippy;
+      instance.state.isDestroyed = true;
+      invokeHook('onDestroy', [instance]);
+    }
+  }
+
+  function tippy(targets, optionalProps) {
+    if (optionalProps === void 0) {
+      optionalProps = {};
+    }
+
+    var plugins = defaultProps.plugins.concat(optionalProps.plugins || []);
+    /* istanbul ignore else */
+
+    {
+      validateTargets(targets);
+      validateProps(optionalProps, plugins);
+    }
+
+    bindGlobalEventListeners();
+    var passedProps = Object.assign({}, optionalProps, {
+      plugins: plugins
+    });
+    var elements = getArrayOfElements(targets);
+    /* istanbul ignore else */
+
+    {
+      var isSingleContentElement = isElement(passedProps.content);
+      var isMoreThanOneReferenceElement = elements.length > 1;
+      warnWhen(isSingleContentElement && isMoreThanOneReferenceElement, ['tippy() was passed an Element as the `content` prop, but more than', 'one tippy instance was created by this invocation. This means the', 'content element will only be appended to the last tippy instance.', '\n\n', 'Instead, pass the .innerHTML of the element, or use a function that', 'returns a cloned version of the element instead.', '\n\n', '1) content: element.innerHTML\n', '2) content: () => element.cloneNode(true)'].join(' '));
+    }
+
+    var instances = elements.reduce(function (acc, reference) {
+      var instance = reference && createTippy(reference, passedProps);
+
+      if (instance) {
+        acc.push(instance);
+      }
+
+      return acc;
+    }, []);
+    return isElement(targets) ? instances[0] : instances;
+  }
+
+  tippy.defaultProps = defaultProps;
+  tippy.setDefaultProps = setDefaultProps;
+  tippy.currentInput = currentInput;
+
+  // every time the popper is destroyed (i.e. a new target), removing the styles
+  // and causing transitions to break for singletons when the console is open, but
+  // most notably for non-transform styles being used, `gpuAcceleration: false`.
+
+  Object.assign({}, applyStyles$1, {
+    effect: function effect(_ref) {
+      var state = _ref.state;
+      var initialStyles = {
+        popper: {
+          position: state.options.strategy,
+          left: '0',
+          top: '0',
+          margin: '0'
+        },
+        arrow: {
+          position: 'absolute'
+        },
+        reference: {}
+      };
+      Object.assign(state.elements.popper.style, initialStyles.popper);
+      state.styles = initialStyles;
+
+      if (state.elements.arrow) {
+        Object.assign(state.elements.arrow.style, initialStyles.arrow);
+      } // intentionally return no cleanup function
+      // return () => { ... }
+
+    }
+  });
+
+  tippy.setDefaultProps({
+    render: render
+  });
+
+  class BubbleMenuView {
+    constructor({ editor, element, view, tippyOptions, }) {
+      this.preventHide = false;
+      this.mousedownHandler = () => {
+        this.preventHide = true;
+      };
+      this.focusHandler = () => {
+        // we use `setTimeout` to make sure `selection` is already updated
+        setTimeout(() => this.update(this.editor.view));
+      };
+      this.blurHandler = ({ event }) => {
+        var _a;
+        if (this.preventHide) {
+          this.preventHide = false;
+          return;
+        }
+        if ((event === null || event === void 0 ? void 0 : event.relatedTarget)
+          && ((_a = this.element.parentNode) === null || _a === void 0 ? void 0 : _a.contains(event.relatedTarget))) {
+          return;
+        }
+        this.hide();
+      };
+      this.editor = editor;
+      this.element = element;
+      this.view = view;
+      this.element.addEventListener('mousedown', this.mousedownHandler, { capture: true });
+      this.editor.on('focus', this.focusHandler);
+      this.editor.on('blur', this.blurHandler);
+      this.createTooltip(tippyOptions);
+      this.element.style.visibility = 'visible';
+    }
+    createTooltip(options = {}) {
+      this.tippy = tippy(this.view.dom, {
+        duration: 0,
+        getReferenceClientRect: null,
+        content: this.element,
+        interactive: true,
+        trigger: 'manual',
+        placement: 'top',
+        hideOnClick: 'toggle',
+        ...options,
+      });
+    }
+    update(view, oldState) {
+      const { state, composing } = view;
+      const { doc, selection } = state;
+      const isSame = oldState && oldState.doc.eq(doc) && oldState.selection.eq(selection);
+      if (composing || isSame) {
+        return;
+      }
+      const { empty, $anchor, ranges } = selection;
+      // support for CellSelections
+      const from = Math.min(...ranges.map(range => range.$from.pos));
+      const to = Math.max(...ranges.map(range => range.$to.pos));
+      // Sometime check for `empty` is not enough.
+      // Doubleclick an empty paragraph returns a node size of 2.
+      // So we check also for an empty text size.
+      if (empty || !$anchor.parent.textContent) {
+        this.hide();
+        return;
+      }
+      this.tippy.setProps({
+        getReferenceClientRect: () => {
+          return posToDOMRect(view, from, to);
+        }
+      });
+      this.show();
+    }
+    show() {
+      this.tippy.show();
+      this.editor.emit('bubble-menu-show');
+    }
+    hide() {
+      this.tippy.hide();
+      this.editor.emit('bubble-menu-hide');
+    }
+    destroy() {
+      this.tippy.destroy();
+      this.element.removeEventListener('mousedown', this.mousedownHandler);
+      this.editor.off('focus', this.focusHandler);
+      this.editor.off('blur', this.blurHandler);
+    }
+  }
+  new PluginKey('menuBubble');
+  const BubbleMenuPlugin = (options) => {
+    return new Plugin({
+      key: new PluginKey(options.key || 'menuBubble'),
+      view: view => new BubbleMenuView({ view, ...options }),
+    });
+  };
+
+  const BubbleMenu = Extension.create({
+    name: 'bubbleMenu',
+    defaultOptions: {
+      element: null,
+      tippyOptions: {},
+    },
+    addProseMirrorPlugins() {
+      if (!this.options.element) {
+        return [];
+      }
+      return [
+        BubbleMenuPlugin({
+          key: this.options.key || 'menuBubble',
+          editor: this.editor,
+          element: this.options.element,
+          tippyOptions: this.options.tippyOptions,
+        }),
+      ];
+    },
+  });
+
+  const inputRegex$3 = /^\s*([-+*])\s$/;
+  const BulletList = Node.create({
+      name: 'bulletList',
+      defaultOptions: {
+          HTMLAttributes: {},
+      },
+      group: 'block list',
+      content: 'listItem+',
+      parseHTML() {
+          return [
+              { tag: 'ul' },
+          ];
+      },
+      renderHTML({ HTMLAttributes }) {
+          return ['ul', mergeAttributes(this.options.HTMLAttributes, HTMLAttributes), 0];
+      },
+      addCommands() {
+          return {
+              toggleBulletList: () => ({ commands }) => {
+                  return commands.toggleList('bulletList', 'listItem');
+              },
+          };
+      },
+      addKeyboardShortcuts() {
+          return {
+              'Mod-Shift-8': () => this.editor.commands.toggleBulletList(),
+          };
+      },
+      addInputRules() {
+          return [
+              wrappingInputRule(inputRegex$3, this.type),
+          ];
+      },
+  });
+
+  const inputRegex$2 = /(?:^|\s)((?:`)((?:[^`]+))(?:`))$/gm;
+  const Code = Mark.create({
+      name: 'code',
+      defaultOptions: {
+          HTMLAttributes: {},
+      },
+      excludes: '_',
+      parseHTML() {
+          return [
+              { tag: 'code' },
+          ];
+      },
+      renderHTML({ HTMLAttributes }) {
+          return ['code', mergeAttributes(this.options.HTMLAttributes, HTMLAttributes), 0];
+      },
+      addCommands() {
+          return {
+              setCode: () => ({ commands }) => {
+                  return commands.setMark('code');
+              },
+              toggleCode: () => ({ commands }) => {
+                  return commands.toggleMark('code');
+              },
+              unsetCode: () => ({ commands }) => {
+                  return commands.unsetMark('code');
+              },
+          };
+      },
+      addKeyboardShortcuts() {
+          return {
+              'Mod-e': () => this.editor.commands.toggleCode(),
+          };
+      },
+      addInputRules() {
+          return [
+              markInputRule(inputRegex$2, this.type),
+          ];
+      },
+      addPasteRules() {
+          return [
+              markPasteRule(inputRegex$2, this.type),
+          ];
+      },
+  });
+
+  const backtickInputRegex = /^```(?<language>[a-z]*)? $/;
+  const tildeInputRegex = /^~~~(?<language>[a-z]*)? $/;
+  const CodeBlock = Node.create({
+      name: 'codeBlock',
+      defaultOptions: {
+          languageClassPrefix: 'language-',
+          HTMLAttributes: {},
+      },
+      content: 'text*',
+      marks: '',
+      group: 'block',
+      code: true,
+      defining: true,
+      addAttributes() {
+          return {
+              language: {
+                  default: null,
+                  parseHTML: element => {
+                      var _a;
+                      const classAttribute = (_a = element.firstElementChild) === null || _a === void 0 ? void 0 : _a.getAttribute('class');
+                      if (!classAttribute) {
+                          return null;
+                      }
+                      const regexLanguageClassPrefix = new RegExp(`^(${this.options.languageClassPrefix})`);
+                      return {
+                          language: classAttribute.replace(regexLanguageClassPrefix, ''),
+                      };
+                  },
+                  renderHTML: attributes => {
+                      if (!attributes.language) {
+                          return null;
+                      }
+                      return {
+                          class: this.options.languageClassPrefix + attributes.language,
+                      };
+                  },
+              },
+          };
+      },
+      parseHTML() {
+          return [
+              {
+                  tag: 'pre',
+                  preserveWhitespace: 'full',
+              },
+          ];
+      },
+      renderHTML({ HTMLAttributes }) {
+          return ['pre', this.options.HTMLAttributes, ['code', HTMLAttributes, 0]];
+      },
+      addCommands() {
+          return {
+              setCodeBlock: attributes => ({ commands }) => {
+                  return commands.setNode('codeBlock', attributes);
+              },
+              toggleCodeBlock: attributes => ({ commands }) => {
+                  return commands.toggleNode('codeBlock', 'paragraph', attributes);
+              },
+          };
+      },
+      addKeyboardShortcuts() {
+          return {
+              'Mod-Alt-c': () => this.editor.commands.toggleCodeBlock(),
+              // remove code block when at start of document or code block is empty
+              Backspace: () => {
+                  const { empty, $anchor } = this.editor.state.selection;
+                  const isAtStart = $anchor.pos === 1;
+                  if (!empty || $anchor.parent.type.name !== this.name) {
+                      return false;
+                  }
+                  if (isAtStart || !$anchor.parent.textContent.length) {
+                      return this.editor.commands.clearNodes();
+                  }
+                  return false;
+              },
+          };
+      },
+      addInputRules() {
+          return [
+              textblockTypeInputRule(backtickInputRegex, this.type, ({ groups }) => groups),
+              textblockTypeInputRule(tildeInputRegex, this.type, ({ groups }) => groups),
+          ];
+      },
+  });
+
+  /**
+   * Checks if `value` is the
+   * [language type](http://www.ecma-international.org/ecma-262/7.0/#sec-ecmascript-language-types)
+   * of `Object`. (e.g. arrays, functions, objects, regexes, `new Number(0)`, and `new String('')`)
+   *
+   * @static
+   * @memberOf _
+   * @since 0.1.0
+   * @category Lang
+   * @param {*} value The value to check.
+   * @returns {boolean} Returns `true` if `value` is an object, else `false`.
+   * @example
+   *
+   * _.isObject({});
+   * // => true
+   *
+   * _.isObject([1, 2, 3]);
+   * // => true
+   *
+   * _.isObject(_.noop);
+   * // => true
+   *
+   * _.isObject(null);
+   * // => false
+   */
+  function isObject(value) {
+    var type = typeof value;
+    return value != null && (type == 'object' || type == 'function');
+  }
+
+  var isObject_1 = isObject;
+
+  var commonjsGlobal = typeof globalThis !== 'undefined' ? globalThis : typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : typeof self !== 'undefined' ? self : {};
+
+  /** Detect free variable `global` from Node.js. */
+  var freeGlobal = typeof commonjsGlobal == 'object' && commonjsGlobal && commonjsGlobal.Object === Object && commonjsGlobal;
+
+  var _freeGlobal = freeGlobal;
+
+  /** Detect free variable `self`. */
+  var freeSelf = typeof self == 'object' && self && self.Object === Object && self;
+
+  /** Used as a reference to the global object. */
+  var root = _freeGlobal || freeSelf || Function('return this')();
+
+  var _root = root;
+
+  /**
+   * Gets the timestamp of the number of milliseconds that have elapsed since
+   * the Unix epoch (1 January 1970 00:00:00 UTC).
+   *
+   * @static
+   * @memberOf _
+   * @since 2.4.0
+   * @category Date
+   * @returns {number} Returns the timestamp.
+   * @example
+   *
+   * _.defer(function(stamp) {
+   *   console.log(_.now() - stamp);
+   * }, _.now());
+   * // => Logs the number of milliseconds it took for the deferred invocation.
+   */
+  var now = function() {
+    return _root.Date.now();
+  };
+
+  var now_1 = now;
+
+  /** Used to match a single whitespace character. */
+  var reWhitespace = /\s/;
+
+  /**
+   * Used by `_.trim` and `_.trimEnd` to get the index of the last non-whitespace
+   * character of `string`.
+   *
+   * @private
+   * @param {string} string The string to inspect.
+   * @returns {number} Returns the index of the last non-whitespace character.
+   */
+  function trimmedEndIndex(string) {
+    var index = string.length;
+
+    while (index-- && reWhitespace.test(string.charAt(index))) {}
+    return index;
+  }
+
+  var _trimmedEndIndex = trimmedEndIndex;
+
+  /** Used to match leading whitespace. */
+  var reTrimStart = /^\s+/;
+
+  /**
+   * The base implementation of `_.trim`.
+   *
+   * @private
+   * @param {string} string The string to trim.
+   * @returns {string} Returns the trimmed string.
+   */
+  function baseTrim(string) {
+    return string
+      ? string.slice(0, _trimmedEndIndex(string) + 1).replace(reTrimStart, '')
+      : string;
+  }
+
+  var _baseTrim = baseTrim;
+
+  /** Built-in value references. */
+  var Symbol$1 = _root.Symbol;
+
+  var _Symbol = Symbol$1;
+
+  /** Used for built-in method references. */
+  var objectProto$1 = Object.prototype;
+
+  /** Used to check objects for own properties. */
+  var hasOwnProperty = objectProto$1.hasOwnProperty;
+
+  /**
+   * Used to resolve the
+   * [`toStringTag`](http://ecma-international.org/ecma-262/7.0/#sec-object.prototype.tostring)
+   * of values.
+   */
+  var nativeObjectToString$1 = objectProto$1.toString;
+
+  /** Built-in value references. */
+  var symToStringTag$1 = _Symbol ? _Symbol.toStringTag : undefined;
+
+  /**
+   * A specialized version of `baseGetTag` which ignores `Symbol.toStringTag` values.
+   *
+   * @private
+   * @param {*} value The value to query.
+   * @returns {string} Returns the raw `toStringTag`.
+   */
+  function getRawTag(value) {
+    var isOwn = hasOwnProperty.call(value, symToStringTag$1),
+        tag = value[symToStringTag$1];
+
+    try {
+      value[symToStringTag$1] = undefined;
+      var unmasked = true;
+    } catch (e) {}
+
+    var result = nativeObjectToString$1.call(value);
+    if (unmasked) {
+      if (isOwn) {
+        value[symToStringTag$1] = tag;
+      } else {
+        delete value[symToStringTag$1];
+      }
+    }
+    return result;
+  }
+
+  var _getRawTag = getRawTag;
+
+  /** Used for built-in method references. */
+  var objectProto = Object.prototype;
+
+  /**
+   * Used to resolve the
+   * [`toStringTag`](http://ecma-international.org/ecma-262/7.0/#sec-object.prototype.tostring)
+   * of values.
+   */
+  var nativeObjectToString = objectProto.toString;
+
+  /**
+   * Converts `value` to a string using `Object.prototype.toString`.
+   *
+   * @private
+   * @param {*} value The value to convert.
+   * @returns {string} Returns the converted string.
+   */
+  function objectToString(value) {
+    return nativeObjectToString.call(value);
+  }
+
+  var _objectToString = objectToString;
+
+  /** `Object#toString` result references. */
+  var nullTag = '[object Null]',
+      undefinedTag = '[object Undefined]';
+
+  /** Built-in value references. */
+  var symToStringTag = _Symbol ? _Symbol.toStringTag : undefined;
+
+  /**
+   * The base implementation of `getTag` without fallbacks for buggy environments.
+   *
+   * @private
+   * @param {*} value The value to query.
+   * @returns {string} Returns the `toStringTag`.
+   */
+  function baseGetTag(value) {
+    if (value == null) {
+      return value === undefined ? undefinedTag : nullTag;
+    }
+    return (symToStringTag && symToStringTag in Object(value))
+      ? _getRawTag(value)
+      : _objectToString(value);
+  }
+
+  var _baseGetTag = baseGetTag;
+
+  /**
+   * Checks if `value` is object-like. A value is object-like if it's not `null`
+   * and has a `typeof` result of "object".
+   *
+   * @static
+   * @memberOf _
+   * @since 4.0.0
+   * @category Lang
+   * @param {*} value The value to check.
+   * @returns {boolean} Returns `true` if `value` is object-like, else `false`.
+   * @example
+   *
+   * _.isObjectLike({});
+   * // => true
+   *
+   * _.isObjectLike([1, 2, 3]);
+   * // => true
+   *
+   * _.isObjectLike(_.noop);
+   * // => false
+   *
+   * _.isObjectLike(null);
+   * // => false
+   */
+  function isObjectLike(value) {
+    return value != null && typeof value == 'object';
+  }
+
+  var isObjectLike_1 = isObjectLike;
+
+  /** `Object#toString` result references. */
+  var symbolTag = '[object Symbol]';
+
+  /**
+   * Checks if `value` is classified as a `Symbol` primitive or object.
+   *
+   * @static
+   * @memberOf _
+   * @since 4.0.0
+   * @category Lang
+   * @param {*} value The value to check.
+   * @returns {boolean} Returns `true` if `value` is a symbol, else `false`.
+   * @example
+   *
+   * _.isSymbol(Symbol.iterator);
+   * // => true
+   *
+   * _.isSymbol('abc');
+   * // => false
+   */
+  function isSymbol(value) {
+    return typeof value == 'symbol' ||
+      (isObjectLike_1(value) && _baseGetTag(value) == symbolTag);
+  }
+
+  var isSymbol_1 = isSymbol;
+
+  /** Used as references for various `Number` constants. */
+  var NAN = 0 / 0;
+
+  /** Used to detect bad signed hexadecimal string values. */
+  var reIsBadHex = /^[-+]0x[0-9a-f]+$/i;
+
+  /** Used to detect binary string values. */
+  var reIsBinary = /^0b[01]+$/i;
+
+  /** Used to detect octal string values. */
+  var reIsOctal = /^0o[0-7]+$/i;
+
+  /** Built-in method references without a dependency on `root`. */
+  var freeParseInt = parseInt;
+
+  /**
+   * Converts `value` to a number.
+   *
+   * @static
+   * @memberOf _
+   * @since 4.0.0
+   * @category Lang
+   * @param {*} value The value to process.
+   * @returns {number} Returns the number.
+   * @example
+   *
+   * _.toNumber(3.2);
+   * // => 3.2
+   *
+   * _.toNumber(Number.MIN_VALUE);
+   * // => 5e-324
+   *
+   * _.toNumber(Infinity);
+   * // => Infinity
+   *
+   * _.toNumber('3.2');
+   * // => 3.2
+   */
+  function toNumber(value) {
+    if (typeof value == 'number') {
+      return value;
+    }
+    if (isSymbol_1(value)) {
+      return NAN;
+    }
+    if (isObject_1(value)) {
+      var other = typeof value.valueOf == 'function' ? value.valueOf() : value;
+      value = isObject_1(other) ? (other + '') : other;
+    }
+    if (typeof value != 'string') {
+      return value === 0 ? value : +value;
+    }
+    value = _baseTrim(value);
+    var isBinary = reIsBinary.test(value);
+    return (isBinary || reIsOctal.test(value))
+      ? freeParseInt(value.slice(2), isBinary ? 2 : 8)
+      : (reIsBadHex.test(value) ? NAN : +value);
+  }
+
+  var toNumber_1 = toNumber;
+
+  /** Error message constants. */
+  var FUNC_ERROR_TEXT = 'Expected a function';
+
+  /* Built-in method references for those with the same name as other `lodash` methods. */
+  var nativeMax = Math.max,
+      nativeMin = Math.min;
+
+  /**
+   * Creates a debounced function that delays invoking `func` until after `wait`
+   * milliseconds have elapsed since the last time the debounced function was
+   * invoked. The debounced function comes with a `cancel` method to cancel
+   * delayed `func` invocations and a `flush` method to immediately invoke them.
+   * Provide `options` to indicate whether `func` should be invoked on the
+   * leading and/or trailing edge of the `wait` timeout. The `func` is invoked
+   * with the last arguments provided to the debounced function. Subsequent
+   * calls to the debounced function return the result of the last `func`
+   * invocation.
+   *
+   * **Note:** If `leading` and `trailing` options are `true`, `func` is
+   * invoked on the trailing edge of the timeout only if the debounced function
+   * is invoked more than once during the `wait` timeout.
+   *
+   * If `wait` is `0` and `leading` is `false`, `func` invocation is deferred
+   * until to the next tick, similar to `setTimeout` with a timeout of `0`.
+   *
+   * See [David Corbacho's article](https://css-tricks.com/debouncing-throttling-explained-examples/)
+   * for details over the differences between `_.debounce` and `_.throttle`.
+   *
+   * @static
+   * @memberOf _
+   * @since 0.1.0
+   * @category Function
+   * @param {Function} func The function to debounce.
+   * @param {number} [wait=0] The number of milliseconds to delay.
+   * @param {Object} [options={}] The options object.
+   * @param {boolean} [options.leading=false]
+   *  Specify invoking on the leading edge of the timeout.
+   * @param {number} [options.maxWait]
+   *  The maximum time `func` is allowed to be delayed before it's invoked.
+   * @param {boolean} [options.trailing=true]
+   *  Specify invoking on the trailing edge of the timeout.
+   * @returns {Function} Returns the new debounced function.
+   * @example
+   *
+   * // Avoid costly calculations while the window size is in flux.
+   * jQuery(window).on('resize', _.debounce(calculateLayout, 150));
+   *
+   * // Invoke `sendMail` when clicked, debouncing subsequent calls.
+   * jQuery(element).on('click', _.debounce(sendMail, 300, {
+   *   'leading': true,
+   *   'trailing': false
+   * }));
+   *
+   * // Ensure `batchLog` is invoked once after 1 second of debounced calls.
+   * var debounced = _.debounce(batchLog, 250, { 'maxWait': 1000 });
+   * var source = new EventSource('/stream');
+   * jQuery(source).on('message', debounced);
+   *
+   * // Cancel the trailing debounced invocation.
+   * jQuery(window).on('popstate', debounced.cancel);
+   */
+  function debounce(func, wait, options) {
+    var lastArgs,
+        lastThis,
+        maxWait,
+        result,
+        timerId,
+        lastCallTime,
+        lastInvokeTime = 0,
+        leading = false,
+        maxing = false,
+        trailing = true;
+
+    if (typeof func != 'function') {
+      throw new TypeError(FUNC_ERROR_TEXT);
+    }
+    wait = toNumber_1(wait) || 0;
+    if (isObject_1(options)) {
+      leading = !!options.leading;
+      maxing = 'maxWait' in options;
+      maxWait = maxing ? nativeMax(toNumber_1(options.maxWait) || 0, wait) : maxWait;
+      trailing = 'trailing' in options ? !!options.trailing : trailing;
+    }
+
+    function invokeFunc(time) {
+      var args = lastArgs,
+          thisArg = lastThis;
+
+      lastArgs = lastThis = undefined;
+      lastInvokeTime = time;
+      result = func.apply(thisArg, args);
+      return result;
+    }
+
+    function leadingEdge(time) {
+      // Reset any `maxWait` timer.
+      lastInvokeTime = time;
+      // Start the timer for the trailing edge.
+      timerId = setTimeout(timerExpired, wait);
+      // Invoke the leading edge.
+      return leading ? invokeFunc(time) : result;
+    }
+
+    function remainingWait(time) {
+      var timeSinceLastCall = time - lastCallTime,
+          timeSinceLastInvoke = time - lastInvokeTime,
+          timeWaiting = wait - timeSinceLastCall;
+
+      return maxing
+        ? nativeMin(timeWaiting, maxWait - timeSinceLastInvoke)
+        : timeWaiting;
+    }
+
+    function shouldInvoke(time) {
+      var timeSinceLastCall = time - lastCallTime,
+          timeSinceLastInvoke = time - lastInvokeTime;
+
+      // Either this is the first call, activity has stopped and we're at the
+      // trailing edge, the system time has gone backwards and we're treating
+      // it as the trailing edge, or we've hit the `maxWait` limit.
+      return (lastCallTime === undefined || (timeSinceLastCall >= wait) ||
+        (timeSinceLastCall < 0) || (maxing && timeSinceLastInvoke >= maxWait));
+    }
+
+    function timerExpired() {
+      var time = now_1();
+      if (shouldInvoke(time)) {
+        return trailingEdge(time);
+      }
+      // Restart the timer.
+      timerId = setTimeout(timerExpired, remainingWait(time));
+    }
+
+    function trailingEdge(time) {
+      timerId = undefined;
+
+      // Only invoke if we have `lastArgs` which means `func` has been
+      // debounced at least once.
+      if (trailing && lastArgs) {
+        return invokeFunc(time);
+      }
+      lastArgs = lastThis = undefined;
+      return result;
+    }
+
+    function cancel() {
+      if (timerId !== undefined) {
+        clearTimeout(timerId);
+      }
+      lastInvokeTime = 0;
+      lastArgs = lastCallTime = lastThis = timerId = undefined;
+    }
+
+    function flush() {
+      return timerId === undefined ? result : trailingEdge(now_1());
+    }
+
+    function debounced() {
+      var time = now_1(),
+          isInvoking = shouldInvoke(time);
+
+      lastArgs = arguments;
+      lastThis = this;
+      lastCallTime = time;
+
+      if (isInvoking) {
+        if (timerId === undefined) {
+          return leadingEdge(lastCallTime);
+        }
+        if (maxing) {
+          // Handle invocations in a tight loop.
+          clearTimeout(timerId);
+          timerId = setTimeout(timerExpired, wait);
+          return invokeFunc(lastCallTime);
+        }
+      }
+      if (timerId === undefined) {
+        timerId = setTimeout(timerExpired, wait);
+      }
+      return result;
+    }
+    debounced.cancel = cancel;
+    debounced.flush = flush;
+    return debounced;
+  }
+
+  var debounce_1 = debounce;
+
+  const Document = Node.create({
+      name: 'doc',
+      topNode: true,
+      content: 'block+',
+  });
+
+  // :: (options: ?Object) → Plugin
+  // Create a plugin that, when added to a ProseMirror instance,
+  // causes a decoration to show up at the drop position when something
+  // is dragged over the editor.
+  //
+  //   options::- These options are supported:
+  //
+  //     color:: ?string
+  //     The color of the cursor. Defaults to `black`.
+  //
+  //     width:: ?number
+  //     The precise width of the cursor in pixels. Defaults to 1.
+  //
+  //     class:: ?string
+  //     A CSS class name to add to the cursor element.
+  function dropCursor(options) {
+    if ( options === void 0 ) options = {};
+
+    return new Plugin({
+      view: function view(editorView) { return new DropCursorView(editorView, options) }
+    })
+  }
+
+  var DropCursorView = function DropCursorView(editorView, options) {
+    var this$1 = this;
+
+    this.editorView = editorView;
+    this.width = options.width || 1;
+    this.color = options.color || "black";
+    this.class = options.class;
+    this.cursorPos = null;
+    this.element = null;
+    this.timeout = null;
+
+    this.handlers = ["dragover", "dragend", "drop", "dragleave"].map(function (name) {
+      var handler = function (e) { return this$1[name](e); };
+      editorView.dom.addEventListener(name, handler);
+      return {name: name, handler: handler}
+    });
+  };
+
+  DropCursorView.prototype.destroy = function destroy () {
+      var this$1 = this;
+
+    this.handlers.forEach(function (ref) {
+        var name = ref.name;
+        var handler = ref.handler;
+
+        return this$1.editorView.dom.removeEventListener(name, handler);
+      });
+  };
+
+  DropCursorView.prototype.update = function update (editorView, prevState) {
+    if (this.cursorPos != null && prevState.doc != editorView.state.doc) { this.updateOverlay(); }
+  };
+
+  DropCursorView.prototype.setCursor = function setCursor (pos) {
+    if (pos == this.cursorPos) { return }
+    this.cursorPos = pos;
+    if (pos == null) {
+      this.element.parentNode.removeChild(this.element);
+      this.element = null;
+    } else {
+      this.updateOverlay();
+    }
+  };
+
+  DropCursorView.prototype.updateOverlay = function updateOverlay () {
+    var $pos = this.editorView.state.doc.resolve(this.cursorPos), rect;
+    if (!$pos.parent.inlineContent) {
+      var before = $pos.nodeBefore, after = $pos.nodeAfter;
+      if (before || after) {
+        var nodeRect = this.editorView.nodeDOM(this.cursorPos - (before ?before.nodeSize : 0)).getBoundingClientRect();
+        var top = before ? nodeRect.bottom : nodeRect.top;
+        if (before && after)
+          { top = (top + this.editorView.nodeDOM(this.cursorPos).getBoundingClientRect().top) / 2; }
+        rect = {left: nodeRect.left, right: nodeRect.right, top: top - this.width / 2, bottom: top + this.width / 2};
+      }
+    }
+    if (!rect) {
+      var coords = this.editorView.coordsAtPos(this.cursorPos);
+      rect = {left: coords.left - this.width / 2, right: coords.left + this.width / 2, top: coords.top, bottom: coords.bottom};
+    }
+
+    var parent = this.editorView.dom.offsetParent;
+    if (!this.element) {
+      this.element = parent.appendChild(document.createElement("div"));
+      if (this.class) { this.element.className = this.class; }
+      this.element.style.cssText = "position: absolute; z-index: 50; pointer-events: none; background-color: " + this.color;
+    }
+    var parentLeft, parentTop;
+    if (!parent || parent == document.body && getComputedStyle(parent).position == "static") {
+      parentLeft = -pageXOffset;
+      parentTop = -pageYOffset;
+    } else {
+      var rect$1 = parent.getBoundingClientRect();
+      parentLeft = rect$1.left - parent.scrollLeft;
+      parentTop = rect$1.top - parent.scrollTop;
+    }
+    this.element.style.left = (rect.left - parentLeft) + "px";
+    this.element.style.top = (rect.top - parentTop) + "px";
+    this.element.style.width = (rect.right - rect.left) + "px";
+    this.element.style.height = (rect.bottom - rect.top) + "px";
+  };
+
+  DropCursorView.prototype.scheduleRemoval = function scheduleRemoval (timeout) {
+      var this$1 = this;
+
+    clearTimeout(this.timeout);
+    this.timeout = setTimeout(function () { return this$1.setCursor(null); }, timeout);
+  };
+
+  DropCursorView.prototype.dragover = function dragover (event) {
+    if (!this.editorView.editable) { return }
+    var pos = this.editorView.posAtCoords({left: event.clientX, top: event.clientY});
+    if (pos) {
+      var target = pos.pos;
+      if (this.editorView.dragging && this.editorView.dragging.slice) {
+        target = dropPoint(this.editorView.state.doc, target, this.editorView.dragging.slice);
+        if (target == null) { return this.setCursor(null) }
+      }
+      this.setCursor(target);
+      this.scheduleRemoval(5000);
+    }
+  };
+
+  DropCursorView.prototype.dragend = function dragend () {
+    this.scheduleRemoval(20);
+  };
+
+  DropCursorView.prototype.drop = function drop () {
+    this.scheduleRemoval(20);
+  };
+
+  DropCursorView.prototype.dragleave = function dragleave (event) {
+    if (event.target == this.editorView.dom || !this.editorView.dom.contains(event.relatedTarget))
+      { this.setCursor(null); }
+  };
+
+  const Dropcursor = Extension.create({
+      name: 'dropCursor',
+      defaultOptions: {
+          color: 'black',
+          width: 1,
+          class: null,
+      },
+      addProseMirrorPlugins() {
+          return [
+              dropCursor(this.options),
+          ];
+      },
+  });
+
+  // ::- Gap cursor selections are represented using this class. Its
+  // `$anchor` and `$head` properties both point at the cursor position.
+  var GapCursor = /*@__PURE__*/(function (Selection) {
+    function GapCursor($pos) {
+      Selection.call(this, $pos, $pos);
+    }
+
+    if ( Selection ) GapCursor.__proto__ = Selection;
+    GapCursor.prototype = Object.create( Selection && Selection.prototype );
+    GapCursor.prototype.constructor = GapCursor;
+
+    GapCursor.prototype.map = function map (doc, mapping) {
+      var $pos = doc.resolve(mapping.map(this.head));
+      return GapCursor.valid($pos) ? new GapCursor($pos) : Selection.near($pos)
+    };
+
+    GapCursor.prototype.content = function content () { return Slice.empty };
+
+    GapCursor.prototype.eq = function eq (other) {
+      return other instanceof GapCursor && other.head == this.head
+    };
+
+    GapCursor.prototype.toJSON = function toJSON () {
+      return {type: "gapcursor", pos: this.head}
+    };
+
+    GapCursor.fromJSON = function fromJSON (doc, json) {
+      if (typeof json.pos != "number") { throw new RangeError("Invalid input for GapCursor.fromJSON") }
+      return new GapCursor(doc.resolve(json.pos))
+    };
+
+    GapCursor.prototype.getBookmark = function getBookmark () { return new GapBookmark(this.anchor) };
+
+    GapCursor.valid = function valid ($pos) {
+      var parent = $pos.parent;
+      if (parent.isTextblock || !closedBefore($pos) || !closedAfter($pos)) { return false }
+      var override = parent.type.spec.allowGapCursor;
+      if (override != null) { return override }
+      var deflt = parent.contentMatchAt($pos.index()).defaultType;
+      return deflt && deflt.isTextblock
+    };
+
+    GapCursor.findFrom = function findFrom ($pos, dir, mustMove) {
+      search: for (;;) {
+        if (!mustMove && GapCursor.valid($pos)) { return $pos }
+        var pos = $pos.pos, next = null;
+        // Scan up from this position
+        for (var d = $pos.depth;; d--) {
+          var parent = $pos.node(d);
+          if (dir > 0 ? $pos.indexAfter(d) < parent.childCount : $pos.index(d) > 0) {
+            next = parent.child(dir > 0 ? $pos.indexAfter(d) : $pos.index(d) - 1);
+            break
+          } else if (d == 0) {
+            return null
+          }
+          pos += dir;
+          var $cur = $pos.doc.resolve(pos);
+          if (GapCursor.valid($cur)) { return $cur }
+        }
+
+        // And then down into the next node
+        for (;;) {
+          var inside = dir > 0 ? next.firstChild : next.lastChild;
+          if (!inside) {
+            if (next.isAtom && !next.isText && !NodeSelection.isSelectable(next)) {
+              $pos = $pos.doc.resolve(pos + next.nodeSize * dir);
+              mustMove = false;
+              continue search
+            }
+            break
+          }
+          next = inside;
+          pos += dir;
+          var $cur$1 = $pos.doc.resolve(pos);
+          if (GapCursor.valid($cur$1)) { return $cur$1 }
+        }
+
+        return null
+      }
+    };
+
+    return GapCursor;
+  }(Selection));
+
+  GapCursor.prototype.visible = false;
+
+  Selection.jsonID("gapcursor", GapCursor);
+
+  var GapBookmark = function GapBookmark(pos) {
+    this.pos = pos;
+  };
+  GapBookmark.prototype.map = function map (mapping) {
+    return new GapBookmark(mapping.map(this.pos))
+  };
+  GapBookmark.prototype.resolve = function resolve (doc) {
+    var $pos = doc.resolve(this.pos);
+    return GapCursor.valid($pos) ? new GapCursor($pos) : Selection.near($pos)
+  };
+
+  function closedBefore($pos) {
+    for (var d = $pos.depth; d >= 0; d--) {
+      var index = $pos.index(d);
+      // At the start of this parent, look at next one
+      if (index == 0) { continue }
+      // See if the node before (or its first ancestor) is closed
+      for (var before = $pos.node(d).child(index - 1);; before = before.lastChild) {
+        if ((before.childCount == 0 && !before.inlineContent) || before.isAtom || before.type.spec.isolating) { return true }
+        if (before.inlineContent) { return false }
+      }
+    }
+    // Hit start of document
+    return true
+  }
+
+  function closedAfter($pos) {
+    for (var d = $pos.depth; d >= 0; d--) {
+      var index = $pos.indexAfter(d), parent = $pos.node(d);
+      if (index == parent.childCount) { continue }
+      for (var after = parent.child(index);; after = after.firstChild) {
+        if ((after.childCount == 0 && !after.inlineContent) || after.isAtom || after.type.spec.isolating) { return true }
+        if (after.inlineContent) { return false }
+      }
+    }
+    return true
+  }
+
+  // :: () → Plugin
+  // Create a gap cursor plugin. When enabled, this will capture clicks
+  // near and arrow-key-motion past places that don't have a normally
+  // selectable position nearby, and create a gap cursor selection for
+  // them. The cursor is drawn as an element with class
+  // `ProseMirror-gapcursor`. You can either include
+  // `style/gapcursor.css` from the package's directory or add your own
+  // styles to make it visible.
+  var gapCursor = function() {
+    return new Plugin({
+      props: {
+        decorations: drawGapCursor,
+
+        createSelectionBetween: function createSelectionBetween(_view, $anchor, $head) {
+          if ($anchor.pos == $head.pos && GapCursor.valid($head)) { return new GapCursor($head) }
+        },
+
+        handleClick: handleClick,
+        handleKeyDown: handleKeyDown
+      }
+    })
+  };
+
+  var handleKeyDown = keydownHandler({
+    "ArrowLeft": arrow$1("horiz", -1),
+    "ArrowRight": arrow$1("horiz", 1),
+    "ArrowUp": arrow$1("vert", -1),
+    "ArrowDown": arrow$1("vert", 1)
+  });
+
+  function arrow$1(axis, dir) {
+    var dirStr = axis == "vert" ? (dir > 0 ? "down" : "up") : (dir > 0 ? "right" : "left");
+    return function(state, dispatch, view) {
+      var sel = state.selection;
+      var $start = dir > 0 ? sel.$to : sel.$from, mustMove = sel.empty;
+      if (sel instanceof TextSelection) {
+        if (!view.endOfTextblock(dirStr) || $start.depth == 0) { return false }
+        mustMove = false;
+        $start = state.doc.resolve(dir > 0 ? $start.after() : $start.before());
+      }
+      var $found = GapCursor.findFrom($start, dir, mustMove);
+      if (!$found) { return false }
+      if (dispatch) { dispatch(state.tr.setSelection(new GapCursor($found))); }
+      return true
+    }
+  }
+
+  function handleClick(view, pos, event) {
+    if (!view.editable) { return false }
+    var $pos = view.state.doc.resolve(pos);
+    if (!GapCursor.valid($pos)) { return false }
+    var ref = view.posAtCoords({left: event.clientX, top: event.clientY});
+    var inside = ref.inside;
+    if (inside > -1 && NodeSelection.isSelectable(view.state.doc.nodeAt(inside))) { return false }
+    view.dispatch(view.state.tr.setSelection(new GapCursor($pos)));
+    return true
+  }
+
+  function drawGapCursor(state) {
+    if (!(state.selection instanceof GapCursor)) { return null }
+    var node = document.createElement("div");
+    node.className = "ProseMirror-gapcursor";
+    return DecorationSet.create(state.doc, [Decoration.widget(state.selection.head, node, {key: "gapcursor"})])
+  }
+
+  const Gapcursor = Extension.create({
+      name: 'gapCursor',
+      addProseMirrorPlugins() {
+          return [
+              gapCursor(),
+          ];
+      },
+      extendNodeSchema(extension) {
+          var _a;
+          const context = {
+              name: extension.name,
+              options: extension.options,
+          };
+          return {
+              allowGapCursor: (_a = callOrReturn(getExtensionField(extension, 'allowGapCursor', context))) !== null && _a !== void 0 ? _a : null,
+          };
+      },
+  });
+
+  const HardBreak = Node.create({
+      name: 'hardBreak',
+      defaultOptions: {
+          HTMLAttributes: {},
+      },
+      inline: true,
+      group: 'inline',
+      selectable: false,
+      parseHTML() {
+          return [
+              { tag: 'br' },
+          ];
+      },
+      renderHTML({ HTMLAttributes }) {
+          return ['br', mergeAttributes(this.options.HTMLAttributes, HTMLAttributes)];
+      },
+      addCommands() {
+          return {
+              setHardBreak: () => ({ commands }) => {
+                  return commands.first([
+                      () => commands.exitCode(),
+                      () => commands.insertContent({ type: this.name }),
+                  ]);
+              },
+          };
+      },
+      addKeyboardShortcuts() {
+          return {
+              'Mod-Enter': () => this.editor.commands.setHardBreak(),
+              'Shift-Enter': () => this.editor.commands.setHardBreak(),
+          };
+      },
+  });
+
+  const Heading = Node.create({
+      name: 'heading',
+      defaultOptions: {
+          levels: [1, 2, 3, 4, 5, 6],
+          HTMLAttributes: {},
+      },
+      content: 'inline*',
+      group: 'block',
+      defining: true,
+      addAttributes() {
+          return {
+              level: {
+                  default: 1,
+                  rendered: false,
+              },
+          };
+      },
+      parseHTML() {
+          return this.options.levels
+              .map((level) => ({
+              tag: `h${level}`,
+              attrs: { level },
+          }));
+      },
+      renderHTML({ node, HTMLAttributes }) {
+          const hasLevel = this.options.levels.includes(node.attrs.level);
+          const level = hasLevel
+              ? node.attrs.level
+              : this.options.levels[0];
+          return [`h${level}`, mergeAttributes(this.options.HTMLAttributes, HTMLAttributes), 0];
+      },
+      addCommands() {
+          return {
+              setHeading: attributes => ({ commands }) => {
+                  if (!this.options.levels.includes(attributes.level)) {
+                      return false;
+                  }
+                  return commands.setNode('heading', attributes);
+              },
+              toggleHeading: attributes => ({ commands }) => {
+                  if (!this.options.levels.includes(attributes.level)) {
+                      return false;
+                  }
+                  return commands.toggleNode('heading', 'paragraph', attributes);
+              },
+          };
+      },
+      addKeyboardShortcuts() {
+          return this.options.levels.reduce((items, level) => ({
+              ...items,
+              ...{
+                  [`Mod-Alt-${level}`]: () => this.editor.commands.toggleHeading({ level }),
+              },
+          }), {});
+      },
+      addInputRules() {
+          return this.options.levels.map(level => {
+              return textblockTypeInputRule(new RegExp(`^(#{1,${level}})\\s$`), this.type, { level });
+          });
+      },
+  });
+
+  var GOOD_LEAF_SIZE = 200;
+
+  // :: class<T> A rope sequence is a persistent sequence data structure
+  // that supports appending, prepending, and slicing without doing a
+  // full copy. It is represented as a mostly-balanced tree.
+  var RopeSequence = function RopeSequence () {};
+
+  RopeSequence.prototype.append = function append (other) {
+    if (!other.length) { return this }
+    other = RopeSequence.from(other);
+
+    return (!this.length && other) ||
+      (other.length < GOOD_LEAF_SIZE && this.leafAppend(other)) ||
+      (this.length < GOOD_LEAF_SIZE && other.leafPrepend(this)) ||
+      this.appendInner(other)
+  };
+
+  // :: (union<[T], RopeSequence<T>>) → RopeSequence<T>
+  // Prepend an array or other rope to this one, returning a new rope.
+  RopeSequence.prototype.prepend = function prepend (other) {
+    if (!other.length) { return this }
+    return RopeSequence.from(other).append(this)
+  };
+
+  RopeSequence.prototype.appendInner = function appendInner (other) {
+    return new Append(this, other)
+  };
+
+  // :: (?number, ?number) → RopeSequence<T>
+  // Create a rope repesenting a sub-sequence of this rope.
+  RopeSequence.prototype.slice = function slice (from, to) {
+      if ( from === void 0 ) from = 0;
+      if ( to === void 0 ) to = this.length;
+
+    if (from >= to) { return RopeSequence.empty }
+    return this.sliceInner(Math.max(0, from), Math.min(this.length, to))
+  };
+
+  // :: (number) → T
+  // Retrieve the element at the given position from this rope.
+  RopeSequence.prototype.get = function get (i) {
+    if (i < 0 || i >= this.length) { return undefined }
+    return this.getInner(i)
+  };
+
+  // :: ((element: T, index: number) → ?bool, ?number, ?number)
+  // Call the given function for each element between the given
+  // indices. This tends to be more efficient than looping over the
+  // indices and calling `get`, because it doesn't have to descend the
+  // tree for every element.
+  RopeSequence.prototype.forEach = function forEach (f, from, to) {
+      if ( from === void 0 ) from = 0;
+      if ( to === void 0 ) to = this.length;
+
+    if (from <= to)
+      { this.forEachInner(f, from, to, 0); }
+    else
+      { this.forEachInvertedInner(f, from, to, 0); }
+  };
+
+  // :: ((element: T, index: number) → U, ?number, ?number) → [U]
+  // Map the given functions over the elements of the rope, producing
+  // a flat array.
+  RopeSequence.prototype.map = function map (f, from, to) {
+      if ( from === void 0 ) from = 0;
+      if ( to === void 0 ) to = this.length;
+
+    var result = [];
+    this.forEach(function (elt, i) { return result.push(f(elt, i)); }, from, to);
+    return result
+  };
+
+  // :: (?union<[T], RopeSequence<T>>) → RopeSequence<T>
+  // Create a rope representing the given array, or return the rope
+  // itself if a rope was given.
+  RopeSequence.from = function from (values) {
+    if (values instanceof RopeSequence) { return values }
+    return values && values.length ? new Leaf(values) : RopeSequence.empty
+  };
+
+  var Leaf = /*@__PURE__*/(function (RopeSequence) {
+    function Leaf(values) {
+      RopeSequence.call(this);
+      this.values = values;
+    }
+
+    if ( RopeSequence ) Leaf.__proto__ = RopeSequence;
+    Leaf.prototype = Object.create( RopeSequence && RopeSequence.prototype );
+    Leaf.prototype.constructor = Leaf;
+
+    var prototypeAccessors = { length: { configurable: true },depth: { configurable: true } };
+
+    Leaf.prototype.flatten = function flatten () {
+      return this.values
+    };
+
+    Leaf.prototype.sliceInner = function sliceInner (from, to) {
+      if (from == 0 && to == this.length) { return this }
+      return new Leaf(this.values.slice(from, to))
+    };
+
+    Leaf.prototype.getInner = function getInner (i) {
+      return this.values[i]
+    };
+
+    Leaf.prototype.forEachInner = function forEachInner (f, from, to, start) {
+      for (var i = from; i < to; i++)
+        { if (f(this.values[i], start + i) === false) { return false } }
+    };
+
+    Leaf.prototype.forEachInvertedInner = function forEachInvertedInner (f, from, to, start) {
+      for (var i = from - 1; i >= to; i--)
+        { if (f(this.values[i], start + i) === false) { return false } }
+    };
+
+    Leaf.prototype.leafAppend = function leafAppend (other) {
+      if (this.length + other.length <= GOOD_LEAF_SIZE)
+        { return new Leaf(this.values.concat(other.flatten())) }
+    };
+
+    Leaf.prototype.leafPrepend = function leafPrepend (other) {
+      if (this.length + other.length <= GOOD_LEAF_SIZE)
+        { return new Leaf(other.flatten().concat(this.values)) }
+    };
+
+    prototypeAccessors.length.get = function () { return this.values.length };
+
+    prototypeAccessors.depth.get = function () { return 0 };
+
+    Object.defineProperties( Leaf.prototype, prototypeAccessors );
+
+    return Leaf;
+  }(RopeSequence));
+
+  // :: RopeSequence
+  // The empty rope sequence.
+  RopeSequence.empty = new Leaf([]);
+
+  var Append = /*@__PURE__*/(function (RopeSequence) {
+    function Append(left, right) {
+      RopeSequence.call(this);
+      this.left = left;
+      this.right = right;
+      this.length = left.length + right.length;
+      this.depth = Math.max(left.depth, right.depth) + 1;
+    }
+
+    if ( RopeSequence ) Append.__proto__ = RopeSequence;
+    Append.prototype = Object.create( RopeSequence && RopeSequence.prototype );
+    Append.prototype.constructor = Append;
+
+    Append.prototype.flatten = function flatten () {
+      return this.left.flatten().concat(this.right.flatten())
+    };
+
+    Append.prototype.getInner = function getInner (i) {
+      return i < this.left.length ? this.left.get(i) : this.right.get(i - this.left.length)
+    };
+
+    Append.prototype.forEachInner = function forEachInner (f, from, to, start) {
+      var leftLen = this.left.length;
+      if (from < leftLen &&
+          this.left.forEachInner(f, from, Math.min(to, leftLen), start) === false)
+        { return false }
+      if (to > leftLen &&
+          this.right.forEachInner(f, Math.max(from - leftLen, 0), Math.min(this.length, to) - leftLen, start + leftLen) === false)
+        { return false }
+    };
+
+    Append.prototype.forEachInvertedInner = function forEachInvertedInner (f, from, to, start) {
+      var leftLen = this.left.length;
+      if (from > leftLen &&
+          this.right.forEachInvertedInner(f, from - leftLen, Math.max(to, leftLen) - leftLen, start + leftLen) === false)
+        { return false }
+      if (to < leftLen &&
+          this.left.forEachInvertedInner(f, Math.min(from, leftLen), to, start) === false)
+        { return false }
+    };
+
+    Append.prototype.sliceInner = function sliceInner (from, to) {
+      if (from == 0 && to == this.length) { return this }
+      var leftLen = this.left.length;
+      if (to <= leftLen) { return this.left.slice(from, to) }
+      if (from >= leftLen) { return this.right.slice(from - leftLen, to - leftLen) }
+      return this.left.slice(from, leftLen).append(this.right.slice(0, to - leftLen))
+    };
+
+    Append.prototype.leafAppend = function leafAppend (other) {
+      var inner = this.right.leafAppend(other);
+      if (inner) { return new Append(this.left, inner) }
+    };
+
+    Append.prototype.leafPrepend = function leafPrepend (other) {
+      var inner = this.left.leafPrepend(other);
+      if (inner) { return new Append(inner, this.right) }
+    };
+
+    Append.prototype.appendInner = function appendInner (other) {
+      if (this.left.depth >= Math.max(this.right.depth, other.depth) + 1)
+        { return new Append(this.left, new Append(this.right, other)) }
+      return new Append(this, other)
+    };
+
+    return Append;
+  }(RopeSequence));
+
+  var ropeSequence = RopeSequence;
+
+  // ProseMirror's history isn't simply a way to roll back to a previous
+  // state, because ProseMirror supports applying changes without adding
+  // them to the history (for example during collaboration).
+  //
+  // To this end, each 'Branch' (one for the undo history and one for
+  // the redo history) keeps an array of 'Items', which can optionally
+  // hold a step (an actual undoable change), and always hold a position
+  // map (which is needed to move changes below them to apply to the
+  // current document).
+  //
+  // An item that has both a step and a selection bookmark is the start
+  // of an 'event' — a group of changes that will be undone or redone at
+  // once. (It stores only the bookmark, since that way we don't have to
+  // provide a document until the selection is actually applied, which
+  // is useful when compressing.)
+
+  // Used to schedule history compression
+  var max_empty_items = 500;
+
+  var Branch = function Branch(items, eventCount) {
+    this.items = items;
+    this.eventCount = eventCount;
+  };
+
+  // : (EditorState, bool) → ?{transform: Transform, selection: ?SelectionBookmark, remaining: Branch}
+  // Pop the latest event off the branch's history and apply it
+  // to a document transform.
+  Branch.prototype.popEvent = function popEvent (state, preserveItems) {
+      var this$1 = this;
+
+    if (this.eventCount == 0) { return null }
+
+    var end = this.items.length;
+    for (;; end--) {
+      var next = this.items.get(end - 1);
+      if (next.selection) { --end; break }
+    }
+
+    var remap, mapFrom;
+    if (preserveItems) {
+      remap = this.remapping(end, this.items.length);
+      mapFrom = remap.maps.length;
+    }
+    var transform = state.tr;
+    var selection, remaining;
+    var addAfter = [], addBefore = [];
+
+    this.items.forEach(function (item, i) {
+      if (!item.step) {
+        if (!remap) {
+          remap = this$1.remapping(end, i + 1);
+          mapFrom = remap.maps.length;
+        }
+        mapFrom--;
+        addBefore.push(item);
+        return
+      }
+
+      if (remap) {
+        addBefore.push(new Item(item.map));
+        var step = item.step.map(remap.slice(mapFrom)), map;
+
+        if (step && transform.maybeStep(step).doc) {
+          map = transform.mapping.maps[transform.mapping.maps.length - 1];
+          addAfter.push(new Item(map, null, null, addAfter.length + addBefore.length));
+        }
+        mapFrom--;
+        if (map) { remap.appendMap(map, mapFrom); }
+      } else {
+        transform.maybeStep(item.step);
+      }
+
+      if (item.selection) {
+        selection = remap ? item.selection.map(remap.slice(mapFrom)) : item.selection;
+        remaining = new Branch(this$1.items.slice(0, end).append(addBefore.reverse().concat(addAfter)), this$1.eventCount - 1);
+        return false
+      }
+    }, this.items.length, 0);
+
+    return {remaining: remaining, transform: transform, selection: selection}
+  };
+
+  // : (Transform, ?SelectionBookmark, Object) → Branch
+  // Create a new branch with the given transform added.
+  Branch.prototype.addTransform = function addTransform (transform, selection, histOptions, preserveItems) {
+    var newItems = [], eventCount = this.eventCount;
+    var oldItems = this.items, lastItem = !preserveItems && oldItems.length ? oldItems.get(oldItems.length - 1) : null;
+
+    for (var i = 0; i < transform.steps.length; i++) {
+      var step = transform.steps[i].invert(transform.docs[i]);
+      var item = new Item(transform.mapping.maps[i], step, selection), merged = (void 0);
+      if (merged = lastItem && lastItem.merge(item)) {
+        item = merged;
+        if (i) { newItems.pop(); }
+        else { oldItems = oldItems.slice(0, oldItems.length - 1); }
+      }
+      newItems.push(item);
+      if (selection) {
+        eventCount++;
+        selection = null;
+      }
+      if (!preserveItems) { lastItem = item; }
+    }
+    var overflow = eventCount - histOptions.depth;
+    if (overflow > DEPTH_OVERFLOW) {
+      oldItems = cutOffEvents(oldItems, overflow);
+      eventCount -= overflow;
+    }
+    return new Branch(oldItems.append(newItems), eventCount)
+  };
+
+  Branch.prototype.remapping = function remapping (from, to) {
+    var maps = new Mapping;
+    this.items.forEach(function (item, i) {
+      var mirrorPos = item.mirrorOffset != null && i - item.mirrorOffset >= from
+          ? maps.maps.length - item.mirrorOffset : null;
+      maps.appendMap(item.map, mirrorPos);
+    }, from, to);
+    return maps
+  };
+
+  Branch.prototype.addMaps = function addMaps (array) {
+    if (this.eventCount == 0) { return this }
+    return new Branch(this.items.append(array.map(function (map) { return new Item(map); })), this.eventCount)
+  };
+
+  // : (Transform, number)
+  // When the collab module receives remote changes, the history has
+  // to know about those, so that it can adjust the steps that were
+  // rebased on top of the remote changes, and include the position
+  // maps for the remote changes in its array of items.
+  Branch.prototype.rebased = function rebased (rebasedTransform, rebasedCount) {
+    if (!this.eventCount) { return this }
+
+    var rebasedItems = [], start = Math.max(0, this.items.length - rebasedCount);
+
+    var mapping = rebasedTransform.mapping;
+    var newUntil = rebasedTransform.steps.length;
+    var eventCount = this.eventCount;
+    this.items.forEach(function (item) { if (item.selection) { eventCount--; } }, start);
+
+    var iRebased = rebasedCount;
+    this.items.forEach(function (item) {
+      var pos = mapping.getMirror(--iRebased);
+      if (pos == null) { return }
+      newUntil = Math.min(newUntil, pos);
+      var map = mapping.maps[pos];
+      if (item.step) {
+        var step = rebasedTransform.steps[pos].invert(rebasedTransform.docs[pos]);
+        var selection = item.selection && item.selection.map(mapping.slice(iRebased + 1, pos));
+        if (selection) { eventCount++; }
+        rebasedItems.push(new Item(map, step, selection));
+      } else {
+        rebasedItems.push(new Item(map));
+      }
+    }, start);
+
+    var newMaps = [];
+    for (var i = rebasedCount; i < newUntil; i++)
+      { newMaps.push(new Item(mapping.maps[i])); }
+    var items = this.items.slice(0, start).append(newMaps).append(rebasedItems);
+    var branch = new Branch(items, eventCount);
+
+    if (branch.emptyItemCount() > max_empty_items)
+      { branch = branch.compress(this.items.length - rebasedItems.length); }
+    return branch
+  };
+
+  Branch.prototype.emptyItemCount = function emptyItemCount () {
+    var count = 0;
+    this.items.forEach(function (item) { if (!item.step) { count++; } });
+    return count
+  };
+
+  // Compressing a branch means rewriting it to push the air (map-only
+  // items) out. During collaboration, these naturally accumulate
+  // because each remote change adds one. The `upto` argument is used
+  // to ensure that only the items below a given level are compressed,
+  // because `rebased` relies on a clean, untouched set of items in
+  // order to associate old items with rebased steps.
+  Branch.prototype.compress = function compress (upto) {
+      if ( upto === void 0 ) upto = this.items.length;
+
+    var remap = this.remapping(0, upto), mapFrom = remap.maps.length;
+    var items = [], events = 0;
+    this.items.forEach(function (item, i) {
+      if (i >= upto) {
+        items.push(item);
+        if (item.selection) { events++; }
+      } else if (item.step) {
+        var step = item.step.map(remap.slice(mapFrom)), map = step && step.getMap();
+        mapFrom--;
+        if (map) { remap.appendMap(map, mapFrom); }
+        if (step) {
+          var selection = item.selection && item.selection.map(remap.slice(mapFrom));
+          if (selection) { events++; }
+          var newItem = new Item(map.invert(), step, selection), merged, last = items.length - 1;
+          if (merged = items.length && items[last].merge(newItem))
+            { items[last] = merged; }
+          else
+            { items.push(newItem); }
+        }
+      } else if (item.map) {
+        mapFrom--;
+      }
+    }, this.items.length, 0);
+    return new Branch(ropeSequence.from(items.reverse()), events)
+  };
+
+  Branch.empty = new Branch(ropeSequence.empty, 0);
+
+  function cutOffEvents(items, n) {
+    var cutPoint;
+    items.forEach(function (item, i) {
+      if (item.selection && (n-- == 0)) {
+        cutPoint = i;
+        return false
+      }
+    });
+    return items.slice(cutPoint)
+  }
+
+  var Item = function Item(map, step, selection, mirrorOffset) {
+    // The (forward) step map for this item.
+    this.map = map;
+    // The inverted step
+    this.step = step;
+    // If this is non-null, this item is the start of a group, and
+    // this selection is the starting selection for the group (the one
+    // that was active before the first step was applied)
+    this.selection = selection;
+    // If this item is the inverse of a previous mapping on the stack,
+    // this points at the inverse's offset
+    this.mirrorOffset = mirrorOffset;
+  };
+
+  Item.prototype.merge = function merge (other) {
+    if (this.step && other.step && !other.selection) {
+      var step = other.step.merge(this.step);
+      if (step) { return new Item(step.getMap().invert(), step, this.selection) }
+    }
+  };
+
+  // The value of the state field that tracks undo/redo history for that
+  // state. Will be stored in the plugin state when the history plugin
+  // is active.
+  var HistoryState = function HistoryState(done, undone, prevRanges, prevTime) {
+    this.done = done;
+    this.undone = undone;
+    this.prevRanges = prevRanges;
+    this.prevTime = prevTime;
+  };
+
+  var DEPTH_OVERFLOW = 20;
+
+  // : (HistoryState, EditorState, Transaction, Object)
+  // Record a transformation in undo history.
+  function applyTransaction(history, state, tr, options) {
+    var historyTr = tr.getMeta(historyKey), rebased;
+    if (historyTr) { return historyTr.historyState }
+
+    if (tr.getMeta(closeHistoryKey)) { history = new HistoryState(history.done, history.undone, null, 0); }
+
+    var appended = tr.getMeta("appendedTransaction");
+
+    if (tr.steps.length == 0) {
+      return history
+    } else if (appended && appended.getMeta(historyKey)) {
+      if (appended.getMeta(historyKey).redo)
+        { return new HistoryState(history.done.addTransform(tr, null, options, mustPreserveItems(state)),
+                                history.undone, rangesFor(tr.mapping.maps[tr.steps.length - 1]), history.prevTime) }
+      else
+        { return new HistoryState(history.done, history.undone.addTransform(tr, null, options, mustPreserveItems(state)),
+                                null, history.prevTime) }
+    } else if (tr.getMeta("addToHistory") !== false && !(appended && appended.getMeta("addToHistory") === false)) {
+      // Group transforms that occur in quick succession into one event.
+      var newGroup = history.prevTime == 0 || !appended && (history.prevTime < (tr.time || 0) - options.newGroupDelay ||
+                                                            !isAdjacentTo(tr, history.prevRanges));
+      var prevRanges = appended ? mapRanges(history.prevRanges, tr.mapping) : rangesFor(tr.mapping.maps[tr.steps.length - 1]);
+      return new HistoryState(history.done.addTransform(tr, newGroup ? state.selection.getBookmark() : null,
+                                                        options, mustPreserveItems(state)),
+                              Branch.empty, prevRanges, tr.time)
+    } else if (rebased = tr.getMeta("rebased")) {
+      // Used by the collab module to tell the history that some of its
+      // content has been rebased.
+      return new HistoryState(history.done.rebased(tr, rebased),
+                              history.undone.rebased(tr, rebased),
+                              mapRanges(history.prevRanges, tr.mapping), history.prevTime)
+    } else {
+      return new HistoryState(history.done.addMaps(tr.mapping.maps),
+                              history.undone.addMaps(tr.mapping.maps),
+                              mapRanges(history.prevRanges, tr.mapping), history.prevTime)
+    }
+  }
+
+  function isAdjacentTo(transform, prevRanges) {
+    if (!prevRanges) { return false }
+    if (!transform.docChanged) { return true }
+    var adjacent = false;
+    transform.mapping.maps[0].forEach(function (start, end) {
+      for (var i = 0; i < prevRanges.length; i += 2)
+        { if (start <= prevRanges[i + 1] && end >= prevRanges[i])
+          { adjacent = true; } }
+    });
+    return adjacent
+  }
+
+  function rangesFor(map) {
+    var result = [];
+    map.forEach(function (_from, _to, from, to) { return result.push(from, to); });
+    return result
+  }
+
+  function mapRanges(ranges, mapping) {
+    if (!ranges) { return null }
+    var result = [];
+    for (var i = 0; i < ranges.length; i += 2) {
+      var from = mapping.map(ranges[i], 1), to = mapping.map(ranges[i + 1], -1);
+      if (from <= to) { result.push(from, to); }
+    }
+    return result
+  }
+
+  // : (HistoryState, EditorState, (tr: Transaction), bool)
+  // Apply the latest event from one branch to the document and shift the event
+  // onto the other branch.
+  function histTransaction(history, state, dispatch, redo) {
+    var preserveItems = mustPreserveItems(state), histOptions = historyKey.get(state).spec.config;
+    var pop = (redo ? history.undone : history.done).popEvent(state, preserveItems);
+    if (!pop) { return }
+
+    var selection = pop.selection.resolve(pop.transform.doc);
+    var added = (redo ? history.done : history.undone).addTransform(pop.transform, state.selection.getBookmark(),
+                                                                    histOptions, preserveItems);
+
+    var newHist = new HistoryState(redo ? added : pop.remaining, redo ? pop.remaining : added, null, 0);
+    dispatch(pop.transform.setSelection(selection).setMeta(historyKey, {redo: redo, historyState: newHist}).scrollIntoView());
+  }
+
+  var cachedPreserveItems = false, cachedPreserveItemsPlugins = null;
+  // Check whether any plugin in the given state has a
+  // `historyPreserveItems` property in its spec, in which case we must
+  // preserve steps exactly as they came in, so that they can be
+  // rebased.
+  function mustPreserveItems(state) {
+    var plugins = state.plugins;
+    if (cachedPreserveItemsPlugins != plugins) {
+      cachedPreserveItems = false;
+      cachedPreserveItemsPlugins = plugins;
+      for (var i = 0; i < plugins.length; i++) { if (plugins[i].spec.historyPreserveItems) {
+        cachedPreserveItems = true;
+        break
+      } }
+    }
+    return cachedPreserveItems
+  }
+
+  var historyKey = new PluginKey("history");
+  var closeHistoryKey = new PluginKey("closeHistory");
+
+  // :: (?Object) → Plugin
+  // Returns a plugin that enables the undo history for an editor. The
+  // plugin will track undo and redo stacks, which can be used with the
+  // [`undo`](#history.undo) and [`redo`](#history.redo) commands.
+  //
+  // You can set an `"addToHistory"` [metadata
+  // property](#state.Transaction.setMeta) of `false` on a transaction
+  // to prevent it from being rolled back by undo.
+  //
+  //   config::-
+  //   Supports the following configuration options:
+  //
+  //     depth:: ?number
+  //     The amount of history events that are collected before the
+  //     oldest events are discarded. Defaults to 100.
+  //
+  //     newGroupDelay:: ?number
+  //     The delay between changes after which a new group should be
+  //     started. Defaults to 500 (milliseconds). Note that when changes
+  //     aren't adjacent, a new group is always started.
+  function history(config) {
+    config = {depth: config && config.depth || 100,
+              newGroupDelay: config && config.newGroupDelay || 500};
+    return new Plugin({
+      key: historyKey,
+
+      state: {
+        init: function init() {
+          return new HistoryState(Branch.empty, Branch.empty, null, 0)
+        },
+        apply: function apply(tr, hist, state) {
+          return applyTransaction(hist, state, tr, config)
+        }
+      },
+
+      config: config
+    })
+  }
+
+  // :: (EditorState, ?(tr: Transaction)) → bool
+  // A command function that undoes the last change, if any.
+  function undo(state, dispatch) {
+    var hist = historyKey.getState(state);
+    if (!hist || hist.done.eventCount == 0) { return false }
+    if (dispatch) { histTransaction(hist, state, dispatch, false); }
+    return true
+  }
+
+  // :: (EditorState, ?(tr: Transaction)) → bool
+  // A command function that redoes the last undone change, if any.
+  function redo(state, dispatch) {
+    var hist = historyKey.getState(state);
+    if (!hist || hist.undone.eventCount == 0) { return false }
+    if (dispatch) { histTransaction(hist, state, dispatch, true); }
+    return true
+  }
+
+  const History = Extension.create({
+      name: 'history',
+      defaultOptions: {
+          depth: 100,
+          newGroupDelay: 500,
+      },
+      addCommands() {
+          return {
+              undo: () => ({ state, dispatch }) => {
+                  return undo(state, dispatch);
+              },
+              redo: () => ({ state, dispatch }) => {
+                  return redo(state, dispatch);
+              },
+          };
+      },
+      addProseMirrorPlugins() {
+          return [
+              history(this.options),
+          ];
+      },
+      addKeyboardShortcuts() {
+          return {
+              'Mod-z': () => this.editor.commands.undo(),
+              'Mod-y': () => this.editor.commands.redo(),
+              'Shift-Mod-z': () => this.editor.commands.redo(),
+          };
+      },
+  });
+
+  const HorizontalRule = Node.create({
+      name: 'horizontalRule',
+      defaultOptions: {
+          HTMLAttributes: {},
+      },
+      group: 'block',
+      parseHTML() {
+          return [
+              { tag: 'hr' },
+          ];
+      },
+      renderHTML({ HTMLAttributes }) {
+          return ['hr', mergeAttributes(this.options.HTMLAttributes, HTMLAttributes)];
+      },
+      addCommands() {
+          return {
+              setHorizontalRule: () => ({ chain }) => {
+                  return chain()
+                      .insertContent({ type: this.name })
+                      .command(({ tr, dispatch }) => {
+                      var _a;
+                      if (dispatch) {
+                          const { parent, pos } = tr.selection.$from;
+                          const posAfter = pos + 1;
+                          const nodeAfter = tr.doc.nodeAt(posAfter);
+                          // end of document
+                          if (!nodeAfter) {
+                              const node = (_a = parent.type.contentMatch.defaultType) === null || _a === void 0 ? void 0 : _a.create();
+                              if (node) {
+                                  tr.insert(posAfter, node);
+                                  tr.setSelection(TextSelection.create(tr.doc, posAfter));
+                              }
+                          }
+                          tr.scrollIntoView();
+                      }
+                      return true;
+                  })
+                      .run();
+              },
+          };
+      },
+      addInputRules() {
+          return [
+              nodeInputRule(/^(?:---|—-|___\s|\*\*\*\s)$/, this.type),
+          ];
+      },
+  });
+
+  const starInputRegex = /(?:^|\s)((?:\*)((?:[^*]+))(?:\*))$/gm;
+  const starPasteRegex = /(?:^|\s)((?:\*)((?:[^*]+))(?:\*))/gm;
+  const underscoreInputRegex = /(?:^|\s)((?:_)((?:[^_]+))(?:_))$/gm;
+  const underscorePasteRegex = /(?:^|\s)((?:_)((?:[^_]+))(?:_))/gm;
+  const Italic = Mark.create({
+      name: 'italic',
+      defaultOptions: {
+          HTMLAttributes: {},
+      },
+      parseHTML() {
+          return [
+              {
+                  tag: 'em',
+              },
+              {
+                  tag: 'i',
+                  getAttrs: node => node.style.fontStyle !== 'normal' && null,
+              },
+              {
+                  style: 'font-style=italic',
+              },
+          ];
+      },
+      renderHTML({ HTMLAttributes }) {
+          return ['em', mergeAttributes(this.options.HTMLAttributes, HTMLAttributes), 0];
+      },
+      addCommands() {
+          return {
+              setItalic: () => ({ commands }) => {
+                  return commands.setMark('italic');
+              },
+              toggleItalic: () => ({ commands }) => {
+                  return commands.toggleMark('italic');
+              },
+              unsetItalic: () => ({ commands }) => {
+                  return commands.unsetMark('italic');
+              },
+          };
+      },
+      addKeyboardShortcuts() {
+          return {
+              'Mod-i': () => this.editor.commands.toggleItalic(),
+          };
+      },
+      addInputRules() {
+          return [
+              markInputRule(starInputRegex, this.type),
+              markInputRule(underscoreInputRegex, this.type),
+          ];
+      },
+      addPasteRules() {
+          return [
+              markPasteRule(starPasteRegex, this.type),
+              markPasteRule(underscorePasteRegex, this.type),
+          ];
+      },
+  });
+
+  const ListItem = Node.create({
+      name: 'listItem',
+      defaultOptions: {
+          HTMLAttributes: {},
+      },
+      content: 'paragraph block*',
+      defining: true,
+      parseHTML() {
+          return [
+              {
+                  tag: 'li',
+              },
+          ];
+      },
+      renderHTML({ HTMLAttributes }) {
+          return ['li', mergeAttributes(this.options.HTMLAttributes, HTMLAttributes), 0];
+      },
+      addKeyboardShortcuts() {
+          return {
+              Enter: () => this.editor.commands.splitListItem('listItem'),
+              Tab: () => this.editor.commands.sinkListItem('listItem'),
+              'Shift-Tab': () => this.editor.commands.liftListItem('listItem'),
+          };
+      },
+  });
+
+  const inputRegex$1 = /^(\d+)\.\s$/;
+  const OrderedList = Node.create({
+      name: 'orderedList',
+      defaultOptions: {
+          HTMLAttributes: {},
+      },
+      group: 'block list',
+      content: 'listItem+',
+      addAttributes() {
+          return {
+              start: {
+                  default: 1,
+                  parseHTML: element => ({
+                      start: element.hasAttribute('start')
+                          ? parseInt(element.getAttribute('start') || '', 10)
+                          : 1,
+                  }),
+              },
+          };
+      },
+      parseHTML() {
+          return [
+              {
+                  tag: 'ol',
+              },
+          ];
+      },
+      renderHTML({ HTMLAttributes }) {
+          const { start, ...attributesWithoutStart } = HTMLAttributes;
+          return start === 1
+              ? ['ol', mergeAttributes(this.options.HTMLAttributes, attributesWithoutStart), 0]
+              : ['ol', mergeAttributes(this.options.HTMLAttributes, HTMLAttributes), 0];
+      },
+      addCommands() {
+          return {
+              toggleOrderedList: () => ({ commands }) => {
+                  return commands.toggleList('orderedList', 'listItem');
+              },
+          };
+      },
+      addKeyboardShortcuts() {
+          return {
+              'Mod-Shift-7': () => this.editor.commands.toggleOrderedList(),
+          };
+      },
+      addInputRules() {
+          return [
+              wrappingInputRule(inputRegex$1, this.type, match => ({ order: +match[1] }), (match, node) => node.childCount + node.attrs.order === +match[1]),
+          ];
+      },
+  });
+
+  const Paragraph = Node.create({
+      name: 'paragraph',
+      priority: 1000,
+      defaultOptions: {
+          HTMLAttributes: {},
+      },
+      group: 'block',
+      content: 'inline*',
+      parseHTML() {
+          return [
+              { tag: 'p' },
+          ];
+      },
+      renderHTML({ HTMLAttributes }) {
+          return ['p', mergeAttributes(this.options.HTMLAttributes, HTMLAttributes), 0];
+      },
+      addCommands() {
+          return {
+              setParagraph: () => ({ commands }) => {
+                  return commands.toggleNode('paragraph', 'paragraph');
+              },
+          };
+      },
+      addKeyboardShortcuts() {
+          return {
+              'Mod-Alt-0': () => this.editor.commands.setParagraph(),
+          };
+      },
+  });
+
+  const inputRegex = /(?:^|\s)((?:~~)((?:[^~]+))(?:~~))$/gm;
+  const Strike = Mark.create({
+      name: 'strike',
+      defaultOptions: {
+          HTMLAttributes: {},
+      },
+      parseHTML() {
+          return [
+              {
+                  tag: 's',
+              },
+              {
+                  tag: 'del',
+              },
+              {
+                  tag: 'strike',
+              },
+              {
+                  style: 'text-decoration',
+                  consuming: false,
+                  getAttrs: style => (style.includes('line-through') ? {} : false),
+              },
+          ];
+      },
+      renderHTML({ HTMLAttributes }) {
+          return ['s', mergeAttributes(this.options.HTMLAttributes, HTMLAttributes), 0];
+      },
+      addCommands() {
+          return {
+              setStrike: () => ({ commands }) => {
+                  return commands.setMark('strike');
+              },
+              toggleStrike: () => ({ commands }) => {
+                  return commands.toggleMark('strike');
+              },
+              unsetStrike: () => ({ commands }) => {
+                  return commands.unsetMark('strike');
+              },
+          };
+      },
+      addKeyboardShortcuts() {
+          return {
+              'Mod-Shift-x': () => this.editor.commands.toggleStrike(),
+          };
+      },
+      addInputRules() {
+          return [
+              markInputRule(inputRegex, this.type),
+          ];
+      },
+      addPasteRules() {
+          return [
+              markPasteRule(inputRegex, this.type),
+          ];
+      },
+  });
+
+  const Text = Node.create({
+      name: 'text',
+      group: 'inline',
+  });
+
+  //
+  var script$a = {
+    name: 'tce-tiptap-html',
+    inject: ['$elementBus'],
+    props: {
+      element: {
+        type: Object,
+        required: true
+      },
+      isFocused: {
+        type: Boolean,
+        default: false
+      },
+      isDragged: {
+        type: Boolean,
+        default: false
+      },
+      isDisabled: {
+        type: Boolean,
+        default: false
+      },
+      dense: {
+        type: Boolean,
+        default: false
+      },
+      showPlaceholder: {
+        type: Boolean,
+        default: true
+      }
+    },
+    data: vm => {
+      var _vm$element$data$cont, _vm$element, _vm$element$data;
+
+      return {
+        content: (_vm$element$data$cont = (_vm$element = vm.element) === null || _vm$element === void 0 ? void 0 : (_vm$element$data = _vm$element.data) === null || _vm$element$data === void 0 ? void 0 : _vm$element$data.content) !== null && _vm$element$data$cont !== void 0 ? _vm$element$data$cont : '',
+        editor: null
+      };
+    },
+    computed: {
+      hasChanges() {
+        var _this$element$data$co, _this$element, _this$element$data;
+
+        const previousValue = (_this$element$data$co = (_this$element = this.element) === null || _this$element === void 0 ? void 0 : (_this$element$data = _this$element.data) === null || _this$element$data === void 0 ? void 0 : _this$element$data.content) !== null && _this$element$data$co !== void 0 ? _this$element$data$co : '';
+        return previousValue !== this.content;
+      }
+
+    },
+    methods: {
+      save() {
+        if (!this.hasChanges) return;
+        this.$emit('save', {
+          content: this.content
+        });
+      }
+
+    },
+    watch: {
+      element(val) {
+        // Make sure that component state is kept
+        // until events (i.e. focusout => save) are triggered
+        setTimeout(() => {
+          var _val$data$content, _val$data;
+
+          if (this.isFocused) return;
+          this.content = (_val$data$content = val === null || val === void 0 ? void 0 : (_val$data = val.data) === null || _val$data === void 0 ? void 0 : _val$data.content) !== null && _val$data$content !== void 0 ? _val$data$content : '';
+        }, 0);
+      },
+
+      isFocused(val, oldVal) {
+        if (oldVal && !val) this.save();
+        this.$elementBus.emit('tiptap-editor', this.editor);
+      },
+
+      isDragged(state, oldState) {
+        if (state) {
+          this.readonly = true;
+        } else if (!state && oldState) {
+          this.readonly = false;
+        }
+      },
+
+      content: debounce_1(function () {
+        this.save();
+      }, 4000)
+    },
+
+    mounted() {
+      this.editor = new vue2.Editor({
+        content: this.content,
+        extensions: [BubbleMenu, Blockquote, Bold, BulletList, Code, CodeBlock, Document, Dropcursor, Gapcursor, HardBreak, Heading, History, HorizontalRule, Indent, Image, Italic, ListItem, Link__default['default'].configure({
+          openOnClick: false
+        }), OrderedList, Paragraph, Strike, Text, TextStyle__default['default'], FontFamily__default['default'], FontSize, Underline__default['default'], Table__default['default'].configure({
+          resizable: true
+        }), TableRow__default['default'], TableHeader__default['default'], TableCell__default['default'], TextAlign__default['default'], TextColor, TextHighlight],
+        onUpdate: () => {
+          this.content = this.editor.getHTML();
+        }
+      });
+    },
+
+    beforeDestroy() {
+      this.editor.destroy();
+    },
+
+    components: {
+      EditorContent: vue2.EditorContent,
+      BubbleMenu: __vue_component__$b
+    }
+  };
+
+  /* script */
+  const __vue_script__$a = script$a;
+  /* template */
+
+  var __vue_render__$a = function () {
+    var _vm = this;
+
+    var _h = _vm.$createElement;
+
+    var _c = _vm._self._c || _h;
+
+    return _c('div', {
+      staticClass: "tce-tiptap-html",
+      class: {
+        sm: _vm.dense,
+        disabled: _vm.isDisabled
+      }
+    }, [!_vm.isFocused && !_vm.content && _vm.showPlaceholder ? _c('div', {
+      staticClass: "tiptap-html-placeholder"
+    }, [_vm._m(0), _vm._v(" "), _c('div', {
+      staticClass: "message"
+    }, [_c('span', {
+      staticClass: "heading"
+    }, [_vm._v("HTML component")]), _vm._v(" "), !_vm.dense ? _c('span', [_vm._v("Select to edit")]) : _vm._e()])]) : [_c('editor-content', {
+      staticClass: "editor",
+      attrs: {
+        "editor": _vm.editor
+      }
+    }), _vm._v(" "), _vm.editor ? _c('bubble-menu', {
+      attrs: {
+        "editor": _vm.editor
+      }
+    }) : _vm._e()]], 2);
+  };
+
+  var __vue_staticRenderFns__$a = [function () {
+    var _vm = this;
+
+    var _h = _vm.$createElement;
+
+    var _c = _vm._self._c || _h;
+
+    return _c('div', {
+      staticClass: "placeholder-avatar"
+    }, [_c('span', [_vm._v("<")]), _vm._v(" "), _c('span', {
+      staticClass: "divider"
+    }, [_vm._v("/")]), _vm._v(" "), _c('span', [_vm._v(">")])]);
+  }];
+  /* style */
+
+  const __vue_inject_styles__$a = undefined;
+  /* scoped */
+
+  const __vue_scope_id__$a = "data-v-650a9097";
+  /* module identifier */
+
+  const __vue_module_identifier__$a = undefined;
+  /* functional template */
+
+  const __vue_is_functional_template__$a = false;
+  /* style inject */
+
+  /* style inject SSR */
+
+  /* style inject shadow dom */
+
+  const __vue_component__$a = /*#__PURE__*/normalizeComponent({
+    render: __vue_render__$a,
+    staticRenderFns: __vue_staticRenderFns__$a
+  }, __vue_inject_styles__$a, __vue_script__$a, __vue_scope_id__$a, __vue_is_functional_template__$a, __vue_module_identifier__$a, false, undefined, undefined, undefined);
+
+  //
+
+  const fontFamilies = () => ['Arial', 'Arial Black', 'Georgia', 'Impact', 'Tahoma', 'Times New Roman', 'Verdana', 'Courier New', 'Lucida Console', 'Monaco', 'monospace'];
+
+  var script$9 = {
+    name: 'tce-tiptap-font-family',
+    props: {
+      editor: {
+        type: Object,
+        required: true
+      }
+    },
+    data: () => ({
+      font: ''
+    }),
+    computed: {
+      fontFamilies
+    },
+    methods: {
+      toggleFontFamily(font) {
+        this.editor.chain().focus().setFontFamily(font).run();
+      }
+
+    },
+    watch: {
+      font: 'toggleFontFamily'
+    },
+    components: {
+      MenuButton: __vue_component__$i
+    }
+  };
+
+  /* script */
+  const __vue_script__$9 = script$9;
+  /* template */
+
+  var __vue_render__$9 = function () {
+    var _vm = this;
+
+    var _h = _vm.$createElement;
+
+    var _c = _vm._self._c || _h;
+
+    return _c('v-menu', {
+      attrs: {
+        "transition": "slide-y-transition",
+        "bottom": ""
+      },
+      scopedSlots: _vm._u([{
+        key: "activator",
+        fn: function (ref) {
+          var on = ref.on;
+          var attrs = ref.attrs;
+          return [_c('menu-button', _vm._g(_vm._b({
+            attrs: {
+              "is-active": !!_vm.editor.getAttributes('textStyle').fontFamily,
+              "icon": "format-font",
+              "tooltip": "Font family"
+            }
+          }, 'menu-button', attrs, false), on), [_c('v-icon', {
+            staticClass: "ml-1",
+            attrs: {
+              "size": "14"
+            }
+          }, [_vm._v("mdi-chevron-down")])], 1)];
+        }
+      }])
+    }, [_vm._v(" "), _c('v-list', {
+      staticClass: "font-types",
+      attrs: {
+        "dense": ""
+      }
+    }, [_c('v-list-item-group', {
+      model: {
+        value: _vm.font,
+        callback: function ($$v) {
+          _vm.font = $$v;
+        },
+        expression: "font"
+      }
+    }, _vm._l(_vm.fontFamilies, function (fontFamily) {
+      return _c('v-list-item', {
+        key: fontFamily,
+        class: {
+          'active': _vm.editor.isActive('textStyle', {
+            fontFamily: fontFamily
+          })
+        },
+        attrs: {
+          "value": fontFamily
+        }
+      }, [_c('v-list-item-title', [_c('span', {
+        style: "font-family: " + fontFamily
+      }, [_vm._v(_vm._s(fontFamily))])])], 1);
+    }), 1)], 1)], 1);
+  };
+
+  var __vue_staticRenderFns__$9 = [];
+  /* style */
+
+  const __vue_inject_styles__$9 = undefined;
+  /* scoped */
+
+  const __vue_scope_id__$9 = "data-v-0f427584";
+  /* module identifier */
+
+  const __vue_module_identifier__$9 = undefined;
+  /* functional template */
+
+  const __vue_is_functional_template__$9 = false;
+  /* style inject */
+
+  /* style inject SSR */
+
+  /* style inject shadow dom */
+
+  const __vue_component__$9 = /*#__PURE__*/normalizeComponent({
+    render: __vue_render__$9,
+    staticRenderFns: __vue_staticRenderFns__$9
+  }, __vue_inject_styles__$9, __vue_script__$9, __vue_scope_id__$9, __vue_is_functional_template__$9, __vue_module_identifier__$9, false, undefined, undefined, undefined);
+
+  //
+  var script$8 = {
+    name: 'tce-tiptap-font-size',
+    props: {
+      editor: {
+        type: Object,
+        required: true
+      }
+    },
+    data: () => ({
+      size: 14
+    }),
+    computed: {
+      fontSizes: () => FONT_SIZES
+    },
+    methods: {
+      toggleFontSize(size) {
+        this.editor.chain().focus().setFontSize(size).run();
+      }
+
+    },
+    watch: {
+      size: 'toggleFontSize'
+    },
+    components: {
+      MenuButton: __vue_component__$i
+    }
+  };
+
+  /* script */
+  const __vue_script__$8 = script$8;
+  /* template */
+
+  var __vue_render__$8 = function () {
+    var _vm = this;
+
+    var _h = _vm.$createElement;
+
+    var _c = _vm._self._c || _h;
+
+    return _c('v-menu', {
+      attrs: {
+        "transition": "slide-y-transition",
+        "bottom": ""
+      },
+      scopedSlots: _vm._u([{
+        key: "activator",
+        fn: function (ref) {
+          var on = ref.on;
+          var attrs = ref.attrs;
+          return [_c('menu-button', _vm._g(_vm._b({
+            attrs: {
+              "is-active": !!_vm.editor.getAttributes('textStyle').fontSize,
+              "icon": "format-size",
+              "tooltip": "Font size"
+            }
+          }, 'menu-button', attrs, false), on), [_c('v-icon', {
+            staticClass: "ml-1",
+            attrs: {
+              "size": "14"
+            }
+          }, [_vm._v("mdi-chevron-down")])], 1)];
+        }
+      }])
+    }, [_vm._v(" "), _c('v-list', {
+      staticClass: "font-sizes",
+      attrs: {
+        "dense": ""
+      }
+    }, [_c('v-list-item-group', {
+      model: {
+        value: _vm.size,
+        callback: function ($$v) {
+          _vm.size = $$v;
+        },
+        expression: "size"
+      }
+    }, _vm._l(_vm.fontSizes, function (fontSize) {
+      return _c('v-list-item', {
+        key: fontSize,
+        class: {
+          'active': _vm.editor.isActive('textStyle', {
+            fontSize: fontSize
+          })
+        },
+        attrs: {
+          "value": fontSize
+        }
+      }, [_c('v-list-item-title', [_vm._v(_vm._s(fontSize))])], 1);
+    }), 1)], 1)], 1);
+  };
+
+  var __vue_staticRenderFns__$8 = [];
+  /* style */
+
+  const __vue_inject_styles__$8 = undefined;
+  /* scoped */
+
+  const __vue_scope_id__$8 = "data-v-609d512c";
+  /* module identifier */
+
+  const __vue_module_identifier__$8 = undefined;
+  /* functional template */
+
+  const __vue_is_functional_template__$8 = false;
+  /* style inject */
+
+  /* style inject SSR */
+
+  /* style inject shadow dom */
+
+  const __vue_component__$8 = /*#__PURE__*/normalizeComponent({
+    render: __vue_render__$8,
+    staticRenderFns: __vue_staticRenderFns__$8
+  }, __vue_inject_styles__$8, __vue_script__$8, __vue_scope_id__$8, __vue_is_functional_template__$8, __vue_module_identifier__$8, false, undefined, undefined, undefined);
+
+  //
+  var script$7 = {
+    name: 'tce-tiptap-heading',
+    props: {
+      editor: {
+        type: Object,
+        required: true
+      }
+    },
+    data: () => ({
+      level: 0
+    }),
+    methods: {
+      toggleHeading(level) {
+        if (level) return this.editor.chain().focus().toggleHeading({
+          level
+        }).run();
+        this.editor.commands.setNode('paragraph');
+      }
+
+    },
+    watch: {
+      level: 'toggleHeading'
+    },
+    components: {
+      MenuButton: __vue_component__$i
+    }
+  };
+
+  /* script */
+  const __vue_script__$7 = script$7;
+  /* template */
+
+  var __vue_render__$7 = function () {
+    var _vm = this;
+
+    var _h = _vm.$createElement;
+
+    var _c = _vm._self._c || _h;
+
+    return _c('v-menu', {
+      attrs: {
+        "transition": "slide-y-transition",
+        "bottom": ""
+      },
+      scopedSlots: _vm._u([{
+        key: "activator",
+        fn: function (ref) {
+          var on = ref.on;
+          var attrs = ref.attrs;
+          return [_c('menu-button', _vm._g(_vm._b({
+            attrs: {
+              "is-active": _vm.editor.isActive('heading'),
+              "icon": "format-pilcrow",
+              "tooltip": "Heading"
+            }
+          }, 'menu-button', attrs, false), on), [_c('v-icon', {
+            staticClass: "ml-1",
+            attrs: {
+              "size": "14"
+            }
+          }, [_vm._v("mdi-chevron-down")])], 1)];
+        }
+      }])
+    }, [_vm._v(" "), _c('v-list', {
+      staticClass: "headings",
+      attrs: {
+        "dense": ""
+      }
+    }, [_c('v-list-item-group', {
+      model: {
+        value: _vm.level,
+        callback: function ($$v) {
+          _vm.level = $$v;
+        },
+        expression: "level"
+      }
+    }, [_c('v-list-item', {
+      attrs: {
+        "value": 0
+      }
+    }, [_vm._v("Normal")]), _vm._v(" "), _vm._l([1, 2, 3, 4, 5, 6], function (l) {
+      return _c('v-list-item', {
+        key: l,
+        class: {
+          'active': _vm.editor.isActive('heading', {
+            level: l
+          })
+        },
+        attrs: {
+          "value": l
+        }
+      }, [_c('v-list-item-title', [_c("h" + l, {
+        tag: "component"
+      }, [_vm._v("Heading " + _vm._s(l))])], 1)], 1);
+    })], 2)], 1)], 1);
+  };
+
+  var __vue_staticRenderFns__$7 = [];
+  /* style */
+
+  const __vue_inject_styles__$7 = undefined;
+  /* scoped */
+
+  const __vue_scope_id__$7 = "data-v-a6a1cb78";
+  /* module identifier */
+
+  const __vue_module_identifier__$7 = undefined;
+  /* functional template */
+
+  const __vue_is_functional_template__$7 = false;
+  /* style inject */
+
+  /* style inject SSR */
+
+  /* style inject shadow dom */
+
+  const __vue_component__$7 = /*#__PURE__*/normalizeComponent({
+    render: __vue_render__$7,
+    staticRenderFns: __vue_staticRenderFns__$7
+  }, __vue_inject_styles__$7, __vue_script__$7, __vue_scope_id__$7, __vue_is_functional_template__$7, __vue_module_identifier__$7, false, undefined, undefined, undefined);
+
+  //
+  var script$6 = {
+    name: 'tce-tiptap-image',
+    props: {
+      editor: {
+        type: Object,
+        required: true
+      }
+    },
+    data: () => ({
+      menu: false,
+      imageAttrs: {
+        src: null,
+        alt: null
+      }
+    }),
+    methods: {
+      save() {
+        this.menu = false;
+        this.editor.chain().focus().setImage(this.imageAttrs).run();
+      }
+
+    },
+    watch: {
+      menu() {
+        this.imageAttrs = this.editor.getAttributes('image');
+      }
+
+    },
+    components: {
+      MenuButton: __vue_component__$i
+    }
+  };
+
+  /* script */
+  const __vue_script__$6 = script$6;
+  /* template */
+
+  var __vue_render__$6 = function () {
+    var _vm = this;
+
+    var _h = _vm.$createElement;
+
+    var _c = _vm._self._c || _h;
+
+    return _c('v-menu', {
+      attrs: {
+        "transition": "slide-y-transition",
+        "close-on-content-click": false,
+        "bottom": ""
+      },
+      scopedSlots: _vm._u([{
+        key: "activator",
+        fn: function (ref) {
+          var on = ref.on;
+          var attrs = ref.attrs;
+          return [_c('menu-button', _vm._g(_vm._b({
+            attrs: {
+              "is-active": _vm.editor.isActive('image'),
+              "icon": "image-plus",
+              "tooltip": "Insert image"
+            }
+          }, 'menu-button', attrs, false), on))];
+        }
+      }]),
+      model: {
+        value: _vm.menu,
+        callback: function ($$v) {
+          _vm.menu = $$v;
+        },
+        expression: "menu"
+      }
+    }, [_vm._v(" "), _c('v-card', {
+      attrs: {
+        "min-width": "300"
+      }
+    }, [_c('v-card-text', {
+      staticClass: "pb-0"
+    }, [_c('v-text-field', {
+      ref: "imageUrl",
+      attrs: {
+        "label": "Url",
+        "placeholder": "https://example.com",
+        "type": "url"
+      },
+      model: {
+        value: _vm.imageAttrs.src,
+        callback: function ($$v) {
+          _vm.$set(_vm.imageAttrs, "src", $$v);
+        },
+        expression: "imageAttrs.src"
+      }
+    }), _vm._v(" "), _c('v-text-field', {
+      attrs: {
+        "label": "Alt text"
+      },
+      model: {
+        value: _vm.imageAttrs.alt,
+        callback: function ($$v) {
+          _vm.$set(_vm.imageAttrs, "alt", $$v);
+        },
+        expression: "imageAttrs.alt"
+      }
+    })], 1), _vm._v(" "), _c('v-card-actions', {
+      staticClass: "pt-0"
+    }, [_c('v-spacer'), _vm._v(" "), _c('v-btn', {
+      attrs: {
+        "text": ""
+      },
+      on: {
+        "click": _vm.save
+      }
+    }, [_vm._v("\n        Save\n      ")]), _vm._v(" "), _c('v-btn', {
+      attrs: {
+        "text": ""
+      },
+      on: {
+        "click": function ($event) {
+          _vm.menu = false;
+        }
+      }
+    }, [_vm._v("\n        Close\n      ")])], 1)], 1)], 1);
+  };
+
+  var __vue_staticRenderFns__$6 = [];
+  /* style */
+
+  const __vue_inject_styles__$6 = undefined;
+  /* scoped */
+
+  const __vue_scope_id__$6 = undefined;
+  /* module identifier */
+
+  const __vue_module_identifier__$6 = undefined;
+  /* functional template */
+
+  const __vue_is_functional_template__$6 = false;
+  /* style inject */
+
+  /* style inject SSR */
+
+  /* style inject shadow dom */
+
+  const __vue_component__$6 = /*#__PURE__*/normalizeComponent({
+    render: __vue_render__$6,
+    staticRenderFns: __vue_staticRenderFns__$6
+  }, __vue_inject_styles__$6, __vue_script__$6, __vue_scope_id__$6, __vue_is_functional_template__$6, __vue_module_identifier__$6, false, undefined, undefined, undefined);
+
+  //
+  var script$5 = {
+    name: 'tce-tiptap-text-align',
+    props: {
+      editor: {
+        type: Object,
+        required: true
+      }
+    },
+    data: () => ({
+      alignment: 'left'
+    }),
+    computed: {
+      alignments: () => ['left', 'center', 'right', 'justify']
+    },
+    components: {
+      MenuButton: __vue_component__$i
+    }
+  };
+
+  /* script */
+  const __vue_script__$5 = script$5;
+  /* template */
+
+  var __vue_render__$5 = function () {
+    var _vm = this;
+
+    var _h = _vm.$createElement;
+
+    var _c = _vm._self._c || _h;
+
+    return _c('v-menu', {
+      attrs: {
+        "transition": "slide-y-transition",
+        "bottom": ""
+      },
+      scopedSlots: _vm._u([{
+        key: "activator",
+        fn: function (ref) {
+          var on = ref.on;
+          var attrs = ref.attrs;
+          return [_c('menu-button', _vm._g(_vm._b({
+            attrs: {
+              "icon": "format-align-left",
+              "tooltip": "Align text"
+            }
+          }, 'menu-button', attrs, false), on), [_c('v-icon', {
+            staticClass: "ml-1",
+            attrs: {
+              "size": "14"
+            }
+          }, [_vm._v("mdi-chevron-down")])], 1)];
+        }
+      }])
+    }, [_vm._v(" "), _c('v-list', {
+      staticClass: "text-alignment",
+      attrs: {
+        "dense": ""
+      }
+    }, [_c('v-list-item-group', {
+      model: {
+        value: _vm.alignment,
+        callback: function ($$v) {
+          _vm.alignment = $$v;
+        },
+        expression: "alignment"
+      }
+    }, _vm._l(_vm.alignments, function (it) {
+      return _c('v-list-item', {
+        key: it,
+        class: {
+          'active': _vm.editor.isActive({
+            textAlign: it
+          })
+        },
+        attrs: {
+          "value": it
+        }
+      }, [_c('v-list-item-title', [_c('menu-button', {
+        attrs: {
+          "is-active": _vm.editor.isActive({
+            textAlign: it
+          }),
+          "icon": "format-align-" + it
+        },
+        on: {
+          "click": function ($event) {
+            _vm.editor.chain().focus().setTextAlign(it).run();
+          }
+        }
+      })], 1)], 1);
+    }), 1)], 1)], 1);
+  };
+
+  var __vue_staticRenderFns__$5 = [];
+  /* style */
+
+  const __vue_inject_styles__$5 = undefined;
+  /* scoped */
+
+  const __vue_scope_id__$5 = "data-v-206fbff0";
+  /* module identifier */
+
+  const __vue_module_identifier__$5 = undefined;
+  /* functional template */
+
+  const __vue_is_functional_template__$5 = false;
+  /* style inject */
+
+  /* style inject SSR */
+
+  /* style inject shadow dom */
+
+  const __vue_component__$5 = /*#__PURE__*/normalizeComponent({
+    render: __vue_render__$5,
+    staticRenderFns: __vue_staticRenderFns__$5
+  }, __vue_inject_styles__$5, __vue_script__$5, __vue_scope_id__$5, __vue_is_functional_template__$5, __vue_module_identifier__$5, false, undefined, undefined, undefined);
+
+  //
+  var script$4 = {
+    name: 'tce-tiptap-text-color',
+    props: {
+      editor: {
+        type: Object,
+        required: true
+      },
+      isActive: {
+        type: Boolean,
+        default: false
+      }
+    },
+    methods: {
+      onColorChange(color) {
+        this.editor.chain().focus().setTextColor(color.hex).run();
+      }
+
+    },
+    components: {
+      MenuButton: __vue_component__$i
+    }
+  };
+
+  /* script */
+  const __vue_script__$4 = script$4;
+  /* template */
+
+  var __vue_render__$4 = function () {
+    var _vm = this;
+
+    var _h = _vm.$createElement;
+
+    var _c = _vm._self._c || _h;
+
+    return _c('v-menu', {
+      attrs: {
+        "transition": "slide-y-transition",
+        "bottom": ""
+      },
+      scopedSlots: _vm._u([{
+        key: "activator",
+        fn: function (ref) {
+          var on = ref.on;
+          var attrs = ref.attrs;
+          return [_c('menu-button', _vm._g(_vm._b({
+            attrs: {
+              "is-active": !!_vm.editor.getAttributes('textStyle').color,
+              "icon": "palette",
+              "tooltip": "Add text color"
+            }
+          }, 'menu-button', attrs, false), on))];
+        }
+      }])
+    }, [_vm._v(" "), _c('v-color-picker', {
+      attrs: {
+        "dot-size": "25",
+        "mode": "hexa",
+        "show-swatches": "",
+        "swatches-max-height": "200"
+      },
+      on: {
+        "input": _vm.onColorChange
+      }
+    })], 1);
+  };
+
+  var __vue_staticRenderFns__$4 = [];
+  /* style */
+
+  const __vue_inject_styles__$4 = undefined;
+  /* scoped */
+
+  const __vue_scope_id__$4 = "data-v-1059d05a";
+  /* module identifier */
+
+  const __vue_module_identifier__$4 = undefined;
+  /* functional template */
+
+  const __vue_is_functional_template__$4 = false;
+  /* style inject */
+
+  /* style inject SSR */
+
+  /* style inject shadow dom */
+
+  const __vue_component__$4 = /*#__PURE__*/normalizeComponent({
+    render: __vue_render__$4,
+    staticRenderFns: __vue_staticRenderFns__$4
+  }, __vue_inject_styles__$4, __vue_script__$4, __vue_scope_id__$4, __vue_is_functional_template__$4, __vue_module_identifier__$4, false, undefined, undefined, undefined);
+
+  //
+  var script$3 = {
+    name: 'tce-tiptap-text-hightlight',
+    props: {
+      editor: {
+        type: Object,
+        required: true
+      },
+      isActive: {
+        type: Boolean,
+        default: false
+      }
+    },
+    methods: {
+      onColorChange(color) {
+        this.editor.chain().focus().setTextHighlight(color.hex).run();
+      }
+
+    },
+    components: {
+      MenuButton: __vue_component__$i
+    }
+  };
+
+  /* script */
+  const __vue_script__$3 = script$3;
+  /* template */
+
+  var __vue_render__$3 = function () {
+    var _vm = this;
+
+    var _h = _vm.$createElement;
+
+    var _c = _vm._self._c || _h;
+
+    return _c('v-menu', {
+      attrs: {
+        "transition": "slide-y-transition",
+        "bottom": ""
+      },
+      scopedSlots: _vm._u([{
+        key: "activator",
+        fn: function (ref) {
+          var on = ref.on;
+          var attrs = ref.attrs;
+          return [_c('menu-button', _vm._g(_vm._b({
+            attrs: {
+              "is-active": !!_vm.editor.getAttributes('textStyle').backgroundColor,
+              "icon": "format-color-highlight",
+              "tooltip": "Highlight text"
+            }
+          }, 'menu-button', attrs, false), on))];
+        }
+      }])
+    }, [_vm._v(" "), _c('v-color-picker', {
+      attrs: {
+        "dot-size": "25",
+        "mode": "hexa",
+        "show-swatches": "",
+        "swatches-max-height": "200"
+      },
+      on: {
+        "input": _vm.onColorChange
+      }
+    })], 1);
+  };
+
+  var __vue_staticRenderFns__$3 = [];
+  /* style */
+
+  const __vue_inject_styles__$3 = undefined;
+  /* scoped */
+
+  const __vue_scope_id__$3 = "data-v-422b3b39";
+  /* module identifier */
+
+  const __vue_module_identifier__$3 = undefined;
+  /* functional template */
+
+  const __vue_is_functional_template__$3 = false;
+  /* style inject */
+
+  /* style inject SSR */
+
+  /* style inject shadow dom */
+
+  const __vue_component__$3 = /*#__PURE__*/normalizeComponent({
+    render: __vue_render__$3,
+    staticRenderFns: __vue_staticRenderFns__$3
+  }, __vue_inject_styles__$3, __vue_script__$3, __vue_scope_id__$3, __vue_is_functional_template__$3, __vue_module_identifier__$3, false, undefined, undefined, undefined);
 
   // Because working with row and column-spanning cells is not quite
   // trivial, this code builds up a descriptive structure for a given
@@ -16607,37 +22781,6 @@
 
   new PluginKey("tableColumnResizing");
 
-  function isTableActive(state) {
-    if (!state) return false;
-    const {
-      selection,
-      doc
-    } = state;
-    const {
-      from,
-      to
-    } = selection;
-    let keepLooking = true;
-    let active = false;
-    doc.nodesBetween(from, to, node => {
-      const name = node.type.name;
-
-      if (keepLooking && (name === 'table' || name === 'table_row' || name === 'table_column' || name === 'table_cell')) {
-        keepLooking = false;
-        active = true;
-      }
-
-      return keepLooking;
-    });
-    return active;
-  }
-  function enableMergeCells(state) {
-    return isTableActive(state) && mergeCells(state);
-  }
-  function enableSplitCell(state) {
-    return isTableActive(state) && splitCell(state);
-  }
-
   //
   //
   //
@@ -16785,25 +22928,52 @@
   }, __vue_inject_styles__$2, __vue_script__$2, __vue_scope_id__$2, __vue_is_functional_template__$2, __vue_module_identifier__$2, false, undefined, undefined, undefined);
 
   //
+
+  function isTableActive(state) {
+    if (!state) return false;
+    const {
+      selection,
+      doc
+    } = state;
+    const {
+      from,
+      to
+    } = selection;
+    let keepLooking = true;
+    let active = false;
+    doc.nodesBetween(from, to, node => {
+      const name = node.type.name;
+
+      if (keepLooking && (name === 'table' || name === 'table_row' || name === 'table_column' || name === 'table_cell')) {
+        keepLooking = false;
+        active = true;
+      }
+
+      return keepLooking;
+    });
+    return active;
+  }
+
+  function enableMergeCells(state) {
+    return isTableActive(state) && mergeCells(state);
+  }
+
+  function enableSplitCell(state) {
+    return isTableActive(state) && splitCell(state);
+  }
+
   var script$1 = {
     name: 'tce-tiptap-table',
     props: {
-      editorContext: {
+      editor: {
         type: Object,
         required: true
       }
     },
     computed: {
-      editor: ({
-        editorContext: {
-          editor
-        }
-      }) => editor,
       isActive: ({
-        editorContext: {
-          isActive
-        }
-      }) => isActive.table(),
+        editor
+      }) => editor.isActive('table'),
       isTableActive: ({
         editor
       }) => isTableActive(editor.state),
@@ -16819,16 +22989,16 @@
         row,
         col
       }) {
-        this.editorContext.commands.createTable({
+        this.editor.chain().focus().insertTable({
           rowsCount: row,
           colsCount: col,
           withHeaderRow: true
-        });
+        }).run();
       }
 
     },
     components: {
-      MenuButton: __vue_component__$h,
+      MenuButton: __vue_component__$i,
       TableGrid: __vue_component__$2
     }
   };
@@ -16857,9 +23027,15 @@
           return [_c('menu-button', _vm._g(_vm._b({
             attrs: {
               "is-active": _vm.isActive,
-              "icon": "table"
+              "icon": "table",
+              "tooltip": "Insert table"
             }
-          }, 'menu-button', attrs, false), on))];
+          }, 'menu-button', attrs, false), on), [_c('v-icon', {
+            staticClass: "ml-1",
+            attrs: {
+              "size": "14"
+            }
+          }, [_vm._v("mdi-chevron-down")])], 1)];
         }
       }])
     }, [_vm._v(" "), _c('v-list', {
@@ -16893,7 +23069,9 @@
         "disabled": !_vm.isTableActive
       },
       on: {
-        "click": _vm.editorContext.commands.addColumnBefore
+        "click": function ($event) {
+          _vm.editor.chain().focus().addColumnBefore().run();
+        }
       }
     }, [_c('v-icon', {
       staticClass: "mr-3",
@@ -16906,7 +23084,9 @@
         "disabled": !_vm.isTableActive
       },
       on: {
-        "click": _vm.editorContext.commands.addColumnAfter
+        "click": function ($event) {
+          _vm.editor.chain().focus().addColumnAfter().run();
+        }
       }
     }, [_c('v-icon', {
       staticClass: "mr-3",
@@ -16919,7 +23099,9 @@
         "disabled": !_vm.isTableActive
       },
       on: {
-        "click": _vm.editorContext.commands.deleteColumn
+        "click": function ($event) {
+          _vm.editor.chain().focus().deleteColumn().run();
+        }
       }
     }, [_c('v-icon', {
       staticClass: "mr-3",
@@ -16932,7 +23114,9 @@
         "disabled": !_vm.isTableActive
       },
       on: {
-        "click": _vm.editorContext.commands.addRowBefore
+        "click": function ($event) {
+          _vm.editor.chain().focus().addRowBefore().run();
+        }
       }
     }, [_c('v-icon', {
       staticClass: "mr-3",
@@ -16945,7 +23129,9 @@
         "disabled": !_vm.isTableActive
       },
       on: {
-        "click": _vm.editorContext.commands.addRowAfter
+        "click": function ($event) {
+          _vm.editor.chain().focus().addRowAfter().run();
+        }
       }
     }, [_c('v-icon', {
       staticClass: "mr-3",
@@ -16958,7 +23144,9 @@
         "disabled": !_vm.isTableActive
       },
       on: {
-        "click": _vm.editorContext.commands.deleteRow
+        "click": function ($event) {
+          _vm.editor.chain().focus().deleteRow().run();
+        }
       }
     }, [_c('v-icon', {
       staticClass: "mr-3",
@@ -16971,7 +23159,9 @@
         "disabled": !_vm.isMergeCellsEnabled
       },
       on: {
-        "click": _vm.editorContext.commands.mergeCells
+        "click": function ($event) {
+          _vm.editor.chain().focus().mergeCells().run();
+        }
       }
     }, [_c('v-icon', {
       staticClass: "mr-3",
@@ -16984,7 +23174,9 @@
         "disabled": !_vm.isSplitCellEnabled
       },
       on: {
-        "click": _vm.editorContext.commands.splitCell
+        "click": function ($event) {
+          _vm.editor.chain().focus().splitCell().run();
+        }
       }
     }, [_c('v-icon', {
       staticClass: "mr-3",
@@ -16997,7 +23189,9 @@
         "disabled": !_vm.isTableActive
       },
       on: {
-        "click": _vm.editorContext.commands.deleteTable
+        "click": function ($event) {
+          _vm.editor.chain().focus().deleteTable().run();
+        }
       }
     }, [_c('v-icon', {
       staticClass: "mr-3",
@@ -17047,16 +23241,16 @@
     },
 
     components: {
-      ColorPicker: __vue_component__$8,
-      EditorMenuBar: tiptap.EditorMenuBar,
-      FontSize: __vue_component__$7,
-      FontType: __vue_component__$6,
-      Heading: __vue_component__$5,
-      TceImage: __vue_component__$4,
-      MenuButton: __vue_component__$h,
-      LinkButton: __vue_component__$c,
+      TextColor: __vue_component__$4,
+      TextHighlight: __vue_component__$3,
+      FontSize: __vue_component__$8,
+      FontFamily: __vue_component__$9,
+      Heading: __vue_component__$7,
+      TceImage: __vue_component__$6,
+      MenuButton: __vue_component__$i,
+      LinkButton: __vue_component__$d,
       TiptapTable: __vue_component__$1,
-      TextAlign: __vue_component__$3
+      TextAlign: __vue_component__$5
     }
   };
 
@@ -17071,201 +23265,227 @@
 
     var _c = _vm._self._c || _h;
 
-    return _c('div', [_vm.editor ? _c('editor-menu-bar', {
+    return _vm.editor ? _c('div', {
+      staticClass: "toolbar"
+    }, [_c('menu-button', {
+      attrs: {
+        "is-active": _vm.editor.isActive('code'),
+        "icon": "code-tags",
+        "tooltip": "Code"
+      },
+      on: {
+        "click": function ($event) {
+          _vm.editor.chain().focus().toggleCode().run();
+        }
+      }
+    }), _vm._v(" "), _c('v-divider', {
+      attrs: {
+        "vertical": ""
+      }
+    }), _vm._v(" "), _c('menu-button', {
+      attrs: {
+        "icon": "undo",
+        "tooltip": "Undo"
+      },
+      on: {
+        "click": function ($event) {
+          _vm.editor.chain().focus().undo().run();
+        }
+      }
+    }), _vm._v(" "), _c('menu-button', {
+      attrs: {
+        "icon": "redo",
+        "tooltip": "Redo"
+      },
+      on: {
+        "click": function ($event) {
+          _vm.editor.chain().focus().redo().run();
+        }
+      }
+    }), _vm._v(" "), _c('v-divider', {
+      attrs: {
+        "vertical": ""
+      }
+    }), _vm._v(" "), _c('heading', {
       attrs: {
         "editor": _vm.editor
+      }
+    }), _vm._v(" "), _c('font-family', {
+      attrs: {
+        "editor": _vm.editor
+      }
+    }), _vm._v(" "), _c('font-size', {
+      attrs: {
+        "editor": _vm.editor
+      }
+    }), _vm._v(" "), _c('v-divider', {
+      attrs: {
+        "vertical": ""
+      }
+    }), _vm._v(" "), _c('menu-button', {
+      attrs: {
+        "is-active": _vm.editor.isActive('bold'),
+        "icon": "format-bold",
+        "tooltip": "Bold"
       },
-      scopedSlots: _vm._u([{
-        key: "default",
-        fn: function (ref) {
-          var commands = ref.commands;
-          var isActive = ref.isActive;
-          var getMarkAttrs = ref.getMarkAttrs;
-          return [_c('div', {
-            staticClass: "toolbar"
-          }, [_c('menu-button', {
-            attrs: {
-              "command": commands.code,
-              "is-active": isActive.code(),
-              "icon": "code-tags"
-            }
-          }), _vm._v(" "), _c('v-divider', {
-            attrs: {
-              "vertical": ""
-            }
-          }), _vm._v(" "), _c('menu-button', {
-            attrs: {
-              "command": commands.undo,
-              "icon": "undo"
-            }
-          }), _vm._v(" "), _c('menu-button', {
-            attrs: {
-              "command": commands.redo,
-              "icon": "redo"
-            }
-          }), _vm._v(" "), _c('v-divider', {
-            attrs: {
-              "vertical": ""
-            }
-          }), _vm._v(" "), _c('heading', {
-            attrs: {
-              "editor-context": {
-                editor: _vm.editor,
-                commands: commands,
-                isActive: isActive
-              }
-            }
-          }), _vm._v(" "), _c('font-size', {
-            attrs: {
-              "editor-context": {
-                editor: _vm.editor,
-                commands: commands,
-                isActive: isActive
-              }
-            }
-          }), _vm._v(" "), _c('font-type', {
-            attrs: {
-              "editor-context": {
-                editor: _vm.editor,
-                commands: commands,
-                isActive: isActive
-              }
-            }
-          }), _vm._v(" "), _c('v-divider', {
-            attrs: {
-              "vertical": ""
-            }
-          }), _vm._v(" "), _c('menu-button', {
-            attrs: {
-              "command": commands.bold,
-              "is-active": isActive.bold(),
-              "icon": "format-bold"
-            }
-          }), _vm._v(" "), _c('menu-button', {
-            attrs: {
-              "command": commands.italic,
-              "is-active": isActive.italic(),
-              "icon": "format-italic"
-            }
-          }), _vm._v(" "), _c('menu-button', {
-            attrs: {
-              "command": commands.underline,
-              "is-active": isActive.underline(),
-              "icon": "format-underline"
-            }
-          }), _vm._v(" "), _c('menu-button', {
-            attrs: {
-              "command": commands.strike,
-              "is-active": isActive.strike(),
-              "icon": "format-strikethrough"
-            }
-          }), _vm._v(" "), _c('v-divider', {
-            attrs: {
-              "vertical": ""
-            }
-          }), _vm._v(" "), _c('color-picker', {
-            attrs: {
-              "command": commands.textColor,
-              "is-active": isActive.textColor()
-            }
-          }), _vm._v(" "), _c('color-picker', {
-            attrs: {
-              "command": commands.textHighlight,
-              "is-active": isActive.textHighlight(),
-              "icon": "format-color-highlight"
-            }
-          }), _vm._v(" "), _c('v-divider', {
-            attrs: {
-              "vertical": ""
-            }
-          }), _vm._v(" "), _c('menu-button', {
-            attrs: {
-              "command": commands.bullet_list,
-              "is-active": isActive.bullet_list(),
-              "icon": "format-list-bulleted"
-            }
-          }), _vm._v(" "), _c('menu-button', {
-            attrs: {
-              "command": commands.ordered_list,
-              "is-active": isActive.ordered_list(),
-              "icon": "format-list-numbered"
-            }
-          }), _vm._v(" "), _c('menu-button', {
-            attrs: {
-              "command": commands.ordered_list,
-              "is-active": isActive.ordered_list(),
-              "icon": "format-list-numbered"
-            }
-          }), _vm._v(" "), _c('menu-button', {
-            attrs: {
-              "command": commands.outdent,
-              "icon": "format-indent-decrease"
-            }
-          }), _vm._v(" "), _c('menu-button', {
-            attrs: {
-              "command": commands.indent,
-              "icon": "format-indent-increase"
-            }
-          }), _vm._v(" "), _c('text-align', {
-            attrs: {
-              "editor-context": {
-                editor: _vm.editor,
-                commands: commands,
-                isActive: isActive
-              }
-            }
-          }), _vm._v(" "), _c('v-divider', {
-            attrs: {
-              "vertical": ""
-            }
-          }), _vm._v(" "), _c('link-button', {
-            attrs: {
-              "command": commands.link,
-              "is-active": isActive.link(),
-              "link-attributes": getMarkAttrs('link'),
-              "icon": "link"
-            }
-          }), _vm._v(" "), _c('tiptap-table', {
-            attrs: {
-              "editor-context": {
-                editor: _vm.editor,
-                commands: commands,
-                isActive: isActive
-              }
-            }
-          }), _vm._v(" "), _c('tce-image', {
-            attrs: {
-              "editor-context": {
-                editor: _vm.editor,
-                commands: commands,
-                isActive: isActive
-              }
-            }
-          }), _vm._v(" "), _c('menu-button', {
-            attrs: {
-              "command": commands.horizontal_rule,
-              "is-active": isActive.horizontal_rule(),
-              "icon": "minus"
-            }
-          }), _vm._v(" "), _c('menu-button', {
-            attrs: {
-              "command": commands.blockquote,
-              "is-active": isActive.blockquote(),
-              "icon": "format-quote-close"
-            }
-          }), _vm._v(" "), _c('v-divider', {
-            attrs: {
-              "vertical": ""
-            }
-          }), _vm._v(" "), _c('menu-button', {
-            attrs: {
-              "command": commands.clearFormat,
-              "icon": "format-clear"
-            }
-          })], 1)];
+      on: {
+        "click": function ($event) {
+          _vm.editor.chain().focus().toggleBold().run();
         }
-      }], null, false, 3917240205)
-    }) : _vm._e()], 1);
+      }
+    }), _vm._v(" "), _c('menu-button', {
+      attrs: {
+        "is-active": _vm.editor.isActive('italic'),
+        "icon": "format-italic",
+        "tooltip": "Italic"
+      },
+      on: {
+        "click": function ($event) {
+          _vm.editor.chain().focus().toggleItalic().run();
+        }
+      }
+    }), _vm._v(" "), _c('menu-button', {
+      attrs: {
+        "is-active": _vm.editor.isActive('underline'),
+        "icon": "format-underline",
+        "tooltip": "Underline"
+      },
+      on: {
+        "click": function ($event) {
+          _vm.editor.chain().focus().toggleUnderline().run();
+        }
+      }
+    }), _vm._v(" "), _c('menu-button', {
+      attrs: {
+        "is-active": _vm.editor.isActive('strike'),
+        "icon": "format-strikethrough",
+        "tooltip": "Strikethrough"
+      },
+      on: {
+        "click": function ($event) {
+          _vm.editor.chain().focus().toggleStrike().run();
+        }
+      }
+    }), _vm._v(" "), _c('v-divider', {
+      attrs: {
+        "vertical": ""
+      }
+    }), _vm._v(" "), _c('tiptap-table', {
+      attrs: {
+        "editor": _vm.editor
+      }
+    }), _vm._v(" "), _c('text-color', {
+      attrs: {
+        "editor": _vm.editor
+      }
+    }), _vm._v(" "), _c('text-highlight', {
+      attrs: {
+        "editor": _vm.editor
+      }
+    }), _vm._v(" "), _c('v-divider', {
+      attrs: {
+        "vertical": ""
+      }
+    }), _vm._v(" "), _c('menu-button', {
+      attrs: {
+        "is-active": _vm.editor.isActive('bulletList'),
+        "icon": "format-list-bulleted",
+        "tooltip": "Bullet list"
+      },
+      on: {
+        "click": function ($event) {
+          _vm.editor.chain().focus().toggleBulletList().run();
+        }
+      }
+    }), _vm._v(" "), _c('menu-button', {
+      attrs: {
+        "is-active": _vm.editor.isActive('orderedList'),
+        "icon": "format-list-numbered",
+        "tooltip": "Numbered list"
+      },
+      on: {
+        "click": function ($event) {
+          _vm.editor.chain().focus().toggleOrderedList().run();
+        }
+      }
+    }), _vm._v(" "), _c('text-align', {
+      attrs: {
+        "editor": _vm.editor
+      }
+    }), _vm._v(" "), _c('menu-button', {
+      attrs: {
+        "icon": "format-indent-decrease",
+        "tooltip": "Outdent"
+      },
+      on: {
+        "click": function ($event) {
+          _vm.editor.chain().focus().outdent(5).run();
+        }
+      }
+    }), _vm._v(" "), _c('menu-button', {
+      attrs: {
+        "icon": "format-indent-increase",
+        "tooltip": "Indent"
+      },
+      on: {
+        "click": function ($event) {
+          _vm.editor.chain().focus().indent(5).run();
+        }
+      }
+    }), _vm._v(" "), _c('v-divider', {
+      attrs: {
+        "vertical": ""
+      }
+    }), _vm._v(" "), _c('menu-button', {
+      attrs: {
+        "is-active": _vm.editor.isActive('horizontalRule'),
+        "icon": "minus",
+        "tooltip": "Horizontal rule"
+      },
+      on: {
+        "click": function ($event) {
+          _vm.editor.chain().focus().setHorizontalRule().run();
+        }
+      }
+    }), _vm._v(" "), _c('menu-button', {
+      attrs: {
+        "is-active": _vm.editor.isActive('blockquote'),
+        "icon": "format-quote-close",
+        "tooltip": "Blockquote"
+      },
+      on: {
+        "click": function ($event) {
+          _vm.editor.chain().focus().toggleBlockquote().run();
+        }
+      }
+    }), _vm._v(" "), _c('v-divider', {
+      attrs: {
+        "vertical": ""
+      }
+    }), _vm._v(" "), _c('link-button', {
+      attrs: {
+        "editor": _vm.editor,
+        "icon": "link"
+      }
+    }), _vm._v(" "), _c('tce-image', {
+      attrs: {
+        "editor": _vm.editor
+      }
+    }), _vm._v(" "), _c('v-divider', {
+      attrs: {
+        "vertical": ""
+      }
+    }), _vm._v(" "), _c('menu-button', {
+      attrs: {
+        "icon": "format-clear",
+        "tooltip": "Clear formating"
+      },
+      on: {
+        "click": function ($event) {
+          _vm.editor.chain().focus().unsetAllMarks().run();
+        }
+      }
+    })], 1) : _vm._e();
   };
 
   var __vue_staticRenderFns__ = [];
@@ -17274,7 +23494,7 @@
   const __vue_inject_styles__ = undefined;
   /* scoped */
 
-  const __vue_scope_id__ = "data-v-80dd0402";
+  const __vue_scope_id__ = "data-v-d8b596e2";
   /* module identifier */
 
   const __vue_module_identifier__ = undefined;
@@ -17295,14 +23515,14 @@
   var plugin__default = {
     initState: () => ({}),
     components: {
-      Edit: __vue_component__$9,
+      Edit: __vue_component__$a,
       Toolbar: __vue_component__
     }
   };
 
   var plugin = /*#__PURE__*/Object.freeze({
     __proto__: null,
-    Edit: __vue_component__$9,
+    Edit: __vue_component__$a,
     Toolbar: __vue_component__,
     'default': plugin__default
   });
@@ -17490,7 +23710,7 @@
     });
   };
 
-  exports.Edit = __vue_component__$9;
+  exports.Edit = __vue_component__$a;
   exports.Toolbar = __vue_component__;
   exports.default = install;
   exports.install = install;
