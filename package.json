@@ -35,7 +35,7 @@
     "@tiptap/extension-text-align": "^2.0.0-beta.17",
     "@tiptap/extension-text-style": "^2.0.0-beta.13",
     "@tiptap/extension-underline": "^2.0.0-beta.14",
-    "@tiptap/starter-kit": "^2.0.0-beta.70",
+    "@tiptap/starter-kit": "^2.0.0-beta.75",
     "@tiptap/vue-2": "^2.0.0-beta.34",
     "lodash.debounce": "^4.0.8"
   },
