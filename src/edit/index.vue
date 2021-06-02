@@ -22,7 +22,15 @@
 
 <script>
 import { Editor, EditorContent } from '@tiptap/vue-2';
-import { FontSize, Image, Indent, TextColor, TextHighlight } from './extensions';
+import {
+  FontSize,
+  Image,
+  Indent,
+  Subscript,
+  Superscript,
+  TextColor,
+  TextHighlight
+} from './extensions';
 import Blockquote from '@tiptap/extension-blockquote';
 import Bold from '@tiptap/extension-bold';
 import BubbleMenu from './components/BubbleMenu/index.vue';
@@ -141,7 +149,9 @@ export default {
         TableCell,
         TextAlign,
         TextColor,
-        TextHighlight
+        TextHighlight,
+        Superscript,
+        Subscript
       ],
       onUpdate: () => {
         this.content = this.editor.getHTML();

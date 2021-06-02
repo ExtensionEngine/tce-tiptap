@@ -74,6 +74,14 @@
       :is-active="editor.isActive('blockquote')"
       icon="format-quote-close"
       tooltip="Blockquote" />
+    <menu-button
+      @click="editor.chain().focus().toggleSuperscript().run()"
+      icon="format-superscript"
+      tooltip="Superscript" />
+    <menu-button
+      @click="editor.chain().focus().toggleSubscript().run()"
+      icon="format-subscript"
+      tooltip="Subscript" />
     <v-divider vertical />
     <link-button :editor="editor" icon="link" />
     <tce-image :editor="editor" />
