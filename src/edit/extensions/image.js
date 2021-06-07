@@ -1,4 +1,6 @@
 import Image from '@tiptap/extension-image';
+import ImageView from '../components/ExtensionViews/Image.vue';
+import { VueNodeViewRenderer } from '@tiptap/vue-2';
 
 export default Image.extend({
   addAttributes() {
@@ -13,7 +15,7 @@ export default Image.extend({
         default: 200
       },
       height: {
-        default: 'auto'
+        default: 200
       },
       display: {
         default: 'block',
@@ -43,5 +45,8 @@ export default Image.extend({
         }
       }
     };
+  },
+  addNodeView() {
+    return VueNodeViewRenderer(ImageView);
   }
 });
