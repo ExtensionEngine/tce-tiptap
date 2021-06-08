@@ -161,7 +161,7 @@ $tooltipColor: #37474f;
 
 .editor-footer {
   display: flex;
-  padding: 10px;
+  padding: 5px 20px 5px 10px;
   justify-content: space-between;
   align-items: center;
   font-size: 12px;
