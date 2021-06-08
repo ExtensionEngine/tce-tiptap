@@ -14,7 +14,15 @@
       </div>
     </div>
     <template v-else>
-      <editor-content :editor="editor" class="editor" />
+      <editor-content v-if="editor" :editor="editor" class="editor" />
+      <div v-if="editor" class="editor-footer">
+        <span class="select-all">
+          <menu-button
+            @click="editor.chain().focus().selectAll().run()"
+            icon="select-all" />
+        </span>
+        <span class="char-counter">Chars: {{ editor.getCharacterCount() }}</span>
+      </div>
       <bubble-menu v-if="editor" :editor="editor" />
     </template>
   </div>
@@ -50,8 +58,10 @@ import HorizontalRule from '@tiptap/extension-horizontal-rule';
 import Italic from '@tiptap/extension-italic';
 import Link from '@tiptap/extension-link';
 import ListItem from '@tiptap/extension-list-item';
+import MenuButton from './components/MenuButton.vue';
 import OrderedList from '@tiptap/extension-ordered-list';
 import Paragraph from '@tiptap/extension-paragraph';
+import Placeholder from '@tiptap/extension-placeholder';
 import Strike from '@tiptap/extension-strike';
 import Table from '@tiptap/extension-table';
 import TableCell from '@tiptap/extension-table-cell';
@@ -137,6 +147,7 @@ export default {
         Link.configure({ openOnClick: false }),
         OrderedList,
         Paragraph,
+        Placeholder.configure({ placeholder: 'Insert text here...' }),
         Strike,
         Text,
         TextStyle,
@@ -163,7 +174,8 @@ export default {
   },
   components: {
     EditorContent,
-    BubbleMenu
+    BubbleMenu,
+    MenuButton
   }
 };
 </script>
@@ -221,6 +233,21 @@ $tooltipColor: #37474f;
   }
 }
 
+.editor-footer {
+  display: flex;
+  padding: 10px;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 12px;
+
+  ::v-deep {
+    .menu-button {
+      min-width: 32px;
+      padding: 0;
+    }
+  }
+}
+
 .editor {
   text-align: left;
 
@@ -245,6 +272,15 @@ $tooltipColor: #37474f;
 
         &:focus {
           outline: none;
+        }
+
+        &.is-editor-empty:first-child::before {
+          content: attr(data-placeholder);
+          font-style: italic;
+          height: 0;
+          color: #ced4da;
+          float: left;
+          pointer-events: none;
         }
       }
 
